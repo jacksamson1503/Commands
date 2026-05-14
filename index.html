@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ubuntu Server Commands Cheat Sheet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1e293b;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #38bdf8;
+    }
+
+    header p {
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1400px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .section h2 {
+      background: #334155;
+      margin: 0;
+      padding: 15px;
+      color: #f8fafc;
+      font-size: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #475569;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #0f172a;
+      color: #38bdf8;
+    }
+
+    tr:hover {
+      background: #334155;
+    }
+
+    code {
+      background: #020617;
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: #22c55e;
+      font-size: 14px;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      th {
+        display: none;
+      }
+
+      tr {
+        margin-bottom: 15px;
+        border: 1px solid #475569;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+      }
+
+      td::before {
+        position: absolute;
+        left: 10px;
+        top: 12px;
+        font-weight: bold;
+        color: #38bdf8;
+      }
+
+      td:nth-child(1)::before {
+        content: "Command";
+      }
+
+      td:nth-child(2)::before {
+        content: "Use Case";
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Ubuntu Server Commands Cheat Sheet</h1>
+  <p>Installation, Docker, NodeJS, Linux, Networking & Administration Commands</p>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <h2>Package Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo apt update</code></td><td>Refresh package repository list</td></tr>
+      <tr><td><code>sudo apt upgrade -y</code></td><td>Upgrade installed packages</td></tr>
+      <tr><td><code>sudo apt install package_name -y</code></td><td>Install package</td></tr>
+      <tr><td><code>sudo apt remove package_name -y</code></td><td>Remove installed package</td></tr>
+      <tr><td><code>sudo apt autoremove -y</code></td><td>Remove unused packages</td></tr>
+      <tr><td><code>apt list --installed</code></td><td>List installed packages</td></tr>
+      <tr><td><code>apt search package_name</code></td><td>Search package</td></tr>
+      <tr><td><code>dpkg -i package.deb</code></td><td>Install local .deb package</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Software Installation Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo apt install nginx -y</code></td><td>Install Nginx web server</td></tr>
+      <tr><td><code>sudo apt install mysql-server -y</code></td><td>Install MySQL database</td></tr>
+      <tr><td><code>sudo apt install postgresql postgresql-contrib -y</code></td><td>Install PostgreSQL database</td></tr>
+      <tr><td><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></td><td>Add NodeJS 20 repository</td></tr>
+      <tr><td><code>sudo apt install nodejs -y</code></td><td>Install NodeJS</td></tr>
+      <tr><td><code>sudo npm install -g @angular/cli</code></td><td>Install Angular CLI</td></tr>
+      <tr><td><code>sudo npm install -g pm2</code></td><td>Install PM2</td></tr>
+      <tr><td><code>sudo npm install -g npm@latest</code></td><td>Update npm</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Docker Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo apt install apt-transport-https ca-certificates curl software-properties-common -y</code></td><td>Install Docker dependencies</td></tr>
+      <tr><td><code>sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y</code></td><td>Install Docker Engine</td></tr>
+      <tr><td><code>docker --version</code></td><td>Check Docker version</td></tr>
+      <tr><td><code>docker compose version</code></td><td>Check Docker Compose version</td></tr>
+      <tr><td><code>docker ps</code></td><td>Show running containers</td></tr>
+      <tr><td><code>docker images</code></td><td>List Docker images</td></tr>
+      <tr><td><code>docker logs container_id</code></td><td>View container logs</td></tr>
+      <tr><td><code>docker exec -it container_id bash</code></td><td>Access running container</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Service Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo systemctl start service_name</code></td><td>Start service</td></tr>
+      <tr><td><code>sudo systemctl stop service_name</code></td><td>Stop service</td></tr>
+      <tr><td><code>sudo systemctl restart service_name</code></td><td>Restart service</td></tr>
+      <tr><td><code>sudo systemctl enable service_name</code></td><td>Enable service at boot</td></tr>
+      <tr><td><code>sudo systemctl status service_name</code></td><td>Check service status</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Firewall Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo ufw enable</code></td><td>Enable firewall</td></tr>
+      <tr><td><code>sudo ufw status</code></td><td>Check firewall status</td></tr>
+      <tr><td><code>sudo ufw allow 22</code></td><td>Allow SSH port</td></tr>
+      <tr><td><code>sudo ufw allow 80</code></td><td>Allow HTTP port</td></tr>
+      <tr><td><code>sudo ufw allow 443</code></td><td>Allow HTTPS port</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>System Monitoring Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>df -h</code></td><td>Check disk usage</td></tr>
+      <tr><td><code>free -h</code></td><td>Check memory usage</td></tr>
+      <tr><td><code>top</code></td><td>Monitor running processes</td></tr>
+      <tr><td><code>htop</code></td><td>Advanced monitoring</td></tr>
+      <tr><td><code>ps aux</code></td><td>List running processes</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Network Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>ip a</code></td><td>Show IP address</td></tr>
+      <tr><td><code>ping google.com</code></td><td>Check internet connectivity</td></tr>
+      <tr><td><code>curl ifconfig.me</code></td><td>Get public IP address</td></tr>
+      <tr><td><code>wget URL</code></td><td>Download file</td></tr>
+      <tr><td><code>curl -O URL</code></td><td>Download using curl</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Useful Linux Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>history</code></td><td>Show previous commands</td></tr>
+      <tr><td><code>clear</code></td><td>Clear terminal screen</td></tr>
+      <tr><td><code>whoami</code></td><td>Show current user</td></tr>
+      <tr><td><code>uname -a</code></td><td>Show Linux system information</td></tr>
+      <tr><td><code>sudo reboot</code></td><td>Restart server</td></tr>
+      <tr><td><code>sudo shutdown now</code></td><td>Shutdown server</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Git Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>git init</code></td><td>Initialize Git repository</td></tr>
+      <tr><td><code>git clone repo_url</code></td><td>Clone repository</td></tr>
+      <tr><td><code>git status</code></td><td>Check repository status</td></tr>
+      <tr><td><code>git add .</code></td><td>Add all files</td></tr>
+      <tr><td><code>git commit -m "message"</code></td><td>Commit changes</td></tr>
+      <tr><td><code>git push origin main</code></td><td>Push code to GitHub</td></tr>
+      <tr><td><code>git pull origin main</code></td><td>Pull latest code</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Jenkins Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td>Install Java for Jenkins</td></tr>
+      <tr><td><code>sudo systemctl start jenkins</code></td><td>Start Jenkins</td></tr>
+      <tr><td><code>sudo systemctl enable jenkins</code></td><td>Enable Jenkins at boot</td></tr>
+      <tr><td><code>sudo systemctl status jenkins</code></td><td>Check Jenkins status</td></tr>
+      <tr><td><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></td><td>Get Jenkins admin password</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Kubernetes Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>kubectl get pods</code></td><td>List pods</td></tr>
+      <tr><td><code>kubectl get nodes</code></td><td>List cluster nodes</td></tr>
+      <tr><td><code>kubectl get svc</code></td><td>List services</td></tr>
+      <tr><td><code>kubectl describe pod pod_name</code></td><td>Describe pod details</td></tr>
+      <tr><td><code>kubectl logs pod_name</code></td><td>View pod logs</td></tr>
+      <tr><td><code>kubectl delete pod pod_name</code></td><td>Delete pod</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>AWS CLI Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>aws configure</code></td><td>Configure AWS CLI</td></tr>
+      <tr><td><code>aws s3 ls</code></td><td>List S3 buckets</td></tr>
+      <tr><td><code>aws ec2 describe-instances</code></td><td>List EC2 instances</td></tr>
+      <tr><td><code>aws s3 cp file.txt s3://bucket-name</code></td><td>Upload file to S3</td></tr>
+      <tr><td><code>aws iam list-users</code></td><td>List IAM users</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Terraform Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>terraform init</code></td><td>Initialize Terraform</td></tr>
+      <tr><td><code>terraform plan</code></td><td>Preview infrastructure changes</td></tr>
+      <tr><td><code>terraform apply</code></td><td>Create infrastructure</td></tr>
+      <tr><td><code>terraform destroy</code></td><td>Delete infrastructure</td></tr>
+      <tr><td><code>terraform validate</code></td><td>Validate Terraform code</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>SSH & SCP Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>ssh user@server_ip</code></td><td>Connect remote server</td></tr>
+      <tr><td><code>scp file.txt user@server:/path</code></td><td>Copy file to remote server</td></tr>
+      <tr><td><code>scp user@server:/file.txt .</code></td><td>Download remote file</td></tr>
+      <tr><td><code>ssh-keygen</code></td><td>Generate SSH key pair</td></tr>
+      <tr><td><code>cat ~/.ssh/id_rsa.pub</code></td><td>View public SSH key</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>User Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo adduser username</code></td><td>Create new user</td></tr>
+      <tr><td><code>sudo passwd username</code></td><td>Change user password</td></tr>
+      <tr><td><code>sudo userdel username</code></td><td>Delete user</td></tr>
+      <tr><td><code>groups username</code></td><td>Check user groups</td></tr>
+      <tr><td><code>sudo usermod -aG sudo username</code></td><td>Give sudo access</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>File Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>ls -la</code></td><td>List files with details</td></tr>
+      <tr><td><code>cd folder_name</code></td><td>Change directory</td></tr>
+      <tr><td><code>mkdir folder_name</code></td><td>Create directory</td></tr>
+      <tr><td><code>rm -rf folder_name</code></td><td>Delete folder</td></tr>
+      <tr><td><code>cp file1 file2</code></td><td>Copy file</td></tr>
+      <tr><td><code>mv file1 file2</code></td><td>Move/Rename file</td></tr>
+      <tr><td><code>cat file.txt</code></td><td>View file content</td></tr>
+      <tr><td><code>nano file.txt</code></td><td>Edit file using Nano</td></tr>
+      <tr><td><code>vim file.txt</code></td><td>Edit file using Vim</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  <p>Created for GitHub Pages | Ubuntu Server Commands Cheat Sheet</p>
+</footer>
+
+</body>
+</html>
