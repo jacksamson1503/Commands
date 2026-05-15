@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ubuntu Server Commands Cheat Sheet</title>
+  <title>DevOps & Cloud Commands Cheat Sheet</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,151 +12,164 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background: #1e293b;
-      padding: 20px;
+      padding: 24px 20px;
       text-align: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
+    header h1 { margin: 0; font-size: 32px; color: #38bdf8; }
+    header p  { color: #94a3b8; margin-top: 8px; }
 
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-      color: #38bdf8;
-    }
+    .container { width: 95%; max-width: 1400px; margin: auto; padding: 20px; }
 
-    header p {
-      color: #94a3b8;
-      margin-top: 8px;
-    }
-
-    .container {
-      width: 95%;
-      max-width: 1400px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .section {
+    /* INDEX */
+    .index-section {
       margin-bottom: 40px;
       background: #1e293b;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
+    .index-section h2 {
+      background: #0ea5e9;
+      margin: 0; padding: 15px 20px;
+      color: #0f172a; font-size: 22px; font-weight: bold;
+    }
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 20px;
+    }
+    .index-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .index-card:hover { background: #1e3a5f; border-color: #38bdf8; color: #38bdf8; }
+    .index-card .icon { font-size: 18px; }
+    .index-card .label { font-size: 14px; font-weight: bold; }
 
+    /* SECTIONS */
+    .section {
+      margin-bottom: 40px;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      scroll-margin-top: 20px;
+    }
     .section h2 {
       background: #334155;
-      margin: 0;
-      padding: 15px;
-      color: #f8fafc;
-      font-size: 24px;
+      margin: 0; padding: 15px 20px;
+      color: #f8fafc; font-size: 22px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 14px;
-      border-bottom: 1px solid #475569;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background: #0f172a;
-      color: #38bdf8;
-    }
-
-    tr:hover {
-      background: #334155;
-    }
-
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px; border-bottom: 1px solid #475569; text-align: left; vertical-align: top; }
+    th { background: #0f172a; color: #38bdf8; }
+    tr:hover { background: #334155; }
     code {
-      background: #020617;
-      padding: 4px 8px;
-      border-radius: 6px;
-      color: #22c55e;
-      font-size: 14px;
-      display: inline-block;
-      word-break: break-all;
+      background: #020617; padding: 4px 8px; border-radius: 6px;
+      color: #22c55e; font-size: 13px; display: inline-block; word-break: break-all;
     }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #94a3b8;
+    pre {
+      background: #020617; padding: 12px 16px; border-radius: 8px;
+      color: #22c55e; font-size: 13px; overflow-x: auto;
+      margin: 0; white-space: pre-wrap; word-break: break-word;
     }
+    .back-to-top {
+      display: inline-block; margin: 10px 16px;
+      color: #38bdf8; font-size: 13px; text-decoration: none; opacity: 0.7;
+    }
+    .back-to-top:hover { opacity: 1; }
+    footer { text-align: center; padding: 20px; color: #94a3b8; }
 
     @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      th {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 15px;
-        border: 1px solid #475569;
-        border-radius: 10px;
-        overflow: hidden;
-      }
-
-      td {
-        border: none;
-        position: relative;
-        padding-left: 50%;
-      }
-
-      td::before {
-        position: absolute;
-        left: 10px;
-        top: 12px;
-        font-weight: bold;
-        color: #38bdf8;
-      }
-
-      td:nth-child(1)::before {
-        content: "Command";
-      }
-
-      td:nth-child(2)::before {
-        content: "Use Case";
-      }
+      .index-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      table, thead, tbody, th, td, tr { display: block; }
+      th { display: none; }
+      tr { margin-bottom: 15px; border: 1px solid #475569; border-radius: 10px; overflow: hidden; }
+      td { border: none; position: relative; padding-left: 50%; }
+      td::before { position: absolute; left: 10px; top: 12px; font-weight: bold; color: #38bdf8; }
+      td:nth-child(1)::before { content: "Command"; }
+      td:nth-child(2)::before { content: "Use Case"; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Ubuntu Server Commands Cheat Sheet</h1>
-  <p>Installation, Docker, NodeJS, Linux, Networking & Administration Commands</p>
+  <h1>⚙️ DevOps &amp; Cloud Commands Cheat Sheet</h1>
+  <p>Linux · Docker · Kubernetes · Jenkins · Terraform · AWS · Helm · ArgoCD · Trivy · SonarQube · Git</p>
 </header>
 
 <div class="container">
 
-  <div class="section">
-    <h2>Package Management Commands</h2>
+  <!-- INDEX -->
+  <div class="index-section" id="top">
+    <h2>📋 Topics Index — Click to Jump</h2>
+    <div class="index-grid">
+      <a href="#pkg"        class="index-card"><span class="icon">📦</span><span class="label">Package Management</span></a>
+      <a href="#software"   class="index-card"><span class="icon">🛠️</span><span class="label">Software Installation</span></a>
+      <a href="#docker"     class="index-card"><span class="icon">🐳</span><span class="label">Docker Basics</span></a>
+      <a href="#docker-adv" class="index-card"><span class="icon">🐳</span><span class="label">Docker Advanced</span></a>
+      <a href="#service"    class="index-card"><span class="icon">⚙️</span><span class="label">Service Management</span></a>
+      <a href="#firewall"   class="index-card"><span class="icon">🔥</span><span class="label">Firewall (UFW)</span></a>
+      <a href="#monitor"    class="index-card"><span class="icon">📊</span><span class="label">System Monitoring</span></a>
+      <a href="#network"    class="index-card"><span class="icon">🌐</span><span class="label">Network Commands</span></a>
+      <a href="#linux"      class="index-card"><span class="icon">🐧</span><span class="label">Useful Linux</span></a>
+      <a href="#files"      class="index-card"><span class="icon">📁</span><span class="label">File Management</span></a>
+      <a href="#user"       class="index-card"><span class="icon">👤</span><span class="label">User Management</span></a>
+      <a href="#ssh"        class="index-card"><span class="icon">🔑</span><span class="label">SSH &amp; SCP</span></a>
+      <a href="#git"        class="index-card"><span class="icon">🌿</span><span class="label">Git Commands</span></a>
+      <a href="#jenkins"    class="index-card"><span class="icon">🤖</span><span class="label">Jenkins</span></a>
+      <a href="#k8s"        class="index-card"><span class="icon">☸️</span><span class="label">Kubernetes Basics</span></a>
+      <a href="#k8s-adv"    class="index-card"><span class="icon">☸️</span><span class="label">Kubernetes Advanced</span></a>
+      <a href="#helm"       class="index-card"><span class="icon">⛵</span><span class="label">Helm</span></a>
+      <a href="#argocd"     class="index-card"><span class="icon">🔄</span><span class="label">ArgoCD</span></a>
+      <a href="#terraform"  class="index-card"><span class="icon">🏗️</span><span class="label">Terraform</span></a>
+      <a href="#aws"        class="index-card"><span class="icon">☁️</span><span class="label">AWS CLI General</span></a>
+      <a href="#aws-ec2"    class="index-card"><span class="icon">🖥️</span><span class="label">AWS EC2</span></a>
+      <a href="#aws-iam"    class="index-card"><span class="icon">🔐</span><span class="label">AWS IAM</span></a>
+      <a href="#aws-eks"    class="index-card"><span class="icon">☸️</span><span class="label">AWS EKS</span></a>
+      <a href="#aws-cw"     class="index-card"><span class="icon">📈</span><span class="label">AWS CloudWatch</span></a>
+      <a href="#s3"         class="index-card"><span class="icon">🪣</span><span class="label">S3 File Transfer</span></a>
+      <a href="#s3policy"   class="index-card"><span class="icon">📜</span><span class="label">S3 Bucket Policies</span></a>
+      <a href="#trivy"      class="index-card"><span class="icon">🔍</span><span class="label">Trivy Security Scan</span></a>
+      <a href="#sonar"      class="index-card"><span class="icon">🧪</span><span class="label">SonarQube</span></a>
+    </div>
+  </div>
+
+  <!-- PACKAGE MANAGEMENT -->
+  <div class="section" id="pkg">
+    <h2>📦 Package Management Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
       <tr><td><code>sudo apt update</code></td><td>Refresh package repository list</td></tr>
-      <tr><td><code>sudo apt upgrade -y</code></td><td>Upgrade installed packages</td></tr>
-      <tr><td><code>sudo apt install package_name -y</code></td><td>Install package</td></tr>
+      <tr><td><code>sudo apt upgrade -y</code></td><td>Upgrade all installed packages</td></tr>
+      <tr><td><code>sudo apt install package_name -y</code></td><td>Install a package</td></tr>
       <tr><td><code>sudo apt remove package_name -y</code></td><td>Remove installed package</td></tr>
-      <tr><td><code>sudo apt autoremove -y</code></td><td>Remove unused packages</td></tr>
-      <tr><td><code>apt list --installed</code></td><td>List installed packages</td></tr>
-      <tr><td><code>apt search package_name</code></td><td>Search package</td></tr>
-      <tr><td><code>dpkg -i package.deb</code></td><td>Install local .deb package</td></tr>
+      <tr><td><code>sudo apt autoremove -y</code></td><td>Remove unused/orphan packages</td></tr>
+      <tr><td><code>apt list --installed</code></td><td>List all installed packages</td></tr>
+      <tr><td><code>apt search package_name</code></td><td>Search for a package</td></tr>
+      <tr><td><code>dpkg -i package.deb</code></td><td>Install a local .deb file</td></tr>
+      <tr><td><code>dpkg -l</code></td><td>List all dpkg installed packages</td></tr>
+      <tr><td><code>sudo apt-cache show package_name</code></td><td>Show details about a package</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Software Installation Commands</h2>
+  <!-- SOFTWARE INSTALLATION -->
+  <div class="section" id="software">
+    <h2>🛠️ Software Installation Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
       <tr><td><code>sudo apt install nginx -y</code></td><td>Install Nginx web server</td></tr>
@@ -164,195 +177,590 @@
       <tr><td><code>sudo apt install postgresql postgresql-contrib -y</code></td><td>Install PostgreSQL database</td></tr>
       <tr><td><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></td><td>Add NodeJS 20 repository</td></tr>
       <tr><td><code>sudo apt install nodejs -y</code></td><td>Install NodeJS</td></tr>
-      <tr><td><code>sudo npm install -g @angular/cli</code></td><td>Install Angular CLI</td></tr>
-      <tr><td><code>sudo npm install -g pm2</code></td><td>Install PM2</td></tr>
-      <tr><td><code>sudo npm install -g npm@latest</code></td><td>Update npm</td></tr>
+      <tr><td><code>sudo npm install -g @angular/cli</code></td><td>Install Angular CLI globally</td></tr>
+      <tr><td><code>sudo npm install -g pm2</code></td><td>Install PM2 process manager</td></tr>
+      <tr><td><code>sudo npm install -g npm@latest</code></td><td>Update npm to latest version</td></tr>
+      <tr><td><code>sudo apt install python3-pip -y</code></td><td>Install Python pip</td></tr>
+      <tr><td><code>sudo apt install unzip zip -y</code></td><td>Install zip/unzip tools</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Docker Commands</h2>
+  <!-- DOCKER BASICS -->
+  <div class="section" id="docker">
+    <h2>🐳 Docker Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
       <tr><td><code>sudo apt install apt-transport-https ca-certificates curl software-properties-common -y</code></td><td>Install Docker dependencies</td></tr>
       <tr><td><code>sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y</code></td><td>Install Docker Engine</td></tr>
+      <tr><td><code>sudo usermod -aG docker $USER</code></td><td>Add current user to docker group (no sudo needed)</td></tr>
       <tr><td><code>docker --version</code></td><td>Check Docker version</td></tr>
       <tr><td><code>docker compose version</code></td><td>Check Docker Compose version</td></tr>
       <tr><td><code>docker ps</code></td><td>Show running containers</td></tr>
-      <tr><td><code>docker images</code></td><td>List Docker images</td></tr>
+      <tr><td><code>docker ps -a</code></td><td>Show all containers including stopped</td></tr>
+      <tr><td><code>docker images</code></td><td>List all Docker images</td></tr>
       <tr><td><code>docker logs container_id</code></td><td>View container logs</td></tr>
-      <tr><td><code>docker exec -it container_id bash</code></td><td>Access running container</td></tr>
+      <tr><td><code>docker exec -it container_id bash</code></td><td>Access running container shell</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Service Management Commands</h2>
+  <!-- DOCKER ADVANCED -->
+  <div class="section" id="docker-adv">
+    <h2>🐳 Docker Advanced Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo systemctl start service_name</code></td><td>Start service</td></tr>
-      <tr><td><code>sudo systemctl stop service_name</code></td><td>Stop service</td></tr>
-      <tr><td><code>sudo systemctl restart service_name</code></td><td>Restart service</td></tr>
-      <tr><td><code>sudo systemctl enable service_name</code></td><td>Enable service at boot</td></tr>
-      <tr><td><code>sudo systemctl status service_name</code></td><td>Check service status</td></tr>
+      <tr><td><code>docker build -t image_name:tag .</code></td><td>Build Docker image from Dockerfile</td></tr>
+      <tr><td><code>docker run -d -p 80:80 --name myapp image_name</code></td><td>Run container in background with port mapping</td></tr>
+      <tr><td><code>docker run -it image_name bash</code></td><td>Run container interactively</td></tr>
+      <tr><td><code>docker stop container_id</code></td><td>Stop a running container</td></tr>
+      <tr><td><code>docker start container_id</code></td><td>Start a stopped container</td></tr>
+      <tr><td><code>docker rm container_id</code></td><td>Remove a container</td></tr>
+      <tr><td><code>docker rmi image_name</code></td><td>Remove a Docker image</td></tr>
+      <tr><td><code>docker pull image_name:tag</code></td><td>Pull image from Docker Hub</td></tr>
+      <tr><td><code>docker push image_name:tag</code></td><td>Push image to Docker Hub / ECR</td></tr>
+      <tr><td><code>docker tag image_name registry_url/image_name:tag</code></td><td>Tag image for registry push</td></tr>
+      <tr><td><code>docker inspect container_id</code></td><td>View detailed container info</td></tr>
+      <tr><td><code>docker stats</code></td><td>Live container CPU/memory usage</td></tr>
+      <tr><td><code>docker system prune -a</code></td><td>Remove all unused images, containers, volumes</td></tr>
+      <tr><td><code>docker compose up -d</code></td><td>Start all services from docker-compose.yml</td></tr>
+      <tr><td><code>docker compose down</code></td><td>Stop and remove compose services</td></tr>
+      <tr><td><code>docker compose logs -f</code></td><td>Follow live logs from compose services</td></tr>
+      <tr><td><code>docker network ls</code></td><td>List Docker networks</td></tr>
+      <tr><td><code>docker volume ls</code></td><td>List Docker volumes</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Firewall Commands</h2>
+  <!-- SERVICE MANAGEMENT -->
+  <div class="section" id="service">
+    <h2>⚙️ Service Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo systemctl start service_name</code></td><td>Start a service</td></tr>
+      <tr><td><code>sudo systemctl stop service_name</code></td><td>Stop a service</td></tr>
+      <tr><td><code>sudo systemctl restart service_name</code></td><td>Restart a service</td></tr>
+      <tr><td><code>sudo systemctl reload service_name</code></td><td>Reload config without full restart</td></tr>
+      <tr><td><code>sudo systemctl enable service_name</code></td><td>Enable service at boot</td></tr>
+      <tr><td><code>sudo systemctl disable service_name</code></td><td>Disable service from boot</td></tr>
+      <tr><td><code>sudo systemctl status service_name</code></td><td>Check service status</td></tr>
+      <tr><td><code>sudo journalctl -u service_name -f</code></td><td>Follow live logs of a service</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- FIREWALL -->
+  <div class="section" id="firewall">
+    <h2>🔥 Firewall Commands (UFW)</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
       <tr><td><code>sudo ufw enable</code></td><td>Enable firewall</td></tr>
+      <tr><td><code>sudo ufw disable</code></td><td>Disable firewall</td></tr>
       <tr><td><code>sudo ufw status</code></td><td>Check firewall status</td></tr>
+      <tr><td><code>sudo ufw status verbose</code></td><td>Detailed firewall rules view</td></tr>
       <tr><td><code>sudo ufw allow 22</code></td><td>Allow SSH port</td></tr>
       <tr><td><code>sudo ufw allow 80</code></td><td>Allow HTTP port</td></tr>
       <tr><td><code>sudo ufw allow 443</code></td><td>Allow HTTPS port</td></tr>
+      <tr><td><code>sudo ufw allow 8080</code></td><td>Allow custom port (e.g. Jenkins)</td></tr>
+      <tr><td><code>sudo ufw deny 3306</code></td><td>Block a port (e.g. MySQL)</td></tr>
+      <tr><td><code>sudo ufw delete allow 80</code></td><td>Remove a firewall rule</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>System Monitoring Commands</h2>
+  <!-- MONITORING -->
+  <div class="section" id="monitor">
+    <h2>📊 System Monitoring Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>df -h</code></td><td>Check disk usage</td></tr>
-      <tr><td><code>free -h</code></td><td>Check memory usage</td></tr>
-      <tr><td><code>top</code></td><td>Monitor running processes</td></tr>
-      <tr><td><code>htop</code></td><td>Advanced monitoring</td></tr>
-      <tr><td><code>ps aux</code></td><td>List running processes</td></tr>
+      <tr><td><code>df -h</code></td><td>Check disk usage (human readable)</td></tr>
+      <tr><td><code>du -sh /path</code></td><td>Check size of a specific folder</td></tr>
+      <tr><td><code>free -h</code></td><td>Check RAM/memory usage</td></tr>
+      <tr><td><code>top</code></td><td>Live process monitor</td></tr>
+      <tr><td><code>htop</code></td><td>Advanced interactive process monitor</td></tr>
+      <tr><td><code>ps aux</code></td><td>List all running processes</td></tr>
+      <tr><td><code>ps aux | grep process_name</code></td><td>Find a specific process</td></tr>
+      <tr><td><code>kill -9 PID</code></td><td>Force kill a process by PID</td></tr>
+      <tr><td><code>uptime</code></td><td>Check system uptime and load average</td></tr>
+      <tr><td><code>vmstat 1</code></td><td>Monitor CPU, memory, I/O stats live</td></tr>
+      <tr><td><code>netstat -tuln</code></td><td>Show open ports and listening services</td></tr>
+      <tr><td><code>ss -tuln</code></td><td>Modern alternative to netstat</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Network Commands</h2>
+  <!-- NETWORK -->
+  <div class="section" id="network">
+    <h2>🌐 Network Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
       <tr><td><code>ip a</code></td><td>Show IP address</td></tr>
+      <tr><td><code>ip r</code></td><td>Show routing table</td></tr>
       <tr><td><code>ping google.com</code></td><td>Check internet connectivity</td></tr>
-      <tr><td><code>curl ifconfig.me</code></td><td>Get public IP address</td></tr>
-      <tr><td><code>wget URL</code></td><td>Download file</td></tr>
-      <tr><td><code>curl -O URL</code></td><td>Download using curl</td></tr>
+      <tr><td><code>traceroute google.com</code></td><td>Trace network path to destination</td></tr>
+      <tr><td><code>curl ifconfig.me</code></td><td>Get your public IP address</td></tr>
+      <tr><td><code>nslookup domain.com</code></td><td>DNS lookup for a domain</td></tr>
+      <tr><td><code>dig domain.com</code></td><td>Detailed DNS query</td></tr>
+      <tr><td><code>wget URL</code></td><td>Download file from URL</td></tr>
+      <tr><td><code>curl -O URL</code></td><td>Download file using curl</td></tr>
+      <tr><td><code>curl -I URL</code></td><td>Check HTTP headers / response code</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Useful Linux Commands</h2>
+  <!-- LINUX -->
+  <div class="section" id="linux">
+    <h2>🐧 Useful Linux Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>history</code></td><td>Show previous commands</td></tr>
+      <tr><td><code>history</code></td><td>Show command history</td></tr>
+      <tr><td><code>history | grep keyword</code></td><td>Search through command history</td></tr>
       <tr><td><code>clear</code></td><td>Clear terminal screen</td></tr>
-      <tr><td><code>whoami</code></td><td>Show current user</td></tr>
-      <tr><td><code>uname -a</code></td><td>Show Linux system information</td></tr>
+      <tr><td><code>whoami</code></td><td>Show current logged-in user</td></tr>
+      <tr><td><code>id</code></td><td>Show user ID and group info</td></tr>
+      <tr><td><code>uname -a</code></td><td>Show full Linux system info</td></tr>
+      <tr><td><code>lsb_release -a</code></td><td>Show Ubuntu version details</td></tr>
+      <tr><td><code>date</code></td><td>Show current date and time</td></tr>
+      <tr><td><code>timedatectl</code></td><td>Check or set timezone</td></tr>
       <tr><td><code>sudo reboot</code></td><td>Restart server</td></tr>
-      <tr><td><code>sudo shutdown now</code></td><td>Shutdown server</td></tr>
+      <tr><td><code>sudo shutdown now</code></td><td>Shutdown server immediately</td></tr>
+      <tr><td><code>crontab -e</code></td><td>Edit cron jobs for current user</td></tr>
+      <tr><td><code>crontab -l</code></td><td>List all scheduled cron jobs</td></tr>
+      <tr><td><code>env</code></td><td>Show all environment variables</td></tr>
+      <tr><td><code>export VAR=value</code></td><td>Set an environment variable</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Git Commands</h2>
+  <!-- FILE MANAGEMENT -->
+  <div class="section" id="files">
+    <h2>📁 File Management Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>git init</code></td><td>Initialize Git repository</td></tr>
-      <tr><td><code>git clone repo_url</code></td><td>Clone repository</td></tr>
+      <tr><td><code>ls -la</code></td><td>List files with details including hidden</td></tr>
+      <tr><td><code>cd folder_name</code></td><td>Change directory</td></tr>
+      <tr><td><code>pwd</code></td><td>Print current working directory</td></tr>
+      <tr><td><code>mkdir folder_name</code></td><td>Create directory</td></tr>
+      <tr><td><code>mkdir -p path/to/folder</code></td><td>Create nested directories at once</td></tr>
+      <tr><td><code>rm -rf folder_name</code></td><td>Delete folder and all contents</td></tr>
+      <tr><td><code>cp file1 file2</code></td><td>Copy a file</td></tr>
+      <tr><td><code>cp -r folder1 folder2</code></td><td>Copy folder recursively</td></tr>
+      <tr><td><code>mv file1 file2</code></td><td>Move or rename a file</td></tr>
+      <tr><td><code>cat file.txt</code></td><td>View file content</td></tr>
+      <tr><td><code>tail -f file.txt</code></td><td>Follow file updates live (great for logs)</td></tr>
+      <tr><td><code>head -20 file.txt</code></td><td>View first 20 lines of file</td></tr>
+      <tr><td><code>grep "keyword" file.txt</code></td><td>Search for text in a file</td></tr>
+      <tr><td><code>grep -r "keyword" /path</code></td><td>Search text recursively in folder</td></tr>
+      <tr><td><code>find /path -name "*.log"</code></td><td>Find files by name or pattern</td></tr>
+      <tr><td><code>chmod 755 file.sh</code></td><td>Set file execute permissions</td></tr>
+      <tr><td><code>chown user:group file</code></td><td>Change file owner</td></tr>
+      <tr><td><code>nano file.txt</code></td><td>Edit file using Nano editor</td></tr>
+      <tr><td><code>vim file.txt</code></td><td>Edit file using Vim editor</td></tr>
+      <tr><td><code>tar -czvf archive.tar.gz folder/</code></td><td>Create tar.gz archive</td></tr>
+      <tr><td><code>tar -xzvf archive.tar.gz</code></td><td>Extract tar.gz archive</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- USER MANAGEMENT -->
+  <div class="section" id="user">
+    <h2>👤 User Management Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>sudo adduser username</code></td><td>Create a new user</td></tr>
+      <tr><td><code>sudo passwd username</code></td><td>Change user password</td></tr>
+      <tr><td><code>sudo userdel username</code></td><td>Delete a user</td></tr>
+      <tr><td><code>sudo userdel -r username</code></td><td>Delete user and their home directory</td></tr>
+      <tr><td><code>groups username</code></td><td>Check which groups user belongs to</td></tr>
+      <tr><td><code>sudo usermod -aG sudo username</code></td><td>Give sudo (admin) access to user</td></tr>
+      <tr><td><code>sudo usermod -aG docker username</code></td><td>Add user to docker group</td></tr>
+      <tr><td><code>su - username</code></td><td>Switch to another user</td></tr>
+      <tr><td><code>cat /etc/passwd</code></td><td>List all system users</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- SSH -->
+  <div class="section" id="ssh">
+    <h2>🔑 SSH &amp; SCP Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>ssh user@server_ip</code></td><td>Connect to remote server</td></tr>
+      <tr><td><code>ssh -i key.pem ubuntu@server_ip</code></td><td>Connect with PEM key (AWS EC2)</td></tr>
+      <tr><td><code>ssh -p 2222 user@server_ip</code></td><td>Connect on custom SSH port</td></tr>
+      <tr><td><code>scp file.txt user@server:/path</code></td><td>Copy file to remote server</td></tr>
+      <tr><td><code>scp user@server:/file.txt .</code></td><td>Download file from remote server</td></tr>
+      <tr><td><code>scp -r folder/ user@server:/path</code></td><td>Copy full folder to remote server</td></tr>
+      <tr><td><code>ssh-keygen</code></td><td>Generate SSH key pair</td></tr>
+      <tr><td><code>ssh-copy-id user@server_ip</code></td><td>Copy SSH public key to remote server</td></tr>
+      <tr><td><code>cat ~/.ssh/id_rsa.pub</code></td><td>View your public SSH key</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- GIT -->
+  <div class="section" id="git">
+    <h2>🌿 Git Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>git init</code></td><td>Initialize a Git repository</td></tr>
+      <tr><td><code>git clone repo_url</code></td><td>Clone a repository</td></tr>
       <tr><td><code>git status</code></td><td>Check repository status</td></tr>
-      <tr><td><code>git add .</code></td><td>Add all files</td></tr>
-      <tr><td><code>git commit -m "message"</code></td><td>Commit changes</td></tr>
-      <tr><td><code>git push origin main</code></td><td>Push code to GitHub</td></tr>
-      <tr><td><code>git pull origin main</code></td><td>Pull latest code</td></tr>
+      <tr><td><code>git add .</code></td><td>Stage all changed files</td></tr>
+      <tr><td><code>git add file.txt</code></td><td>Stage a specific file</td></tr>
+      <tr><td><code>git commit -m "message"</code></td><td>Commit staged changes</td></tr>
+      <tr><td><code>git push origin main</code></td><td>Push code to GitHub main branch</td></tr>
+      <tr><td><code>git pull origin main</code></td><td>Pull latest code from main</td></tr>
+      <tr><td><code>git branch</code></td><td>List all branches</td></tr>
+      <tr><td><code>git branch branch_name</code></td><td>Create a new branch</td></tr>
+      <tr><td><code>git checkout branch_name</code></td><td>Switch to a branch</td></tr>
+      <tr><td><code>git checkout -b branch_name</code></td><td>Create and switch to new branch</td></tr>
+      <tr><td><code>git merge branch_name</code></td><td>Merge a branch into current branch</td></tr>
+      <tr><td><code>git log --oneline</code></td><td>View commit history in compact form</td></tr>
+      <tr><td><code>git stash</code></td><td>Temporarily save uncommitted changes</td></tr>
+      <tr><td><code>git stash pop</code></td><td>Restore stashed changes</td></tr>
+      <tr><td><code>git reset --hard HEAD</code></td><td>Discard all local changes</td></tr>
+      <tr><td><code>git remote -v</code></td><td>Show remote repository URLs</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Jenkins Commands</h2>
+  <!-- JENKINS -->
+  <div class="section" id="jenkins">
+    <h2>🤖 Jenkins Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td>Install Java for Jenkins</td></tr>
-      <tr><td><code>sudo systemctl start jenkins</code></td><td>Start Jenkins</td></tr>
-      <tr><td><code>sudo systemctl enable jenkins</code></td><td>Enable Jenkins at boot</td></tr>
+      <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td>Install Java 17 (required for Jenkins)</td></tr>
+      <tr><td><code>sudo systemctl start jenkins</code></td><td>Start Jenkins service</td></tr>
+      <tr><td><code>sudo systemctl enable jenkins</code></td><td>Enable Jenkins to start on boot</td></tr>
       <tr><td><code>sudo systemctl status jenkins</code></td><td>Check Jenkins status</td></tr>
-      <tr><td><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></td><td>Get Jenkins admin password</td></tr>
+      <tr><td><code>sudo systemctl restart jenkins</code></td><td>Restart Jenkins</td></tr>
+      <tr><td><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></td><td>Get Jenkins initial admin password</td></tr>
+      <tr><td><code>sudo usermod -aG docker jenkins</code></td><td>Allow Jenkins user to run Docker</td></tr>
+      <tr><td><code>sudo journalctl -u jenkins -f</code></td><td>Follow Jenkins live logs</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Kubernetes Commands</h2>
+  <!-- KUBERNETES BASICS -->
+  <div class="section" id="k8s">
+    <h2>☸️ Kubernetes Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>kubectl get pods</code></td><td>List pods</td></tr>
+      <tr><td><code>kubectl get pods</code></td><td>List pods in default namespace</td></tr>
+      <tr><td><code>kubectl get pods -n namespace</code></td><td>List pods in a specific namespace</td></tr>
+      <tr><td><code>kubectl get pods -A</code></td><td>List pods across all namespaces</td></tr>
       <tr><td><code>kubectl get nodes</code></td><td>List cluster nodes</td></tr>
       <tr><td><code>kubectl get svc</code></td><td>List services</td></tr>
-      <tr><td><code>kubectl describe pod pod_name</code></td><td>Describe pod details</td></tr>
+      <tr><td><code>kubectl get deployments</code></td><td>List all deployments</td></tr>
+      <tr><td><code>kubectl describe pod pod_name</code></td><td>Show detailed pod info (events, errors)</td></tr>
       <tr><td><code>kubectl logs pod_name</code></td><td>View pod logs</td></tr>
-      <tr><td><code>kubectl delete pod pod_name</code></td><td>Delete pod</td></tr>
+      <tr><td><code>kubectl logs -f pod_name</code></td><td>Follow pod logs live</td></tr>
+      <tr><td><code>kubectl delete pod pod_name</code></td><td>Delete a pod</td></tr>
+      <tr><td><code>kubectl exec -it pod_name -- bash</code></td><td>Access pod shell interactively</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>AWS CLI Commands</h2>
+  <!-- KUBERNETES ADVANCED -->
+  <div class="section" id="k8s-adv">
+    <h2>☸️ Kubernetes Advanced Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws configure</code></td><td>Configure AWS CLI</td></tr>
-      <tr><td><code>aws s3 ls</code></td><td>List S3 buckets</td></tr>
-      <tr><td><code>aws ec2 describe-instances</code></td><td>List EC2 instances</td></tr>
-      <tr><td><code>aws s3 cp file.txt s3://bucket-name</code></td><td>Upload file to S3</td></tr>
-      <tr><td><code>aws iam list-users</code></td><td>List IAM users</td></tr>
+      <tr><td><code>kubectl apply -f file.yaml</code></td><td>Create or update resources from YAML</td></tr>
+      <tr><td><code>kubectl delete -f file.yaml</code></td><td>Delete resources defined in YAML</td></tr>
+      <tr><td><code>kubectl get configmap</code></td><td>List ConfigMaps</td></tr>
+      <tr><td><code>kubectl get secret</code></td><td>List Secrets</td></tr>
+      <tr><td><code>kubectl get pvc</code></td><td>List PersistentVolumeClaims</td></tr>
+      <tr><td><code>kubectl get ingress</code></td><td>List Ingress resources</td></tr>
+      <tr><td><code>kubectl rollout status deployment/name</code></td><td>Check deployment rollout status</td></tr>
+      <tr><td><code>kubectl rollout restart deployment/name</code></td><td>Restart all pods in a deployment</td></tr>
+      <tr><td><code>kubectl rollout undo deployment/name</code></td><td>Rollback to previous deployment version</td></tr>
+      <tr><td><code>kubectl scale deployment name --replicas=3</code></td><td>Scale deployment to 3 replicas</td></tr>
+      <tr><td><code>kubectl set image deployment/name container=image:tag</code></td><td>Update container image in deployment</td></tr>
+      <tr><td><code>kubectl top pods</code></td><td>Show CPU/memory usage of pods</td></tr>
+      <tr><td><code>kubectl top nodes</code></td><td>Show CPU/memory usage of nodes</td></tr>
+      <tr><td><code>kubectl create namespace name</code></td><td>Create a new namespace</td></tr>
+      <tr><td><code>kubectl get all -n namespace</code></td><td>List all resources in a namespace</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>Terraform Commands</h2>
+  <!-- HELM -->
+  <div class="section" id="helm">
+    <h2>⛵ Helm Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>terraform init</code></td><td>Initialize Terraform</td></tr>
+      <tr><td><code>helm version</code></td><td>Check Helm version</td></tr>
+      <tr><td><code>helm repo add repo_name repo_url</code></td><td>Add a Helm chart repository</td></tr>
+      <tr><td><code>helm repo update</code></td><td>Update all Helm repositories</td></tr>
+      <tr><td><code>helm repo list</code></td><td>List all added repositories</td></tr>
+      <tr><td><code>helm search repo chart_name</code></td><td>Search for a chart in repos</td></tr>
+      <tr><td><code>helm install release_name chart_name</code></td><td>Install a Helm chart</td></tr>
+      <tr><td><code>helm install release_name chart_name -n namespace</code></td><td>Install chart into specific namespace</td></tr>
+      <tr><td><code>helm upgrade release_name chart_name</code></td><td>Upgrade an installed release</td></tr>
+      <tr><td><code>helm upgrade --install release_name chart_name</code></td><td>Install or upgrade (idempotent)</td></tr>
+      <tr><td><code>helm list</code></td><td>List all Helm releases</td></tr>
+      <tr><td><code>helm list -A</code></td><td>List releases across all namespaces</td></tr>
+      <tr><td><code>helm uninstall release_name</code></td><td>Uninstall a Helm release</td></tr>
+      <tr><td><code>helm rollback release_name 1</code></td><td>Rollback release to revision 1</td></tr>
+      <tr><td><code>helm status release_name</code></td><td>Show status of a release</td></tr>
+      <tr><td><code>helm template release_name chart_name</code></td><td>Render chart templates locally (dry run)</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- ARGOCD -->
+  <div class="section" id="argocd">
+    <h2>🔄 ArgoCD Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>kubectl create namespace argocd</code></td><td>Create ArgoCD namespace</td></tr>
+      <tr><td><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml</code></td><td>Install ArgoCD into cluster</td></tr>
+      <tr><td><code>kubectl get pods -n argocd</code></td><td>Check ArgoCD pods are running</td></tr>
+      <tr><td><code>kubectl port-forward svc/argocd-server -n argocd 8080:443</code></td><td>Access ArgoCD UI at localhost:8080</td></tr>
+      <tr><td><code>kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d</code></td><td>Get ArgoCD initial admin password</td></tr>
+      <tr><td><code>argocd login localhost:8080</code></td><td>Login to ArgoCD via CLI</td></tr>
+      <tr><td><code>argocd app list</code></td><td>List all ArgoCD applications</td></tr>
+      <tr><td><code>argocd app get app_name</code></td><td>Get details of an application</td></tr>
+      <tr><td><code>argocd app sync app_name</code></td><td>Manually sync an application</td></tr>
+      <tr><td><code>argocd app delete app_name</code></td><td>Delete an ArgoCD application</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- TERRAFORM -->
+  <div class="section" id="terraform">
+    <h2>🏗️ Terraform Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>terraform init</code></td><td>Initialize Terraform working directory</td></tr>
       <tr><td><code>terraform plan</code></td><td>Preview infrastructure changes</td></tr>
-      <tr><td><code>terraform apply</code></td><td>Create infrastructure</td></tr>
-      <tr><td><code>terraform destroy</code></td><td>Delete infrastructure</td></tr>
-      <tr><td><code>terraform validate</code></td><td>Validate Terraform code</td></tr>
+      <tr><td><code>terraform apply</code></td><td>Create or update infrastructure</td></tr>
+      <tr><td><code>terraform apply -auto-approve</code></td><td>Apply without confirmation prompt</td></tr>
+      <tr><td><code>terraform destroy</code></td><td>Destroy all managed infrastructure</td></tr>
+      <tr><td><code>terraform destroy -auto-approve</code></td><td>Destroy without confirmation prompt</td></tr>
+      <tr><td><code>terraform validate</code></td><td>Validate Terraform config files</td></tr>
+      <tr><td><code>terraform fmt</code></td><td>Auto-format Terraform files</td></tr>
+      <tr><td><code>terraform show</code></td><td>Show current state</td></tr>
+      <tr><td><code>terraform state list</code></td><td>List all resources in state file</td></tr>
+      <tr><td><code>terraform state show resource</code></td><td>Show details of a specific resource</td></tr>
+      <tr><td><code>terraform output</code></td><td>Show output values from state</td></tr>
+      <tr><td><code>terraform workspace list</code></td><td>List Terraform workspaces</td></tr>
+      <tr><td><code>terraform workspace new env_name</code></td><td>Create new workspace (dev/staging/prod)</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>SSH & SCP Commands</h2>
+  <!-- AWS CLI GENERAL -->
+  <div class="section" id="aws">
+    <h2>☁️ AWS CLI General Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>ssh user@server_ip</code></td><td>Connect remote server</td></tr>
-      <tr><td><code>scp file.txt user@server:/path</code></td><td>Copy file to remote server</td></tr>
-      <tr><td><code>scp user@server:/file.txt .</code></td><td>Download remote file</td></tr>
-      <tr><td><code>ssh-keygen</code></td><td>Generate SSH key pair</td></tr>
-      <tr><td><code>cat ~/.ssh/id_rsa.pub</code></td><td>View public SSH key</td></tr>
+      <tr><td><code>aws configure</code></td><td>Set up AWS CLI with Access Key, Secret, Region</td></tr>
+      <tr><td><code>aws configure list</code></td><td>Show current AWS CLI config</td></tr>
+      <tr><td><code>aws sts get-caller-identity</code></td><td>Check which AWS account/user/role you are</td></tr>
+      <tr><td><code>aws s3 ls</code></td><td>List all S3 buckets in your account</td></tr>
+      <tr><td><code>aws ec2 describe-instances</code></td><td>List all EC2 instances</td></tr>
+      <tr><td><code>aws iam list-users</code></td><td>List all IAM users</td></tr>
+      <tr><td><code>aws --version</code></td><td>Check AWS CLI version</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>User Management Commands</h2>
+  <!-- AWS EC2 -->
+  <div class="section" id="aws-ec2">
+    <h2>🖥️ AWS EC2 Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo adduser username</code></td><td>Create new user</td></tr>
-      <tr><td><code>sudo passwd username</code></td><td>Change user password</td></tr>
-      <tr><td><code>sudo userdel username</code></td><td>Delete user</td></tr>
-      <tr><td><code>groups username</code></td><td>Check user groups</td></tr>
-      <tr><td><code>sudo usermod -aG sudo username</code></td><td>Give sudo access</td></tr>
+      <tr><td><code>aws ec2 describe-instances --output table</code></td><td>List EC2 instances in table format</td></tr>
+      <tr><td><code>aws ec2 describe-instances --filters "Name=instance-state-name,Values=running"</code></td><td>List only running EC2 instances</td></tr>
+      <tr><td><code>aws ec2 start-instances --instance-ids i-xxxxxxxx</code></td><td>Start an EC2 instance</td></tr>
+      <tr><td><code>aws ec2 stop-instances --instance-ids i-xxxxxxxx</code></td><td>Stop an EC2 instance</td></tr>
+      <tr><td><code>aws ec2 reboot-instances --instance-ids i-xxxxxxxx</code></td><td>Reboot an EC2 instance</td></tr>
+      <tr><td><code>aws ec2 terminate-instances --instance-ids i-xxxxxxxx</code></td><td>Terminate (permanently delete) EC2 instance</td></tr>
+      <tr><td><code>aws ec2 describe-security-groups</code></td><td>List all security groups</td></tr>
+      <tr><td><code>aws ec2 describe-key-pairs</code></td><td>List EC2 key pairs</td></tr>
+      <tr><td><code>aws ec2 describe-vpcs</code></td><td>List all VPCs</td></tr>
+      <tr><td><code>aws ec2 describe-subnets</code></td><td>List all subnets</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
-  <div class="section">
-    <h2>File Management Commands</h2>
+  <!-- AWS IAM -->
+  <div class="section" id="aws-iam">
+    <h2>🔐 AWS IAM Commands</h2>
     <table>
       <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>ls -la</code></td><td>List files with details</td></tr>
-      <tr><td><code>cd folder_name</code></td><td>Change directory</td></tr>
-      <tr><td><code>mkdir folder_name</code></td><td>Create directory</td></tr>
-      <tr><td><code>rm -rf folder_name</code></td><td>Delete folder</td></tr>
-      <tr><td><code>cp file1 file2</code></td><td>Copy file</td></tr>
-      <tr><td><code>mv file1 file2</code></td><td>Move/Rename file</td></tr>
-      <tr><td><code>cat file.txt</code></td><td>View file content</td></tr>
-      <tr><td><code>nano file.txt</code></td><td>Edit file using Nano</td></tr>
-      <tr><td><code>vim file.txt</code></td><td>Edit file using Vim</td></tr>
+      <tr><td><code>aws iam list-users</code></td><td>List all IAM users</td></tr>
+      <tr><td><code>aws iam list-roles</code></td><td>List all IAM roles</td></tr>
+      <tr><td><code>aws iam list-groups</code></td><td>List all IAM groups</td></tr>
+      <tr><td><code>aws iam list-policies --scope Local</code></td><td>List custom (non-AWS) IAM policies</td></tr>
+      <tr><td><code>aws iam get-user --user-name username</code></td><td>Get details of an IAM user</td></tr>
+      <tr><td><code>aws iam create-user --user-name username</code></td><td>Create a new IAM user</td></tr>
+      <tr><td><code>aws iam delete-user --user-name username</code></td><td>Delete an IAM user</td></tr>
+      <tr><td><code>aws iam attach-user-policy --user-name username --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</code></td><td>Attach a policy to IAM user</td></tr>
+      <tr><td><code>aws iam list-attached-user-policies --user-name username</code></td><td>List policies attached to a user</td></tr>
+      <tr><td><code>aws iam create-access-key --user-name username</code></td><td>Generate access key for IAM user</td></tr>
     </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- AWS EKS -->
+  <div class="section" id="aws-eks">
+    <h2>☸️ AWS EKS Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>aws eks list-clusters</code></td><td>List all EKS clusters in your account</td></tr>
+      <tr><td><code>aws eks describe-cluster --name cluster_name</code></td><td>Get details of an EKS cluster</td></tr>
+      <tr><td><code>aws eks update-kubeconfig --region us-east-1 --name cluster_name</code></td><td>Connect kubectl to EKS cluster</td></tr>
+      <tr><td><code>aws eks list-nodegroups --cluster-name cluster_name</code></td><td>List node groups in a cluster</td></tr>
+      <tr><td><code>aws eks describe-nodegroup --cluster-name cluster_name --nodegroup-name ng_name</code></td><td>Get node group details</td></tr>
+      <tr><td><code>eksctl create cluster --name cluster_name --region us-east-1 --nodes 2</code></td><td>Create EKS cluster using eksctl</td></tr>
+      <tr><td><code>eksctl delete cluster --name cluster_name</code></td><td>Delete EKS cluster using eksctl</td></tr>
+      <tr><td><code>eksctl get cluster</code></td><td>List EKS clusters via eksctl</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- AWS CLOUDWATCH -->
+  <div class="section" id="aws-cw">
+    <h2>📈 AWS CloudWatch Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>aws cloudwatch list-metrics</code></td><td>List all available CloudWatch metrics</td></tr>
+      <tr><td><code>aws cloudwatch list-alarms</code></td><td>List all CloudWatch alarms</td></tr>
+      <tr><td><code>aws cloudwatch describe-alarms --state-value ALARM</code></td><td>List alarms currently in ALARM state</td></tr>
+      <tr><td><code>aws logs describe-log-groups</code></td><td>List all CloudWatch log groups</td></tr>
+      <tr><td><code>aws logs describe-log-streams --log-group-name /aws/lambda/function_name</code></td><td>List log streams inside a log group</td></tr>
+      <tr><td><code>aws logs tail /aws/lambda/function_name --follow</code></td><td>Live tail CloudWatch logs</td></tr>
+      <tr><td><code>aws logs filter-log-events --log-group-name /aws/ec2/mygroup --filter-pattern "ERROR"</code></td><td>Filter logs by keyword (e.g. ERROR)</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- S3 FILE TRANSFER -->
+  <div class="section" id="s3">
+    <h2>🪣 S3 File Transfer Commands (EC2 ↔ S3)</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>aws s3 cp file.txt s3://your-bucket-name/</code></td><td>Upload file from EC2 to S3</td></tr>
+      <tr><td><code>aws s3 cp s3://your-bucket-name/filename .</code></td><td>Download file from S3 to EC2</td></tr>
+      <tr><td><code>aws s3 ls s3://your-bucket-name</code></td><td>List all files inside an S3 bucket</td></tr>
+      <tr><td><code>aws s3 sync ./local-folder s3://your-bucket-name/</code></td><td>Sync local folder to S3</td></tr>
+      <tr><td><code>aws s3 sync s3://your-bucket-name/ ./local-folder</code></td><td>Sync S3 bucket content to local folder</td></tr>
+      <tr><td><code>aws s3 rm s3://your-bucket-name/filename</code></td><td>Delete a specific file from S3</td></tr>
+      <tr><td><code>aws s3 rm s3://your-bucket-name/ --recursive</code></td><td>Delete all files inside S3 bucket</td></tr>
+      <tr><td><code>aws s3 mb s3://new-bucket-name</code></td><td>Create a new S3 bucket</td></tr>
+      <tr><td><code>aws s3 rb s3://bucket-name --force</code></td><td>Delete S3 bucket with all contents</td></tr>
+      <tr><td><code>aws s3 presign s3://bucket-name/file.txt --expires-in 3600</code></td><td>Generate pre-signed URL (valid 1 hour)</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- S3 POLICIES -->
+  <div class="section" id="s3policy">
+    <h2>📜 S3 Bucket Policies</h2>
+    <table>
+      <tr><th>Policy</th><th>JSON</th></tr>
+      <tr>
+        <td>Public Read Access (All Users)</td>
+        <td><pre>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Principal": "*",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": ["arn:aws:s3:::your-bucket-name/*"]
+    }
+  ]
+}</pre></td>
+      </tr>
+      <tr>
+        <td>Restrict Access to Specific IP Only</td>
+        <td><pre>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowOnlyMyIP",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::your-bucket-name/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "YOUR_PUBLIC_IP/32"
+        }
+      }
+    }
+  ]
+}</pre></td>
+      </tr>
+      <tr>
+        <td>Force HTTPS Only (Deny HTTP Access)</td>
+        <td><pre>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyNonHTTPS",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::your-bucket-name",
+        "arn:aws:s3:::your-bucket-name/*"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}</pre></td>
+      </tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- TRIVY -->
+  <div class="section" id="trivy">
+    <h2>🔍 Trivy Security Scan Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>trivy image image_name:tag</code></td><td>Scan Docker image for vulnerabilities</td></tr>
+      <tr><td><code>trivy image --severity HIGH,CRITICAL image_name</code></td><td>Show only HIGH and CRITICAL vulnerabilities</td></tr>
+      <tr><td><code>trivy fs .</code></td><td>Scan current filesystem / project folder</td></tr>
+      <tr><td><code>trivy fs --security-checks vuln,secret .</code></td><td>Scan for vulnerabilities and secrets</td></tr>
+      <tr><td><code>trivy repo https://github.com/user/repo</code></td><td>Scan a GitHub repository directly</td></tr>
+      <tr><td><code>trivy config .</code></td><td>Scan Terraform / Dockerfile for misconfigurations</td></tr>
+      <tr><td><code>trivy image --format json -o report.json image_name</code></td><td>Export scan result as JSON report</td></tr>
+      <tr><td><code>trivy --version</code></td><td>Check Trivy version</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  </div>
+
+  <!-- SONARQUBE -->
+  <div class="section" id="sonar">
+    <h2>🧪 SonarQube Commands</h2>
+    <table>
+      <tr><th>Command</th><th>Use Case</th></tr>
+      <tr><td><code>docker run -d --name sonarqube -p 9000:9000 sonarqube:lts</code></td><td>Run SonarQube server via Docker</td></tr>
+      <tr><td><code>docker start sonarqube</code></td><td>Start stopped SonarQube container</td></tr>
+      <tr><td><code>docker stop sonarqube</code></td><td>Stop SonarQube container</td></tr>
+      <tr><td><code>docker logs sonarqube</code></td><td>View SonarQube logs</td></tr>
+      <tr><td><code>sonar-scanner -Dsonar.projectKey=project_key -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=token</code></td><td>Run code quality scan on local project</td></tr>
+      <tr><td><code>sonar-scanner --version</code></td><td>Check sonar-scanner version</td></tr>
+    </table>
+    <a href="#top" class="back-to-top">↑ Back to Top</a>
   </div>
 
 </div>
 
 <footer>
-  <p>Created for GitHub Pages | Ubuntu Server Commands Cheat Sheet</p>
+  <p>DevOps &amp; Cloud Commands Cheat Sheet | Created for GitHub Pages by Jarvis</p>
 </footer>
 
 </body>
