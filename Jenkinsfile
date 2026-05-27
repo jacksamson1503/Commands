@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'myapp'
+        DOCKER_IMAGE = 'jack1503/myapp'
         IMAGE_TAG = 'latest'
         CONTAINER_NAME = 'myapp_jack_container'
     }
@@ -38,6 +38,7 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f $CONTAINER_NAME || true
+                docker pull $DOCKER_IMAGE:$IMAGE_TAG
                 docker run -d -p 80:80 --name $CONTAINER_NAME $DOCKER_IMAGE:$IMAGE_TAG
                 '''
             }
