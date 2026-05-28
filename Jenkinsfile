@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'jack1503/myapp'
+        DOCKER_IMAGE = 'jack1503/samson'
         IMAGE_TAG = 'latest'
-        CONTAINER_NAME = 'myapp_jack_container'
+        CONTAINER_NAME = 'samson_container'
     }
 
     stages {
