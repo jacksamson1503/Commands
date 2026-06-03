@@ -3,765 +3,2042 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DevOps & Cloud & AWS Commands Cheat Sheet</title>
+  <title>DevOps & Cloud Commands Cheat Sheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --surface2: #f0eeea;
+      --border: #e0dcd5;
+      --text: #1a1814;
+      --text-muted: #6b6660;
+      --accent: #c8440a;
+      --accent2: #2563b8;
+      --accent3: #16803c;
+      --tag-bg: #fef3ec;
+      --tag-color: #c8440a;
+      --code-bg: #1a1814;
+      --code-color: #a3e635;
+      --header-bg: #1a1814;
+      --header-text: #f5f4f0;
+      --cat-linux: #2563b8;
+      --cat-docker: #0ea5e9;
+      --cat-k8s: #7c3aed;
+      --cat-aws: #c8440a;
+      --cat-cicd: #16803c;
+      --cat-infra: #b45309;
+      --cat-sec: #be123c;
+      --cat-monitor: #0f766e;
+      --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.04);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      margin: 0;
-      padding: 0;
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
+
+    /* HEADER */
     header {
-      background: #1e293b;
-      padding: 24px 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 48px 32px 40px;
+      position: relative;
+      overflow: hidden;
     }
-    header h1 { margin: 0; font-size: 32px; color: #38bdf8; }
-    header p  { color: #94a3b8; margin-top: 8px; }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,68,10,0.3), transparent 70%);
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: 10%;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,184,0.2), transparent 70%);
+    }
+    .header-inner {
+      max-width: 1300px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+    .header-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    header h1 span { color: var(--accent); }
+    header p {
+      color: #a09890;
+      font-size: 14px;
+      max-width: 620px;
+    }
+    .header-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .header-tag {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #d0ccc8;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
 
-    .container { width: 95%; max-width: 1400px; margin: auto; padding: 20px; }
+    /* LAYOUT */
+    .container {
+      max-width: 1300px;
+      margin: auto;
+      padding: 32px 24px 60px;
+    }
 
-    /* INDEX */
-    .index-section {
-      margin-bottom: 40px;
-      background: #1e293b;
+    /* STICKY NAV */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245,244,240,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1300px;
+      margin: auto;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 10px 0;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-btn {
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: 'Sora', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .nav-btn:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .nav-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* INDEX GRID */
+    .index-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow);
+    }
+    .index-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .index-categories {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .index-cat-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .index-cat-label {
+      flex-shrink: 0;
+      width: 120px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-top: 6px;
+    }
+    .index-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .index-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .index-link:hover {
+      border-color: currentColor;
+      background: white;
+    }
+    .index-link.cat-linux { --c: var(--cat-linux); }
+    .index-link.cat-docker { --c: var(--cat-docker); }
+    .index-link.cat-k8s { --c: var(--cat-k8s); }
+    .index-link.cat-aws { --c: var(--cat-aws); }
+    .index-link.cat-cicd { --c: var(--cat-cicd); }
+    .index-link.cat-infra { --c: var(--cat-infra); }
+    .index-link.cat-sec { --c: var(--cat-sec); }
+    .index-link.cat-monitor { --c: var(--cat-monitor); }
+    .index-link:hover { color: var(--c); border-color: var(--c); }
+    .index-icon { font-size: 14px; }
+
+    /* SECTION GROUPS */
+    .section-group {
+      margin-bottom: 48px;
+    }
+    .group-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .group-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .group-heading h2 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .group-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* SECTION CARD */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      scroll-margin-top: 70px;
     }
-    .index-section h2 {
-      background: #0ea5e9;
-      margin: 0; padding: 15px 20px;
-      color: #0f172a; font-size: 22px; font-weight: bold;
-    }
-    .index-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
-      padding: 20px;
-    }
-    .index-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 12px 16px;
-      text-decoration: none;
-      color: #e2e8f0;
+    .section-header {
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: background 0.2s, border-color 0.2s;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface2);
     }
-    .index-card:hover { background: #1e3a5f; border-color: #38bdf8; color: #38bdf8; }
-    .index-card .icon { font-size: 18px; }
-    .index-card .label { font-size: 14px; font-weight: bold; }
+    .section-header:hover { background: #ebe9e4; }
+    .section-icon { font-size: 18px; }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .section-toggle {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    .section.collapsed .section-toggle { transform: rotate(-90deg); }
+    .section-body { display: block; }
+    .section.collapsed .section-body { display: none; }
 
-    /* SECTIONS */
-    .section {
-      margin-bottom: 40px;
-      background: #1e293b;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      scroll-margin-top: 20px;
-    }
-    .section h2 {
-      background: #334155;
-      margin: 0; padding: 15px 20px;
-      color: #f8fafc; font-size: 22px;
-    }
+    /* TABLES */
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 14px; border-bottom: 1px solid #475569; text-align: left; vertical-align: top; }
-    th { background: #0f172a; color: #38bdf8; }
-    tr:hover { background: #334155; }
+    thead th {
+      background: #f7f6f2;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr { border-bottom: 1px solid #f0eeea; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafaf8; }
+    td {
+      padding: 12px 20px;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    td:first-child { width: 52%; }
     code {
-      background: #020617; padding: 4px 8px; border-radius: 6px;
-      color: #22c55e; font-size: 13px; display: inline-block; word-break: break-all;
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--code-bg);
+      color: var(--code-color);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      display: inline-block;
+      word-break: break-all;
+      line-height: 1.6;
     }
     pre {
-      background: #020617; padding: 12px 16px; border-radius: 8px;
-      color: #22c55e; font-size: 13px; overflow-x: auto;
-      margin: 0; white-space: pre-wrap; word-break: break-word;
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--code-bg);
+      color: var(--code-color);
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 12px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.7;
+      margin: 4px 0;
     }
-    .back-to-top {
-      display: inline-block; margin: 10px 16px;
-      color: #38bdf8; font-size: 13px; text-decoration: none; opacity: 0.7;
+    .use-case { color: var(--text-muted); font-size: 13px; }
+    .tip {
+      display: inline-block;
+      background: #f0fdf4;
+      color: #16803c;
+      border: 1px solid #bbf7d0;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
-    .back-to-top:hover { opacity: 1; }
-    footer { text-align: center; padding: 20px; color: #94a3b8; }
+    .warn {
+      display: inline-block;
+      background: #fef3ec;
+      color: #c8440a;
+      border: 1px solid #fed7aa;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    /* STEP TABLES (Prometheus/Grafana install) */
+    .steps-table thead th:first-child { width: 32px; }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px; height: 24px;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* BACK TO TOP */
+    .back-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--accent2);
+      text-decoration: none;
+      padding: 10px 20px;
+      font-weight: 600;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      background: var(--surface2);
+    }
+    .back-top:hover { color: var(--accent); }
+
+    /* SEARCH */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s;
+    }
+    .search-bar:focus-within { border-color: var(--accent); }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      background: transparent;
+      color: var(--text);
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-icon { color: var(--text-muted); font-size: 18px; }
+    #search-clear {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 16px; display: none;
+    }
+    .highlight { background: #fef08a; border-radius: 2px; }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    footer strong { color: var(--text); }
 
     @media (max-width: 768px) {
-      .index-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-      table, thead, tbody, th, td, tr { display: block; }
-      th { display: none; }
-      tr { margin-bottom: 15px; border: 1px solid #475569; border-radius: 10px; overflow: hidden; }
-      td { border: none; position: relative; padding-left: 50%; }
-      td::before { position: absolute; left: 10px; top: 12px; font-weight: bold; color: #38bdf8; }
-      td:nth-child(1)::before { content: "Command"; }
-      td:nth-child(2)::before { content: "Use Case"; }
+      td:first-child { width: auto; }
+      .index-cat-row { flex-direction: column; gap: 6px; }
+      .index-cat-label { width: auto; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>⚙️ DevOps &amp; Cloud Commands Cheat Sheet</h1>
-  <p>Linux · Docker · Kubernetes · Jenkins · Terraform · AWS · Helm · ArgoCD · Trivy · SonarQube · Git</p>
+  <div class="header-inner">
+    <div class="header-badge">Personal Reference</div>
+    <h1>DevOps & Cloud<br><span>Commands Cheat Sheet</span></h1>
+    <p>Your go-to personal reference for DevOps, Cloud, and infrastructure commands — organized by category for quick lookup.</p>
+    <div class="header-tags">
+      <span class="header-tag">Linux</span>
+      <span class="header-tag">Docker</span>
+      <span class="header-tag">Kubernetes</span>
+      <span class="header-tag">Jenkins</span>
+      <span class="header-tag">Terraform</span>
+      <span class="header-tag">AWS</span>
+      <span class="header-tag">Helm</span>
+      <span class="header-tag">ArgoCD</span>
+      <span class="header-tag">Prometheus</span>
+      <span class="header-tag">Grafana</span>
+      <span class="header-tag">Trivy</span>
+      <span class="header-tag">SonarQube</span>
+      <span class="header-tag">Git</span>
+      <span class="header-tag">Cloud Theory</span>
+      <span class="header-tag">Use Cases</span>
+    </div>
+  </div>
 </header>
+
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#grp-linux" class="nav-btn">🐧 Linux</a>
+    <a href="#grp-docker" class="nav-btn">🐳 Docker</a>
+    <a href="#grp-k8s" class="nav-btn">☸️ Kubernetes</a>
+    <a href="#grp-aws" class="nav-btn">☁️ AWS</a>
+    <a href="#grp-cicd" class="nav-btn">🤖 CI/CD</a>
+    <a href="#grp-infra" class="nav-btn">🏗️ IaC</a>
+    <a href="#grp-monitor" class="nav-btn">📈 Monitoring</a>
+    <a href="#grp-security" class="nav-btn">🔍 Security</a>
+    <a href="#grp-knowledge" class="nav-btn">📚 Theory</a>
+  </div>
+</nav>
 
 <div class="container">
 
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search commands, tools, use cases…" autocomplete="off" />
+    <button id="search-clear" title="Clear">✕</button>
+  </div>
+
   <!-- INDEX -->
-  <div class="index-section" id="top">
-    <h2>📋 Topics Index — Click to Jump</h2>
-    <div class="index-grid">
-      <a href="#pkg"        class="index-card"><span class="icon">📦</span><span class="label">Package Management</span></a>
-      <a href="#software"   class="index-card"><span class="icon">🛠️</span><span class="label">Software Installation</span></a>
-      <a href="#docker"     class="index-card"><span class="icon">🐳</span><span class="label">Docker Basics</span></a>
-      <a href="#docker-adv" class="index-card"><span class="icon">🐳</span><span class="label">Docker Advanced</span></a>
-      <a href="#service"    class="index-card"><span class="icon">⚙️</span><span class="label">Service Management</span></a>
-      <a href="#firewall"   class="index-card"><span class="icon">🔥</span><span class="label">Firewall (UFW)</span></a>
-      <a href="#monitor"    class="index-card"><span class="icon">📊</span><span class="label">System Monitoring</span></a>
-      <a href="#network"    class="index-card"><span class="icon">🌐</span><span class="label">Network Commands</span></a>
-      <a href="#linux"      class="index-card"><span class="icon">🐧</span><span class="label">Useful Linux</span></a>
-      <a href="#files"      class="index-card"><span class="icon">📁</span><span class="label">File Management</span></a>
-      <a href="#user"       class="index-card"><span class="icon">👤</span><span class="label">User Management</span></a>
-      <a href="#ssh"        class="index-card"><span class="icon">🔑</span><span class="label">SSH &amp; SCP</span></a>
-      <a href="#git"        class="index-card"><span class="icon">🌿</span><span class="label">Git Commands</span></a>
-      <a href="#jenkins"    class="index-card"><span class="icon">🤖</span><span class="label">Jenkins</span></a>
-      <a href="#k8s"        class="index-card"><span class="icon">☸️</span><span class="label">Kubernetes Basics</span></a>
-      <a href="#k8s-adv"    class="index-card"><span class="icon">☸️</span><span class="label">Kubernetes Advanced</span></a>
-      <a href="#helm"       class="index-card"><span class="icon">⛵</span><span class="label">Helm</span></a>
-      <a href="#argocd"     class="index-card"><span class="icon">🔄</span><span class="label">ArgoCD</span></a>
-      <a href="#terraform"  class="index-card"><span class="icon">🏗️</span><span class="label">Terraform</span></a>
-      <a href="#aws"        class="index-card"><span class="icon">☁️</span><span class="label">AWS CLI General</span></a>
-      <a href="#aws-ec2"    class="index-card"><span class="icon">🖥️</span><span class="label">AWS EC2</span></a>
-      <a href="#aws-iam"    class="index-card"><span class="icon">🔐</span><span class="label">AWS IAM</span></a>
-      <a href="#aws-eks"    class="index-card"><span class="icon">☸️</span><span class="label">AWS EKS</span></a>
-      <a href="#aws-cw"     class="index-card"><span class="icon">📈</span><span class="label">AWS CloudWatch</span></a>
-      <a href="#s3"         class="index-card"><span class="icon">🪣</span><span class="label">S3 File Transfer</span></a>
-      <a href="#s3policy"   class="index-card"><span class="icon">📜</span><span class="label">S3 Bucket Policies</span></a>
-      <a href="#trivy"      class="index-card"><span class="icon">🔍</span><span class="label">Trivy Security Scan</span></a>
-      <a href="#sonar"      class="index-card"><span class="icon">🧪</span><span class="label">SonarQube</span></a>
+  <div class="index-wrapper" id="top">
+    <div class="index-title">📋 Quick Navigation — Click to Jump</div>
+    <div class="index-categories">
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">🐧 Linux</div>
+        <div class="index-links">
+          <a href="#pkg"     class="index-link cat-linux"><span class="index-icon">📦</span>Package Mgmt</a>
+          <a href="#software" class="index-link cat-linux"><span class="index-icon">🛠️</span>Software Install</a>
+          <a href="#service" class="index-link cat-linux"><span class="index-icon">⚙️</span>Service Mgmt</a>
+          <a href="#firewall" class="index-link cat-linux"><span class="index-icon">🔥</span>Firewall UFW</a>
+          <a href="#monitor" class="index-link cat-linux"><span class="index-icon">📊</span>System Monitoring</a>
+          <a href="#network" class="index-link cat-linux"><span class="index-icon">🌐</span>Network</a>
+          <a href="#linux"   class="index-link cat-linux"><span class="index-icon">🐧</span>Useful Linux</a>
+          <a href="#files"   class="index-link cat-linux"><span class="index-icon">📁</span>File Management</a>
+          <a href="#user"    class="index-link cat-linux"><span class="index-icon">👤</span>User Management</a>
+          <a href="#ssh"     class="index-link cat-linux"><span class="index-icon">🔑</span>SSH &amp; SCP</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">🐳 Docker</div>
+        <div class="index-links">
+          <a href="#docker"     class="index-link cat-docker"><span class="index-icon">🐳</span>Docker Basics</a>
+          <a href="#docker-adv" class="index-link cat-docker"><span class="index-icon">🐳</span>Docker Advanced</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">☸️ Kubernetes</div>
+        <div class="index-links">
+          <a href="#k8s"     class="index-link cat-k8s"><span class="index-icon">☸️</span>K8s Basics</a>
+          <a href="#k8s-adv" class="index-link cat-k8s"><span class="index-icon">☸️</span>K8s Advanced</a>
+          <a href="#helm"    class="index-link cat-k8s"><span class="index-icon">⛵</span>Helm</a>
+          <a href="#argocd"  class="index-link cat-k8s"><span class="index-icon">🔄</span>ArgoCD</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">☁️ AWS</div>
+        <div class="index-links">
+          <a href="#aws"      class="index-link cat-aws"><span class="index-icon">☁️</span>AWS General</a>
+          <a href="#aws-ec2"  class="index-link cat-aws"><span class="index-icon">🖥️</span>EC2</a>
+          <a href="#aws-iam"  class="index-link cat-aws"><span class="index-icon">🔐</span>IAM</a>
+          <a href="#aws-eks"  class="index-link cat-aws"><span class="index-icon">☸️</span>EKS</a>
+          <a href="#aws-cw"   class="index-link cat-aws"><span class="index-icon">📈</span>CloudWatch</a>
+          <a href="#s3"       class="index-link cat-aws"><span class="index-icon">🪣</span>S3 Transfer</a>
+          <a href="#s3policy" class="index-link cat-aws"><span class="index-icon">📜</span>S3 Policies</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">🤖 CI/CD</div>
+        <div class="index-links">
+          <a href="#git"     class="index-link cat-cicd"><span class="index-icon">🌿</span>Git</a>
+          <a href="#jenkins" class="index-link cat-cicd"><span class="index-icon">🤖</span>Jenkins</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">🏗️ IaC</div>
+        <div class="index-links">
+          <a href="#terraform" class="index-link cat-infra"><span class="index-icon">🏗️</span>Terraform</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">📈 Monitoring</div>
+        <div class="index-links">
+          <a href="#prometheus" class="index-link cat-monitor"><span class="index-icon">🔥</span>Prometheus Install</a>
+          <a href="#grafana"    class="index-link cat-monitor"><span class="index-icon">📊</span>Grafana Install</a>
+          <a href="#prom-cmds"  class="index-link cat-monitor"><span class="index-icon">⚡</span>Prometheus Commands</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">🔍 Security</div>
+        <div class="index-links">
+          <a href="#trivy" class="index-link cat-sec"><span class="index-icon">🔍</span>Trivy</a>
+          <a href="#sonar" class="index-link cat-sec"><span class="index-icon">🧪</span>SonarQube</a>
+        </div>
+      </div>
+
+      <div class="index-cat-row">
+        <div class="index-cat-label">📚 Theory</div>
+        <div class="index-links">
+          <a href="#cloud-theory" class="index-link cat-aws"><span class="index-icon">☁️</span>Cloud Theory</a>
+          <a href="#aws-use-cases" class="index-link cat-aws"><span class="index-icon">🧩</span>AWS Use Cases</a>
+          <a href="#devops-lifecycle" class="index-link cat-cicd"><span class="index-icon">🔁</span>DevOps Lifecycle</a>
+          <a href="#cicd-theory" class="index-link cat-cicd"><span class="index-icon">🤖</span>CI/CD Theory</a>
+          <a href="#networking-theory" class="index-link cat-linux"><span class="index-icon">🌐</span>Networking Basics</a>
+          <a href="#docker-k8s-theory" class="index-link cat-k8s"><span class="index-icon">☸️</span>Docker &amp; K8s Theory</a>
+          <a href="#linux-interview" class="index-link cat-linux"><span class="index-icon">🎯</span>Linux Interview</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- PACKAGE MANAGEMENT -->
-  <div class="section" id="pkg">
-    <h2>📦 Package Management Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo apt update</code></td><td>Refresh package repository list</td></tr>
-      <tr><td><code>sudo apt upgrade -y</code></td><td>Upgrade all installed packages</td></tr>
-      <tr><td><code>sudo apt install package_name -y</code></td><td>Install a package</td></tr>
-      <tr><td><code>sudo apt remove package_name -y</code></td><td>Remove installed package</td></tr>
-      <tr><td><code>sudo apt autoremove -y</code></td><td>Remove unused/orphan packages</td></tr>
-      <tr><td><code>apt list --installed</code></td><td>List all installed packages</td></tr>
-      <tr><td><code>apt search package_name</code></td><td>Search for a package</td></tr>
-      <tr><td><code>dpkg -i package.deb</code></td><td>Install a local .deb file</td></tr>
-      <tr><td><code>dpkg -l</code></td><td>List all dpkg installed packages</td></tr>
-      <tr><td><code>sudo apt-cache show package_name</code></td><td>Show details about a package</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  <!-- ===================== LINUX GROUP ===================== -->
+  <div class="section-group" id="grp-linux">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-linux)"></span>
+      <h2>Linux & System Administration</h2>
+      <span class="group-count">10 sections</span>
+    </div>
+
+    <!-- Package Management -->
+    <div class="section" id="pkg">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📦</span>
+        <span class="section-title">Package Management (apt / dpkg)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo apt update</code></td><td class="use-case">Refresh package repository list</td></tr>
+            <tr><td><code>sudo apt upgrade -y</code></td><td class="use-case">Upgrade all installed packages</td></tr>
+            <tr><td><code>sudo apt install &lt;pkg&gt; -y</code></td><td class="use-case">Install a package</td></tr>
+            <tr><td><code>sudo apt remove &lt;pkg&gt; -y</code></td><td class="use-case">Remove an installed package</td></tr>
+            <tr><td><code>sudo apt autoremove -y</code></td><td class="use-case">Remove unused/orphan packages</td></tr>
+            <tr><td><code>sudo apt purge &lt;pkg&gt;</code></td><td class="use-case">Remove package + config files completely</td></tr>
+            <tr><td><code>apt list --installed</code></td><td class="use-case">List all installed packages</td></tr>
+            <tr><td><code>apt search &lt;pkg&gt;</code></td><td class="use-case">Search for a package in repos</td></tr>
+            <tr><td><code>sudo apt-cache show &lt;pkg&gt;</code></td><td class="use-case">Show package details (version, size, deps)</td></tr>
+            <tr><td><code>dpkg -i package.deb</code></td><td class="use-case">Install a local .deb file</td></tr>
+            <tr><td><code>dpkg -l</code></td><td class="use-case">List all dpkg-installed packages</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- Software Installation -->
+    <div class="section" id="software">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🛠️</span>
+        <span class="section-title">Software Installation</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo apt install nginx -y</code></td><td class="use-case">Install Nginx web server</td></tr>
+            <tr><td><code>sudo apt install mysql-server -y</code></td><td class="use-case">Install MySQL database</td></tr>
+            <tr><td><code>sudo apt install postgresql postgresql-contrib -y</code></td><td class="use-case">Install PostgreSQL database</td></tr>
+            <tr><td><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></td><td class="use-case">Add NodeJS 20 repository</td></tr>
+            <tr><td><code>sudo apt install nodejs -y</code></td><td class="use-case">Install NodeJS</td></tr>
+            <tr><td><code>sudo npm install -g @angular/cli</code></td><td class="use-case">Install Angular CLI globally</td></tr>
+            <tr><td><code>sudo npm install -g pm2</code></td><td class="use-case">Install PM2 process manager</td></tr>
+            <tr><td><code>sudo apt install python3-pip -y</code></td><td class="use-case">Install Python pip</td></tr>
+            <tr><td><code>sudo apt install unzip zip -y</code></td><td class="use-case">Install zip/unzip tools</td></tr>
+            <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td class="use-case">Install Java 17 (required for Jenkins)</td></tr>
+            <tr><td><code>java -version</code></td><td class="use-case">Verify Java installation</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- Service Management -->
+    <div class="section" id="service">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">⚙️</span>
+        <span class="section-title">Service Management (systemctl)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo systemctl start &lt;service&gt;</code></td><td class="use-case">Start a service</td></tr>
+            <tr><td><code>sudo systemctl stop &lt;service&gt;</code></td><td class="use-case">Stop a service</td></tr>
+            <tr><td><code>sudo systemctl restart &lt;service&gt;</code></td><td class="use-case">Restart a service</td></tr>
+            <tr><td><code>sudo systemctl reload &lt;service&gt;</code></td><td class="use-case">Reload config without full restart</td></tr>
+            <tr><td><code>sudo systemctl enable &lt;service&gt;</code></td><td class="use-case">Enable service to start on boot</td></tr>
+            <tr><td><code>sudo systemctl disable &lt;service&gt;</code></td><td class="use-case">Disable service from boot</td></tr>
+            <tr><td><code>sudo systemctl status &lt;service&gt;</code></td><td class="use-case">Check service status</td></tr>
+            <tr><td><code>sudo systemctl list-units --type=service</code></td><td class="use-case">List all services and their states</td></tr>
+            <tr><td><code>sudo journalctl -u &lt;service&gt; -f</code></td><td class="use-case">Follow live logs of a service</td></tr>
+            <tr><td><code>sudo journalctl -u &lt;service&gt; --since "1 hour ago"</code></td><td class="use-case">View service logs from last 1 hour</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- Firewall -->
+    <div class="section" id="firewall">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔥</span>
+        <span class="section-title">Firewall Commands (UFW)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo ufw enable</code></td><td class="use-case">Enable the firewall</td></tr>
+            <tr><td><code>sudo ufw disable</code></td><td class="use-case">Disable the firewall</td></tr>
+            <tr><td><code>sudo ufw status verbose</code></td><td class="use-case">View all active rules in detail</td></tr>
+            <tr><td><code>sudo ufw allow 22</code></td><td class="use-case">Allow SSH — <span class="warn">Always allow before enabling!</span></td></tr>
+            <tr><td><code>sudo ufw allow 80</code></td><td class="use-case">Allow HTTP port</td></tr>
+            <tr><td><code>sudo ufw allow 443</code></td><td class="use-case">Allow HTTPS port</td></tr>
+            <tr><td><code>sudo ufw allow 8080</code></td><td class="use-case">Allow custom port (Jenkins, etc.)</td></tr>
+            <tr><td><code>sudo ufw allow from 192.168.1.0/24</code></td><td class="use-case">Allow traffic from a specific subnet</td></tr>
+            <tr><td><code>sudo ufw deny 3306</code></td><td class="use-case">Block MySQL port from outside</td></tr>
+            <tr><td><code>sudo ufw delete allow 80</code></td><td class="use-case">Remove an existing rule</td></tr>
+            <tr><td><code>sudo ufw reset</code></td><td class="use-case">Reset all UFW rules to default</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- System Monitoring -->
+    <div class="section" id="monitor">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📊</span>
+        <span class="section-title">System Monitoring</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>df -h</code></td><td class="use-case">Check disk usage (human readable)</td></tr>
+            <tr><td><code>du -sh /path</code></td><td class="use-case">Check size of a specific folder</td></tr>
+            <tr><td><code>du -sh * | sort -rh | head -10</code></td><td class="use-case">Top 10 largest items in current dir</td></tr>
+            <tr><td><code>free -h</code></td><td class="use-case">Check RAM usage</td></tr>
+            <tr><td><code>top</code></td><td class="use-case">Live process monitor (built-in)</td></tr>
+            <tr><td><code>htop</code></td><td class="use-case">Advanced interactive process monitor</td></tr>
+            <tr><td><code>ps aux</code></td><td class="use-case">List all running processes</td></tr>
+            <tr><td><code>ps aux | grep &lt;name&gt;</code></td><td class="use-case">Find a specific process</td></tr>
+            <tr><td><code>kill -9 &lt;PID&gt;</code></td><td class="use-case">Force kill a process by PID</td></tr>
+            <tr><td><code>uptime</code></td><td class="use-case">Show system uptime and load average</td></tr>
+            <tr><td><code>vmstat 1</code></td><td class="use-case">Monitor CPU/memory/I/O stats every 1s</td></tr>
+            <tr><td><code>iostat -x 1</code></td><td class="use-case">Detailed disk I/O stats</td></tr>
+            <tr><td><code>netstat -tuln</code></td><td class="use-case">Show open ports and listening services</td></tr>
+            <tr><td><code>ss -tuln</code></td><td class="use-case">Modern alternative to netstat</td></tr>
+            <tr><td><code>lsof -i :8080</code></td><td class="use-case">See what process is using port 8080</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- Network -->
+    <div class="section" id="network">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🌐</span>
+        <span class="section-title">Network Commands</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>ip a</code></td><td class="use-case">Show all network interfaces and IPs</td></tr>
+            <tr><td><code>ip r</code></td><td class="use-case">Show routing table</td></tr>
+            <tr><td><code>ping -c 4 google.com</code></td><td class="use-case">Test internet connectivity (4 pings)</td></tr>
+            <tr><td><code>traceroute google.com</code></td><td class="use-case">Trace network path to destination</td></tr>
+            <tr><td><code>curl ifconfig.me</code></td><td class="use-case">Get your public IP address</td></tr>
+            <tr><td><code>nslookup domain.com</code></td><td class="use-case">DNS lookup for a domain</td></tr>
+            <tr><td><code>dig domain.com</code></td><td class="use-case">Detailed DNS query with record info</td></tr>
+            <tr><td><code>wget &lt;URL&gt;</code></td><td class="use-case">Download file from URL</td></tr>
+            <tr><td><code>curl -O &lt;URL&gt;</code></td><td class="use-case">Download file using curl</td></tr>
+            <tr><td><code>curl -I &lt;URL&gt;</code></td><td class="use-case">Check HTTP headers / response code</td></tr>
+            <tr><td><code>curl -v &lt;URL&gt;</code></td><td class="use-case">Verbose curl — debug full request/response</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- Useful Linux -->
+    <div class="section" id="linux">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🐧</span>
+        <span class="section-title">Useful Linux Commands</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>history</code></td><td class="use-case">Show command history</td></tr>
+            <tr><td><code>history | grep &lt;keyword&gt;</code></td><td class="use-case">Search through command history</td></tr>
+            <tr><td><code>!&lt;number&gt;</code></td><td class="use-case">Re-run command from history by number</td></tr>
+            <tr><td><code>clear</code></td><td class="use-case">Clear terminal screen</td></tr>
+            <tr><td><code>whoami</code></td><td class="use-case">Show current logged-in user</td></tr>
+            <tr><td><code>id</code></td><td class="use-case">Show user ID and group info</td></tr>
+            <tr><td><code>uname -a</code></td><td class="use-case">Show full Linux system info</td></tr>
+            <tr><td><code>lsb_release -a</code></td><td class="use-case">Show Ubuntu version details</td></tr>
+            <tr><td><code>date</code></td><td class="use-case">Show current date and time</td></tr>
+            <tr><td><code>timedatectl</code></td><td class="use-case">Check or set system timezone</td></tr>
+            <tr><td><code>sudo reboot</code></td><td class="use-case">Restart the server</td></tr>
+            <tr><td><code>sudo shutdown now</code></td><td class="use-case">Shutdown server immediately</td></tr>
+            <tr><td><code>crontab -e</code></td><td class="use-case">Edit cron jobs for current user</td></tr>
+            <tr><td><code>crontab -l</code></td><td class="use-case">List all scheduled cron jobs</td></tr>
+            <tr><td><code>env</code></td><td class="use-case">Show all environment variables</td></tr>
+            <tr><td><code>export VAR=value</code></td><td class="use-case">Set an environment variable</td></tr>
+            <tr><td><code>alias ll='ls -la'</code></td><td class="use-case">Create a shortcut alias for a command</td></tr>
+            <tr><td><code>watch -n 2 &lt;command&gt;</code></td><td class="use-case">Repeat a command every 2 seconds</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- File Management -->
+    <div class="section" id="files">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📁</span>
+        <span class="section-title">File Management</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>ls -la</code></td><td class="use-case">List files with details including hidden files</td></tr>
+            <tr><td><code>cd &lt;folder&gt;</code></td><td class="use-case">Change directory</td></tr>
+            <tr><td><code>pwd</code></td><td class="use-case">Print current working directory</td></tr>
+            <tr><td><code>mkdir -p path/to/folder</code></td><td class="use-case">Create nested directories at once</td></tr>
+            <tr><td><code>rm -rf &lt;folder&gt;</code></td><td class="use-case"><span class="warn">DANGER</span> Delete folder and all contents</td></tr>
+            <tr><td><code>cp -r folder1 folder2</code></td><td class="use-case">Copy folder recursively</td></tr>
+            <tr><td><code>mv file1 file2</code></td><td class="use-case">Move or rename a file</td></tr>
+            <tr><td><code>cat file.txt</code></td><td class="use-case">View file content</td></tr>
+            <tr><td><code>less file.txt</code></td><td class="use-case">Paginated file view (q to quit)</td></tr>
+            <tr><td><code>tail -f file.txt</code></td><td class="use-case">Follow file updates live (great for logs)</td></tr>
+            <tr><td><code>head -20 file.txt</code></td><td class="use-case">View first 20 lines of a file</td></tr>
+            <tr><td><code>grep "keyword" file.txt</code></td><td class="use-case">Search for text in a file</td></tr>
+            <tr><td><code>grep -r "keyword" /path</code></td><td class="use-case">Search text recursively in a folder</td></tr>
+            <tr><td><code>find /path -name "*.log"</code></td><td class="use-case">Find files by name or pattern</td></tr>
+            <tr><td><code>find /path -mtime -1</code></td><td class="use-case">Find files modified in last 24 hours</td></tr>
+            <tr><td><code>chmod 755 file.sh</code></td><td class="use-case">Set file execute permissions</td></tr>
+            <tr><td><code>chown user:group file</code></td><td class="use-case">Change file owner</td></tr>
+            <tr><td><code>nano file.txt</code></td><td class="use-case">Edit file using Nano editor</td></tr>
+            <tr><td><code>vim file.txt</code></td><td class="use-case">Edit file using Vim editor</td></tr>
+            <tr><td><code>tar -czvf archive.tar.gz folder/</code></td><td class="use-case">Create compressed tar.gz archive</td></tr>
+            <tr><td><code>tar -xzvf archive.tar.gz</code></td><td class="use-case">Extract tar.gz archive</td></tr>
+            <tr><td><code>wc -l file.txt</code></td><td class="use-case">Count lines in a file</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="section" id="user">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">👤</span>
+        <span class="section-title">User Management</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo adduser &lt;username&gt;</code></td><td class="use-case">Create a new user interactively</td></tr>
+            <tr><td><code>sudo passwd &lt;username&gt;</code></td><td class="use-case">Change a user's password</td></tr>
+            <tr><td><code>sudo userdel -r &lt;username&gt;</code></td><td class="use-case">Delete user and their home directory</td></tr>
+            <tr><td><code>groups &lt;username&gt;</code></td><td class="use-case">Check which groups a user belongs to</td></tr>
+            <tr><td><code>sudo usermod -aG sudo &lt;username&gt;</code></td><td class="use-case">Give sudo (admin) access to a user</td></tr>
+            <tr><td><code>sudo usermod -aG docker &lt;username&gt;</code></td><td class="use-case">Add user to docker group</td></tr>
+            <tr><td><code>su - &lt;username&gt;</code></td><td class="use-case">Switch to another user</td></tr>
+            <tr><td><code>cat /etc/passwd</code></td><td class="use-case">List all system users</td></tr>
+            <tr><td><code>last</code></td><td class="use-case">Show recent user login history</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- SSH & SCP -->
+    <div class="section" id="ssh">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔑</span>
+        <span class="section-title">SSH &amp; SCP</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>ssh user@server_ip</code></td><td class="use-case">Connect to a remote server</td></tr>
+            <tr><td><code>ssh -i key.pem ubuntu@server_ip</code></td><td class="use-case">Connect with PEM key file (AWS EC2)</td></tr>
+            <tr><td><code>ssh -p 2222 user@server_ip</code></td><td class="use-case">Connect on a custom SSH port</td></tr>
+            <tr><td><code>scp file.txt user@server:/path</code></td><td class="use-case">Upload file to remote server</td></tr>
+            <tr><td><code>scp user@server:/file.txt .</code></td><td class="use-case">Download file from remote server</td></tr>
+            <tr><td><code>scp -r folder/ user@server:/path</code></td><td class="use-case">Copy full folder to remote server</td></tr>
+            <tr><td><code>ssh-keygen -t rsa -b 4096</code></td><td class="use-case">Generate strong RSA SSH key pair</td></tr>
+            <tr><td><code>ssh-copy-id user@server_ip</code></td><td class="use-case">Copy SSH public key to remote server</td></tr>
+            <tr><td><code>cat ~/.ssh/id_rsa.pub</code></td><td class="use-case">View your public SSH key</td></tr>
+            <tr><td><code>chmod 400 key.pem</code></td><td class="use-case"><span class="tip">Required</span> Set correct PEM key permissions</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-  <!-- SOFTWARE INSTALLATION -->
-  <div class="section" id="software">
-    <h2>🛠️ Software Installation Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo apt install nginx -y</code></td><td>Install Nginx web server</td></tr>
-      <tr><td><code>sudo apt install mysql-server -y</code></td><td>Install MySQL database</td></tr>
-      <tr><td><code>sudo apt install postgresql postgresql-contrib -y</code></td><td>Install PostgreSQL database</td></tr>
-      <tr><td><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -</code></td><td>Add NodeJS 20 repository</td></tr>
-      <tr><td><code>sudo apt install nodejs -y</code></td><td>Install NodeJS</td></tr>
-      <tr><td><code>sudo npm install -g @angular/cli</code></td><td>Install Angular CLI globally</td></tr>
-      <tr><td><code>sudo npm install -g pm2</code></td><td>Install PM2 process manager</td></tr>
-      <tr><td><code>sudo npm install -g npm@latest</code></td><td>Update npm to latest version</td></tr>
-      <tr><td><code>sudo apt install python3-pip -y</code></td><td>Install Python pip</td></tr>
-      <tr><td><code>sudo apt install unzip zip -y</code></td><td>Install zip/unzip tools</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  <!-- ===================== DOCKER GROUP ===================== -->
+  <div class="section-group" id="grp-docker">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-docker)"></span>
+      <h2>Docker</h2>
+      <span class="group-count">2 sections</span>
+    </div>
+
+    <div class="section" id="docker">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🐳</span>
+        <span class="section-title">Docker — Install &amp; Basics</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo apt install apt-transport-https ca-certificates curl software-properties-common -y</code></td><td class="use-case">Install Docker prerequisites</td></tr>
+            <tr><td><code>sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y</code></td><td class="use-case">Install Docker Engine + Compose</td></tr>
+            <tr><td><code>sudo usermod -aG docker $USER</code></td><td class="use-case">Run Docker without sudo (re-login after)</td></tr>
+            <tr><td><code>docker --version</code></td><td class="use-case">Check Docker version</td></tr>
+            <tr><td><code>docker compose version</code></td><td class="use-case">Check Docker Compose version</td></tr>
+            <tr><td><code>docker ps</code></td><td class="use-case">Show running containers</td></tr>
+            <tr><td><code>docker ps -a</code></td><td class="use-case">Show all containers including stopped</td></tr>
+            <tr><td><code>docker images</code></td><td class="use-case">List all Docker images</td></tr>
+            <tr><td><code>docker logs &lt;container_id&gt;</code></td><td class="use-case">View container logs</td></tr>
+            <tr><td><code>docker logs -f &lt;container_id&gt;</code></td><td class="use-case">Follow container logs live</td></tr>
+            <tr><td><code>docker exec -it &lt;container_id&gt; bash</code></td><td class="use-case">Access running container shell</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="docker-adv">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🐳</span>
+        <span class="section-title">Docker — Advanced &amp; Compose</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>docker build -t &lt;image&gt;:&lt;tag&gt; .</code></td><td class="use-case">Build image from Dockerfile in current dir</td></tr>
+            <tr><td><code>docker run -d -p 80:80 --name myapp &lt;image&gt;</code></td><td class="use-case">Run container in background with port mapping</td></tr>
+            <tr><td><code>docker run -it &lt;image&gt; bash</code></td><td class="use-case">Run container interactively</td></tr>
+            <tr><td><code>docker run --rm &lt;image&gt;</code></td><td class="use-case">Run container and auto-remove when it exits</td></tr>
+            <tr><td><code>docker stop &lt;container_id&gt;</code></td><td class="use-case">Gracefully stop a container</td></tr>
+            <tr><td><code>docker rm &lt;container_id&gt;</code></td><td class="use-case">Remove a stopped container</td></tr>
+            <tr><td><code>docker rmi &lt;image_name&gt;</code></td><td class="use-case">Remove a Docker image</td></tr>
+            <tr><td><code>docker pull &lt;image&gt;:&lt;tag&gt;</code></td><td class="use-case">Pull image from Docker Hub</td></tr>
+            <tr><td><code>docker push &lt;image&gt;:&lt;tag&gt;</code></td><td class="use-case">Push image to Docker Hub / ECR</td></tr>
+            <tr><td><code>docker tag &lt;image&gt; &lt;registry&gt;/&lt;image&gt;:&lt;tag&gt;</code></td><td class="use-case">Tag image for registry push</td></tr>
+            <tr><td><code>docker inspect &lt;container_id&gt;</code></td><td class="use-case">View detailed container metadata (JSON)</td></tr>
+            <tr><td><code>docker stats</code></td><td class="use-case">Live container CPU/memory usage</td></tr>
+            <tr><td><code>docker system prune -a</code></td><td class="use-case"><span class="warn">Clears All</span> Remove all unused images, containers, volumes</td></tr>
+            <tr><td><code>docker compose up -d</code></td><td class="use-case">Start all services from docker-compose.yml</td></tr>
+            <tr><td><code>docker compose down</code></td><td class="use-case">Stop and remove compose services</td></tr>
+            <tr><td><code>docker compose logs -f</code></td><td class="use-case">Follow live logs from all compose services</td></tr>
+            <tr><td><code>docker compose ps</code></td><td class="use-case">Show status of compose services</td></tr>
+            <tr><td><code>docker network ls</code></td><td class="use-case">List all Docker networks</td></tr>
+            <tr><td><code>docker volume ls</code></td><td class="use-case">List all Docker volumes</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-  <!-- DOCKER BASICS -->
-  <div class="section" id="docker">
-    <h2>🐳 Docker Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo apt install apt-transport-https ca-certificates curl software-properties-common -y</code></td><td>Install Docker dependencies</td></tr>
-      <tr><td><code>sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y</code></td><td>Install Docker Engine</td></tr>
-      <tr><td><code>sudo usermod -aG docker $USER</code></td><td>Add current user to docker group (no sudo needed)</td></tr>
-      <tr><td><code>docker --version</code></td><td>Check Docker version</td></tr>
-      <tr><td><code>docker compose version</code></td><td>Check Docker Compose version</td></tr>
-      <tr><td><code>docker ps</code></td><td>Show running containers</td></tr>
-      <tr><td><code>docker ps -a</code></td><td>Show all containers including stopped</td></tr>
-      <tr><td><code>docker images</code></td><td>List all Docker images</td></tr>
-      <tr><td><code>docker logs container_id</code></td><td>View container logs</td></tr>
-      <tr><td><code>docker exec -it container_id bash</code></td><td>Access running container shell</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  <!-- ===================== KUBERNETES GROUP ===================== -->
+  <div class="section-group" id="grp-k8s">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-k8s)"></span>
+      <h2>Kubernetes, Helm &amp; ArgoCD</h2>
+      <span class="group-count">4 sections</span>
+    </div>
+
+    <div class="section" id="k8s">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☸️</span>
+        <span class="section-title">Kubernetes — Basics (kubectl)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>kubectl get pods</code></td><td class="use-case">List pods in default namespace</td></tr>
+            <tr><td><code>kubectl get pods -n &lt;namespace&gt;</code></td><td class="use-case">List pods in a specific namespace</td></tr>
+            <tr><td><code>kubectl get pods -A</code></td><td class="use-case">List pods across ALL namespaces</td></tr>
+            <tr><td><code>kubectl get nodes</code></td><td class="use-case">List cluster nodes and their status</td></tr>
+            <tr><td><code>kubectl get svc</code></td><td class="use-case">List all services</td></tr>
+            <tr><td><code>kubectl get deployments</code></td><td class="use-case">List all deployments</td></tr>
+            <tr><td><code>kubectl describe pod &lt;pod_name&gt;</code></td><td class="use-case">Detailed pod info — events, errors, config</td></tr>
+            <tr><td><code>kubectl logs &lt;pod_name&gt;</code></td><td class="use-case">View pod logs</td></tr>
+            <tr><td><code>kubectl logs -f &lt;pod_name&gt;</code></td><td class="use-case">Follow pod logs live</td></tr>
+            <tr><td><code>kubectl logs &lt;pod&gt; -c &lt;container&gt;</code></td><td class="use-case">View logs of a specific container in a pod</td></tr>
+            <tr><td><code>kubectl delete pod &lt;pod_name&gt;</code></td><td class="use-case">Delete a pod (will recreate if managed)</td></tr>
+            <tr><td><code>kubectl exec -it &lt;pod_name&gt; -- bash</code></td><td class="use-case">Access pod shell interactively</td></tr>
+            <tr><td><code>kubectl get events --sort-by='.lastTimestamp'</code></td><td class="use-case">View cluster events sorted by time</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="k8s-adv">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☸️</span>
+        <span class="section-title">Kubernetes — Advanced &amp; Deployments</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>kubectl apply -f file.yaml</code></td><td class="use-case">Create or update resources from YAML</td></tr>
+            <tr><td><code>kubectl delete -f file.yaml</code></td><td class="use-case">Delete resources defined in YAML</td></tr>
+            <tr><td><code>kubectl get configmap</code></td><td class="use-case">List all ConfigMaps</td></tr>
+            <tr><td><code>kubectl get secret</code></td><td class="use-case">List all Secrets</td></tr>
+            <tr><td><code>kubectl get pvc</code></td><td class="use-case">List PersistentVolumeClaims</td></tr>
+            <tr><td><code>kubectl get ingress</code></td><td class="use-case">List Ingress resources</td></tr>
+            <tr><td><code>kubectl rollout status deployment/&lt;name&gt;</code></td><td class="use-case">Check deployment rollout status</td></tr>
+            <tr><td><code>kubectl rollout restart deployment/&lt;name&gt;</code></td><td class="use-case">Restart all pods in a deployment</td></tr>
+            <tr><td><code>kubectl rollout undo deployment/&lt;name&gt;</code></td><td class="use-case">Rollback to previous deployment version</td></tr>
+            <tr><td><code>kubectl scale deployment &lt;name&gt; --replicas=3</code></td><td class="use-case">Scale deployment to 3 replicas</td></tr>
+            <tr><td><code>kubectl set image deployment/&lt;name&gt; &lt;container&gt;=&lt;image&gt;:&lt;tag&gt;</code></td><td class="use-case">Update container image in deployment</td></tr>
+            <tr><td><code>kubectl top pods</code></td><td class="use-case">Show CPU/memory usage of all pods</td></tr>
+            <tr><td><code>kubectl top nodes</code></td><td class="use-case">Show CPU/memory usage of all nodes</td></tr>
+            <tr><td><code>kubectl create namespace &lt;name&gt;</code></td><td class="use-case">Create a new namespace</td></tr>
+            <tr><td><code>kubectl get all -n &lt;namespace&gt;</code></td><td class="use-case">List ALL resources in a namespace</td></tr>
+            <tr><td><code>kubectl port-forward pod/&lt;name&gt; 8080:80</code></td><td class="use-case">Forward local port to pod port for testing</td></tr>
+            <tr><td><code>kubectl cordon &lt;node&gt;</code></td><td class="use-case">Mark node as unschedulable</td></tr>
+            <tr><td><code>kubectl drain &lt;node&gt; --ignore-daemonsets</code></td><td class="use-case">Safely evict all pods from a node</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="helm">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">⛵</span>
+        <span class="section-title">Helm — Package Manager for Kubernetes</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>helm version</code></td><td class="use-case">Check Helm version</td></tr>
+            <tr><td><code>helm repo add &lt;name&gt; &lt;url&gt;</code></td><td class="use-case">Add a Helm chart repository</td></tr>
+            <tr><td><code>helm repo update</code></td><td class="use-case">Update all Helm repositories (like apt update)</td></tr>
+            <tr><td><code>helm repo list</code></td><td class="use-case">List all added repositories</td></tr>
+            <tr><td><code>helm search repo &lt;chart&gt;</code></td><td class="use-case">Search for a chart in added repos</td></tr>
+            <tr><td><code>helm install &lt;release&gt; &lt;chart&gt; -n &lt;namespace&gt;</code></td><td class="use-case">Install chart into specific namespace</td></tr>
+            <tr><td><code>helm upgrade --install &lt;release&gt; &lt;chart&gt;</code></td><td class="use-case"><span class="tip">Best Practice</span> Install or upgrade (idempotent)</td></tr>
+            <tr><td><code>helm list -A</code></td><td class="use-case">List all Helm releases across all namespaces</td></tr>
+            <tr><td><code>helm uninstall &lt;release&gt;</code></td><td class="use-case">Uninstall a Helm release</td></tr>
+            <tr><td><code>helm rollback &lt;release&gt; 1</code></td><td class="use-case">Rollback release to revision 1</td></tr>
+            <tr><td><code>helm status &lt;release&gt;</code></td><td class="use-case">Show status and notes of a release</td></tr>
+            <tr><td><code>helm template &lt;release&gt; &lt;chart&gt;</code></td><td class="use-case">Dry-run: render chart templates locally</td></tr>
+            <tr><td><code>helm show values &lt;chart&gt;</code></td><td class="use-case">View all default values of a chart</td></tr>
+            <tr><td><code>helm upgrade &lt;release&gt; &lt;chart&gt; --set key=val</code></td><td class="use-case">Override a single chart value inline</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="argocd">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔄</span>
+        <span class="section-title">ArgoCD — GitOps CD for Kubernetes</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>kubectl create namespace argocd</code></td><td class="use-case">Create ArgoCD namespace</td></tr>
+            <tr><td><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml</code></td><td class="use-case">Install ArgoCD into cluster</td></tr>
+            <tr><td><code>kubectl get pods -n argocd</code></td><td class="use-case">Check ArgoCD pods are running</td></tr>
+            <tr><td><code>kubectl port-forward svc/argocd-server -n argocd 8080:443</code></td><td class="use-case">Access ArgoCD UI at localhost:8080</td></tr>
+            <tr><td><code>kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d</code></td><td class="use-case">Get initial admin password</td></tr>
+            <tr><td><code>argocd login localhost:8080</code></td><td class="use-case">Login to ArgoCD via CLI</td></tr>
+            <tr><td><code>argocd app list</code></td><td class="use-case">List all ArgoCD applications</td></tr>
+            <tr><td><code>argocd app get &lt;app_name&gt;</code></td><td class="use-case">Get status and details of an application</td></tr>
+            <tr><td><code>argocd app sync &lt;app_name&gt;</code></td><td class="use-case">Manually trigger sync for an application</td></tr>
+            <tr><td><code>argocd app delete &lt;app_name&gt;</code></td><td class="use-case">Delete an ArgoCD application</td></tr>
+            <tr><td><code>argocd repo add &lt;repo_url&gt;</code></td><td class="use-case">Add a Git repository to ArgoCD</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-  <!-- DOCKER ADVANCED -->
-  <div class="section" id="docker-adv">
-    <h2>🐳 Docker Advanced Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>docker build -t image_name:tag .</code></td><td>Build Docker image from Dockerfile</td></tr>
-      <tr><td><code>docker run -d -p 80:80 --name myapp image_name</code></td><td>Run container in background with port mapping</td></tr>
-      <tr><td><code>docker run -it image_name bash</code></td><td>Run container interactively</td></tr>
-      <tr><td><code>docker stop container_id</code></td><td>Stop a running container</td></tr>
-      <tr><td><code>docker start container_id</code></td><td>Start a stopped container</td></tr>
-      <tr><td><code>docker rm container_id</code></td><td>Remove a container</td></tr>
-      <tr><td><code>docker rmi image_name</code></td><td>Remove a Docker image</td></tr>
-      <tr><td><code>docker pull image_name:tag</code></td><td>Pull image from Docker Hub</td></tr>
-      <tr><td><code>docker push image_name:tag</code></td><td>Push image to Docker Hub / ECR</td></tr>
-      <tr><td><code>docker tag image_name registry_url/image_name:tag</code></td><td>Tag image for registry push</td></tr>
-      <tr><td><code>docker inspect container_id</code></td><td>View detailed container info</td></tr>
-      <tr><td><code>docker stats</code></td><td>Live container CPU/memory usage</td></tr>
-      <tr><td><code>docker system prune -a</code></td><td>Remove all unused images, containers, volumes</td></tr>
-      <tr><td><code>docker compose up -d</code></td><td>Start all services from docker-compose.yml</td></tr>
-      <tr><td><code>docker compose down</code></td><td>Stop and remove compose services</td></tr>
-      <tr><td><code>docker compose logs -f</code></td><td>Follow live logs from compose services</td></tr>
-      <tr><td><code>docker network ls</code></td><td>List Docker networks</td></tr>
-      <tr><td><code>docker volume ls</code></td><td>List Docker volumes</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+  <!-- ===================== AWS GROUP ===================== -->
+  <div class="section-group" id="grp-aws">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-aws)"></span>
+      <h2>AWS (Amazon Web Services)</h2>
+      <span class="group-count">7 sections</span>
+    </div>
 
-  <!-- SERVICE MANAGEMENT -->
-  <div class="section" id="service">
-    <h2>⚙️ Service Management Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo systemctl start service_name</code></td><td>Start a service</td></tr>
-      <tr><td><code>sudo systemctl stop service_name</code></td><td>Stop a service</td></tr>
-      <tr><td><code>sudo systemctl restart service_name</code></td><td>Restart a service</td></tr>
-      <tr><td><code>sudo systemctl reload service_name</code></td><td>Reload config without full restart</td></tr>
-      <tr><td><code>sudo systemctl enable service_name</code></td><td>Enable service at boot</td></tr>
-      <tr><td><code>sudo systemctl disable service_name</code></td><td>Disable service from boot</td></tr>
-      <tr><td><code>sudo systemctl status service_name</code></td><td>Check service status</td></tr>
-      <tr><td><code>sudo journalctl -u service_name -f</code></td><td>Follow live logs of a service</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="aws">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☁️</span>
+        <span class="section-title">AWS CLI — General Setup</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws configure</code></td><td class="use-case">Set up AWS CLI (Access Key, Secret, Region)</td></tr>
+            <tr><td><code>aws configure list</code></td><td class="use-case">Show current AWS CLI config</td></tr>
+            <tr><td><code>aws configure list-profiles</code></td><td class="use-case">List all named AWS profiles</td></tr>
+            <tr><td><code>aws sts get-caller-identity</code></td><td class="use-case"><span class="tip">Verify Auth</span> Check which AWS account/user/role you are</td></tr>
+            <tr><td><code>aws s3 ls</code></td><td class="use-case">List all S3 buckets in your account</td></tr>
+            <tr><td><code>aws ec2 describe-instances</code></td><td class="use-case">List all EC2 instances</td></tr>
+            <tr><td><code>aws iam list-users</code></td><td class="use-case">List all IAM users</td></tr>
+            <tr><td><code>aws --version</code></td><td class="use-case">Check AWS CLI version</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- FIREWALL -->
-  <div class="section" id="firewall">
-    <h2>🔥 Firewall Commands (UFW)</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo ufw enable</code></td><td>Enable firewall</td></tr>
-      <tr><td><code>sudo ufw disable</code></td><td>Disable firewall</td></tr>
-      <tr><td><code>sudo ufw status</code></td><td>Check firewall status</td></tr>
-      <tr><td><code>sudo ufw status verbose</code></td><td>Detailed firewall rules view</td></tr>
-      <tr><td><code>sudo ufw allow 22</code></td><td>Allow SSH port</td></tr>
-      <tr><td><code>sudo ufw allow 80</code></td><td>Allow HTTP port</td></tr>
-      <tr><td><code>sudo ufw allow 443</code></td><td>Allow HTTPS port</td></tr>
-      <tr><td><code>sudo ufw allow 8080</code></td><td>Allow custom port (e.g. Jenkins)</td></tr>
-      <tr><td><code>sudo ufw deny 3306</code></td><td>Block a port (e.g. MySQL)</td></tr>
-      <tr><td><code>sudo ufw delete allow 80</code></td><td>Remove a firewall rule</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="aws-ec2">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🖥️</span>
+        <span class="section-title">AWS EC2</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws ec2 describe-instances --output table</code></td><td class="use-case">List EC2 instances in readable table format</td></tr>
+            <tr><td><code>aws ec2 describe-instances --filters "Name=instance-state-name,Values=running"</code></td><td class="use-case">List only running instances</td></tr>
+            <tr><td><code>aws ec2 start-instances --instance-ids i-xxxxxxxx</code></td><td class="use-case">Start a stopped EC2 instance</td></tr>
+            <tr><td><code>aws ec2 stop-instances --instance-ids i-xxxxxxxx</code></td><td class="use-case">Stop a running EC2 instance</td></tr>
+            <tr><td><code>aws ec2 reboot-instances --instance-ids i-xxxxxxxx</code></td><td class="use-case">Reboot an EC2 instance</td></tr>
+            <tr><td><code>aws ec2 terminate-instances --instance-ids i-xxxxxxxx</code></td><td class="use-case"><span class="warn">Permanent</span> Terminate (delete) an EC2 instance</td></tr>
+            <tr><td><code>aws ec2 describe-security-groups</code></td><td class="use-case">List all security groups</td></tr>
+            <tr><td><code>aws ec2 describe-key-pairs</code></td><td class="use-case">List EC2 key pairs</td></tr>
+            <tr><td><code>aws ec2 describe-vpcs</code></td><td class="use-case">List all VPCs</td></tr>
+            <tr><td><code>aws ec2 describe-subnets</code></td><td class="use-case">List all subnets</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- MONITORING -->
-  <div class="section" id="monitor">
-    <h2>📊 System Monitoring Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>df -h</code></td><td>Check disk usage (human readable)</td></tr>
-      <tr><td><code>du -sh /path</code></td><td>Check size of a specific folder</td></tr>
-      <tr><td><code>free -h</code></td><td>Check RAM/memory usage</td></tr>
-      <tr><td><code>top</code></td><td>Live process monitor</td></tr>
-      <tr><td><code>htop</code></td><td>Advanced interactive process monitor</td></tr>
-      <tr><td><code>ps aux</code></td><td>List all running processes</td></tr>
-      <tr><td><code>ps aux | grep process_name</code></td><td>Find a specific process</td></tr>
-      <tr><td><code>kill -9 PID</code></td><td>Force kill a process by PID</td></tr>
-      <tr><td><code>uptime</code></td><td>Check system uptime and load average</td></tr>
-      <tr><td><code>vmstat 1</code></td><td>Monitor CPU, memory, I/O stats live</td></tr>
-      <tr><td><code>netstat -tuln</code></td><td>Show open ports and listening services</td></tr>
-      <tr><td><code>ss -tuln</code></td><td>Modern alternative to netstat</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="aws-iam">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔐</span>
+        <span class="section-title">AWS IAM</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws iam list-users</code></td><td class="use-case">List all IAM users</td></tr>
+            <tr><td><code>aws iam list-roles</code></td><td class="use-case">List all IAM roles</td></tr>
+            <tr><td><code>aws iam list-groups</code></td><td class="use-case">List all IAM groups</td></tr>
+            <tr><td><code>aws iam list-policies --scope Local</code></td><td class="use-case">List custom (non-AWS managed) policies</td></tr>
+            <tr><td><code>aws iam get-user --user-name &lt;username&gt;</code></td><td class="use-case">Get details of an IAM user</td></tr>
+            <tr><td><code>aws iam create-user --user-name &lt;username&gt;</code></td><td class="use-case">Create a new IAM user</td></tr>
+            <tr><td><code>aws iam delete-user --user-name &lt;username&gt;</code></td><td class="use-case">Delete an IAM user</td></tr>
+            <tr><td><code>aws iam attach-user-policy --user-name &lt;user&gt; --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</code></td><td class="use-case">Attach a policy to an IAM user</td></tr>
+            <tr><td><code>aws iam list-attached-user-policies --user-name &lt;user&gt;</code></td><td class="use-case">List policies attached to a user</td></tr>
+            <tr><td><code>aws iam create-access-key --user-name &lt;user&gt;</code></td><td class="use-case">Generate access key for programmatic access</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- NETWORK -->
-  <div class="section" id="network">
-    <h2>🌐 Network Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>ip a</code></td><td>Show IP address</td></tr>
-      <tr><td><code>ip r</code></td><td>Show routing table</td></tr>
-      <tr><td><code>ping google.com</code></td><td>Check internet connectivity</td></tr>
-      <tr><td><code>traceroute google.com</code></td><td>Trace network path to destination</td></tr>
-      <tr><td><code>curl ifconfig.me</code></td><td>Get your public IP address</td></tr>
-      <tr><td><code>nslookup domain.com</code></td><td>DNS lookup for a domain</td></tr>
-      <tr><td><code>dig domain.com</code></td><td>Detailed DNS query</td></tr>
-      <tr><td><code>wget URL</code></td><td>Download file from URL</td></tr>
-      <tr><td><code>curl -O URL</code></td><td>Download file using curl</td></tr>
-      <tr><td><code>curl -I URL</code></td><td>Check HTTP headers / response code</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="aws-eks">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☸️</span>
+        <span class="section-title">AWS EKS</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws eks list-clusters</code></td><td class="use-case">List all EKS clusters</td></tr>
+            <tr><td><code>aws eks describe-cluster --name &lt;name&gt;</code></td><td class="use-case">Get details of an EKS cluster</td></tr>
+            <tr><td><code>aws eks update-kubeconfig --region us-east-1 --name &lt;name&gt;</code></td><td class="use-case"><span class="tip">First Step</span> Connect kubectl to EKS cluster</td></tr>
+            <tr><td><code>aws eks list-nodegroups --cluster-name &lt;name&gt;</code></td><td class="use-case">List node groups in a cluster</td></tr>
+            <tr><td><code>aws eks describe-nodegroup --cluster-name &lt;c&gt; --nodegroup-name &lt;ng&gt;</code></td><td class="use-case">Get node group details</td></tr>
+            <tr><td><code>eksctl create cluster --name &lt;name&gt; --region us-east-1 --nodes 2</code></td><td class="use-case">Create EKS cluster using eksctl</td></tr>
+            <tr><td><code>eksctl delete cluster --name &lt;name&gt;</code></td><td class="use-case">Delete EKS cluster using eksctl</td></tr>
+            <tr><td><code>eksctl get cluster</code></td><td class="use-case">List EKS clusters via eksctl</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- LINUX -->
-  <div class="section" id="linux">
-    <h2>🐧 Useful Linux Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>history</code></td><td>Show command history</td></tr>
-      <tr><td><code>history | grep keyword</code></td><td>Search through command history</td></tr>
-      <tr><td><code>clear</code></td><td>Clear terminal screen</td></tr>
-      <tr><td><code>whoami</code></td><td>Show current logged-in user</td></tr>
-      <tr><td><code>id</code></td><td>Show user ID and group info</td></tr>
-      <tr><td><code>uname -a</code></td><td>Show full Linux system info</td></tr>
-      <tr><td><code>lsb_release -a</code></td><td>Show Ubuntu version details</td></tr>
-      <tr><td><code>date</code></td><td>Show current date and time</td></tr>
-      <tr><td><code>timedatectl</code></td><td>Check or set timezone</td></tr>
-      <tr><td><code>sudo reboot</code></td><td>Restart server</td></tr>
-      <tr><td><code>sudo shutdown now</code></td><td>Shutdown server immediately</td></tr>
-      <tr><td><code>crontab -e</code></td><td>Edit cron jobs for current user</td></tr>
-      <tr><td><code>crontab -l</code></td><td>List all scheduled cron jobs</td></tr>
-      <tr><td><code>env</code></td><td>Show all environment variables</td></tr>
-      <tr><td><code>export VAR=value</code></td><td>Set an environment variable</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="aws-cw">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📈</span>
+        <span class="section-title">AWS CloudWatch</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws cloudwatch list-metrics</code></td><td class="use-case">List all available CloudWatch metrics</td></tr>
+            <tr><td><code>aws cloudwatch list-alarms</code></td><td class="use-case">List all CloudWatch alarms</td></tr>
+            <tr><td><code>aws cloudwatch describe-alarms --state-value ALARM</code></td><td class="use-case">List alarms currently firing</td></tr>
+            <tr><td><code>aws logs describe-log-groups</code></td><td class="use-case">List all CloudWatch log groups</td></tr>
+            <tr><td><code>aws logs describe-log-streams --log-group-name /aws/lambda/&lt;fn&gt;</code></td><td class="use-case">List log streams in a log group</td></tr>
+            <tr><td><code>aws logs tail /aws/lambda/&lt;fn&gt; --follow</code></td><td class="use-case">Live tail CloudWatch logs in terminal</td></tr>
+            <tr><td><code>aws logs filter-log-events --log-group-name &lt;group&gt; --filter-pattern "ERROR"</code></td><td class="use-case">Filter logs by keyword (e.g. ERROR)</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- FILE MANAGEMENT -->
-  <div class="section" id="files">
-    <h2>📁 File Management Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>ls -la</code></td><td>List files with details including hidden</td></tr>
-      <tr><td><code>cd folder_name</code></td><td>Change directory</td></tr>
-      <tr><td><code>pwd</code></td><td>Print current working directory</td></tr>
-      <tr><td><code>mkdir folder_name</code></td><td>Create directory</td></tr>
-      <tr><td><code>mkdir -p path/to/folder</code></td><td>Create nested directories at once</td></tr>
-      <tr><td><code>rm -rf folder_name</code></td><td>Delete folder and all contents</td></tr>
-      <tr><td><code>cp file1 file2</code></td><td>Copy a file</td></tr>
-      <tr><td><code>cp -r folder1 folder2</code></td><td>Copy folder recursively</td></tr>
-      <tr><td><code>mv file1 file2</code></td><td>Move or rename a file</td></tr>
-      <tr><td><code>cat file.txt</code></td><td>View file content</td></tr>
-      <tr><td><code>tail -f file.txt</code></td><td>Follow file updates live (great for logs)</td></tr>
-      <tr><td><code>head -20 file.txt</code></td><td>View first 20 lines of file</td></tr>
-      <tr><td><code>grep "keyword" file.txt</code></td><td>Search for text in a file</td></tr>
-      <tr><td><code>grep -r "keyword" /path</code></td><td>Search text recursively in folder</td></tr>
-      <tr><td><code>find /path -name "*.log"</code></td><td>Find files by name or pattern</td></tr>
-      <tr><td><code>chmod 755 file.sh</code></td><td>Set file execute permissions</td></tr>
-      <tr><td><code>chown user:group file</code></td><td>Change file owner</td></tr>
-      <tr><td><code>nano file.txt</code></td><td>Edit file using Nano editor</td></tr>
-      <tr><td><code>vim file.txt</code></td><td>Edit file using Vim editor</td></tr>
-      <tr><td><code>tar -czvf archive.tar.gz folder/</code></td><td>Create tar.gz archive</td></tr>
-      <tr><td><code>tar -xzvf archive.tar.gz</code></td><td>Extract tar.gz archive</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
+    <div class="section" id="s3">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🪣</span>
+        <span class="section-title">S3 File Transfer Commands (EC2 ↔ S3)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>aws s3 cp file.txt s3://your-bucket/</code></td><td class="use-case">Upload file from EC2 to S3</td></tr>
+            <tr><td><code>aws s3 cp s3://your-bucket/file.txt .</code></td><td class="use-case">Download file from S3 to current directory</td></tr>
+            <tr><td><code>aws s3 ls s3://your-bucket</code></td><td class="use-case">List all files inside an S3 bucket</td></tr>
+            <tr><td><code>aws s3 sync ./local-folder s3://your-bucket/</code></td><td class="use-case">Sync local folder TO S3 (like rsync)</td></tr>
+            <tr><td><code>aws s3 sync s3://your-bucket/ ./local-folder</code></td><td class="use-case">Sync S3 bucket content TO local folder</td></tr>
+            <tr><td><code>aws s3 rm s3://your-bucket/file.txt</code></td><td class="use-case">Delete a specific file from S3</td></tr>
+            <tr><td><code>aws s3 rm s3://your-bucket/ --recursive</code></td><td class="use-case">Delete ALL files inside a bucket</td></tr>
+            <tr><td><code>aws s3 mb s3://new-bucket-name</code></td><td class="use-case">Create a new S3 bucket</td></tr>
+            <tr><td><code>aws s3 rb s3://bucket-name --force</code></td><td class="use-case"><span class="warn">Permanent</span> Delete S3 bucket with all contents</td></tr>
+            <tr><td><code>aws s3 presign s3://bucket/file.txt --expires-in 3600</code></td><td class="use-case">Generate pre-signed URL valid for 1 hour</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
 
-  <!-- USER MANAGEMENT -->
-  <div class="section" id="user">
-    <h2>👤 User Management Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo adduser username</code></td><td>Create a new user</td></tr>
-      <tr><td><code>sudo passwd username</code></td><td>Change user password</td></tr>
-      <tr><td><code>sudo userdel username</code></td><td>Delete a user</td></tr>
-      <tr><td><code>sudo userdel -r username</code></td><td>Delete user and their home directory</td></tr>
-      <tr><td><code>groups username</code></td><td>Check which groups user belongs to</td></tr>
-      <tr><td><code>sudo usermod -aG sudo username</code></td><td>Give sudo (admin) access to user</td></tr>
-      <tr><td><code>sudo usermod -aG docker username</code></td><td>Add user to docker group</td></tr>
-      <tr><td><code>su - username</code></td><td>Switch to another user</td></tr>
-      <tr><td><code>cat /etc/passwd</code></td><td>List all system users</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- SSH -->
-  <div class="section" id="ssh">
-    <h2>🔑 SSH &amp; SCP Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>ssh user@server_ip</code></td><td>Connect to remote server</td></tr>
-      <tr><td><code>ssh -i key.pem ubuntu@server_ip</code></td><td>Connect with PEM key (AWS EC2)</td></tr>
-      <tr><td><code>ssh -p 2222 user@server_ip</code></td><td>Connect on custom SSH port</td></tr>
-      <tr><td><code>scp file.txt user@server:/path</code></td><td>Copy file to remote server</td></tr>
-      <tr><td><code>scp user@server:/file.txt .</code></td><td>Download file from remote server</td></tr>
-      <tr><td><code>scp -r folder/ user@server:/path</code></td><td>Copy full folder to remote server</td></tr>
-      <tr><td><code>ssh-keygen</code></td><td>Generate SSH key pair</td></tr>
-      <tr><td><code>ssh-copy-id user@server_ip</code></td><td>Copy SSH public key to remote server</td></tr>
-      <tr><td><code>cat ~/.ssh/id_rsa.pub</code></td><td>View your public SSH key</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- GIT -->
-  <div class="section" id="git">
-    <h2>🌿 Git Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>git init</code></td><td>Initialize a Git repository</td></tr>
-      <tr><td><code>git clone repo_url</code></td><td>Clone a repository</td></tr>
-      <tr><td><code>git status</code></td><td>Check repository status</td></tr>
-      <tr><td><code>git add .</code></td><td>Stage all changed files</td></tr>
-      <tr><td><code>git add file.txt</code></td><td>Stage a specific file</td></tr>
-      <tr><td><code>git commit -m "message"</code></td><td>Commit staged changes</td></tr>
-      <tr><td><code>git push origin main</code></td><td>Push code to GitHub main branch</td></tr>
-      <tr><td><code>git pull origin main</code></td><td>Pull latest code from main</td></tr>
-      <tr><td><code>git branch</code></td><td>List all branches</td></tr>
-      <tr><td><code>git branch branch_name</code></td><td>Create a new branch</td></tr>
-      <tr><td><code>git checkout branch_name</code></td><td>Switch to a branch</td></tr>
-      <tr><td><code>git checkout -b branch_name</code></td><td>Create and switch to new branch</td></tr>
-      <tr><td><code>git merge branch_name</code></td><td>Merge a branch into current branch</td></tr>
-      <tr><td><code>git log --oneline</code></td><td>View commit history in compact form</td></tr>
-      <tr><td><code>git stash</code></td><td>Temporarily save uncommitted changes</td></tr>
-      <tr><td><code>git stash pop</code></td><td>Restore stashed changes</td></tr>
-      <tr><td><code>git reset --hard HEAD</code></td><td>Discard all local changes</td></tr>
-      <tr><td><code>git remote -v</code></td><td>Show remote repository URLs</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- JENKINS -->
-  <div class="section" id="jenkins">
-    <h2>🤖 Jenkins Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td>Install Java 17 (required for Jenkins)</td></tr>
-      <tr><td><code>sudo systemctl start jenkins</code></td><td>Start Jenkins service</td></tr>
-      <tr><td><code>sudo systemctl enable jenkins</code></td><td>Enable Jenkins to start on boot</td></tr>
-      <tr><td><code>sudo systemctl status jenkins</code></td><td>Check Jenkins status</td></tr>
-      <tr><td><code>sudo systemctl restart jenkins</code></td><td>Restart Jenkins</td></tr>
-      <tr><td><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></td><td>Get Jenkins initial admin password</td></tr>
-      <tr><td><code>sudo usermod -aG docker jenkins</code></td><td>Allow Jenkins user to run Docker</td></tr>
-      <tr><td><code>sudo journalctl -u jenkins -f</code></td><td>Follow Jenkins live logs</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- KUBERNETES BASICS -->
-  <div class="section" id="k8s">
-    <h2>☸️ Kubernetes Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>kubectl get pods</code></td><td>List pods in default namespace</td></tr>
-      <tr><td><code>kubectl get pods -n namespace</code></td><td>List pods in a specific namespace</td></tr>
-      <tr><td><code>kubectl get pods -A</code></td><td>List pods across all namespaces</td></tr>
-      <tr><td><code>kubectl get nodes</code></td><td>List cluster nodes</td></tr>
-      <tr><td><code>kubectl get svc</code></td><td>List services</td></tr>
-      <tr><td><code>kubectl get deployments</code></td><td>List all deployments</td></tr>
-      <tr><td><code>kubectl describe pod pod_name</code></td><td>Show detailed pod info (events, errors)</td></tr>
-      <tr><td><code>kubectl logs pod_name</code></td><td>View pod logs</td></tr>
-      <tr><td><code>kubectl logs -f pod_name</code></td><td>Follow pod logs live</td></tr>
-      <tr><td><code>kubectl delete pod pod_name</code></td><td>Delete a pod</td></tr>
-      <tr><td><code>kubectl exec -it pod_name -- bash</code></td><td>Access pod shell interactively</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- KUBERNETES ADVANCED -->
-  <div class="section" id="k8s-adv">
-    <h2>☸️ Kubernetes Advanced Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>kubectl apply -f file.yaml</code></td><td>Create or update resources from YAML</td></tr>
-      <tr><td><code>kubectl delete -f file.yaml</code></td><td>Delete resources defined in YAML</td></tr>
-      <tr><td><code>kubectl get configmap</code></td><td>List ConfigMaps</td></tr>
-      <tr><td><code>kubectl get secret</code></td><td>List Secrets</td></tr>
-      <tr><td><code>kubectl get pvc</code></td><td>List PersistentVolumeClaims</td></tr>
-      <tr><td><code>kubectl get ingress</code></td><td>List Ingress resources</td></tr>
-      <tr><td><code>kubectl rollout status deployment/name</code></td><td>Check deployment rollout status</td></tr>
-      <tr><td><code>kubectl rollout restart deployment/name</code></td><td>Restart all pods in a deployment</td></tr>
-      <tr><td><code>kubectl rollout undo deployment/name</code></td><td>Rollback to previous deployment version</td></tr>
-      <tr><td><code>kubectl scale deployment name --replicas=3</code></td><td>Scale deployment to 3 replicas</td></tr>
-      <tr><td><code>kubectl set image deployment/name container=image:tag</code></td><td>Update container image in deployment</td></tr>
-      <tr><td><code>kubectl top pods</code></td><td>Show CPU/memory usage of pods</td></tr>
-      <tr><td><code>kubectl top nodes</code></td><td>Show CPU/memory usage of nodes</td></tr>
-      <tr><td><code>kubectl create namespace name</code></td><td>Create a new namespace</td></tr>
-      <tr><td><code>kubectl get all -n namespace</code></td><td>List all resources in a namespace</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- HELM -->
-  <div class="section" id="helm">
-    <h2>⛵ Helm Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>helm version</code></td><td>Check Helm version</td></tr>
-      <tr><td><code>helm repo add repo_name repo_url</code></td><td>Add a Helm chart repository</td></tr>
-      <tr><td><code>helm repo update</code></td><td>Update all Helm repositories</td></tr>
-      <tr><td><code>helm repo list</code></td><td>List all added repositories</td></tr>
-      <tr><td><code>helm search repo chart_name</code></td><td>Search for a chart in repos</td></tr>
-      <tr><td><code>helm install release_name chart_name</code></td><td>Install a Helm chart</td></tr>
-      <tr><td><code>helm install release_name chart_name -n namespace</code></td><td>Install chart into specific namespace</td></tr>
-      <tr><td><code>helm upgrade release_name chart_name</code></td><td>Upgrade an installed release</td></tr>
-      <tr><td><code>helm upgrade --install release_name chart_name</code></td><td>Install or upgrade (idempotent)</td></tr>
-      <tr><td><code>helm list</code></td><td>List all Helm releases</td></tr>
-      <tr><td><code>helm list -A</code></td><td>List releases across all namespaces</td></tr>
-      <tr><td><code>helm uninstall release_name</code></td><td>Uninstall a Helm release</td></tr>
-      <tr><td><code>helm rollback release_name 1</code></td><td>Rollback release to revision 1</td></tr>
-      <tr><td><code>helm status release_name</code></td><td>Show status of a release</td></tr>
-      <tr><td><code>helm template release_name chart_name</code></td><td>Render chart templates locally (dry run)</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- ARGOCD -->
-  <div class="section" id="argocd">
-    <h2>🔄 ArgoCD Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>kubectl create namespace argocd</code></td><td>Create ArgoCD namespace</td></tr>
-      <tr><td><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml</code></td><td>Install ArgoCD into cluster</td></tr>
-      <tr><td><code>kubectl get pods -n argocd</code></td><td>Check ArgoCD pods are running</td></tr>
-      <tr><td><code>kubectl port-forward svc/argocd-server -n argocd 8080:443</code></td><td>Access ArgoCD UI at localhost:8080</td></tr>
-      <tr><td><code>kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d</code></td><td>Get ArgoCD initial admin password</td></tr>
-      <tr><td><code>argocd login localhost:8080</code></td><td>Login to ArgoCD via CLI</td></tr>
-      <tr><td><code>argocd app list</code></td><td>List all ArgoCD applications</td></tr>
-      <tr><td><code>argocd app get app_name</code></td><td>Get details of an application</td></tr>
-      <tr><td><code>argocd app sync app_name</code></td><td>Manually sync an application</td></tr>
-      <tr><td><code>argocd app delete app_name</code></td><td>Delete an ArgoCD application</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- TERRAFORM -->
-  <div class="section" id="terraform">
-    <h2>🏗️ Terraform Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>terraform init</code></td><td>Initialize Terraform working directory</td></tr>
-      <tr><td><code>terraform plan</code></td><td>Preview infrastructure changes</td></tr>
-      <tr><td><code>terraform apply</code></td><td>Create or update infrastructure</td></tr>
-      <tr><td><code>terraform apply -auto-approve</code></td><td>Apply without confirmation prompt</td></tr>
-      <tr><td><code>terraform destroy</code></td><td>Destroy all managed infrastructure</td></tr>
-      <tr><td><code>terraform destroy -auto-approve</code></td><td>Destroy without confirmation prompt</td></tr>
-      <tr><td><code>terraform validate</code></td><td>Validate Terraform config files</td></tr>
-      <tr><td><code>terraform fmt</code></td><td>Auto-format Terraform files</td></tr>
-      <tr><td><code>terraform show</code></td><td>Show current state</td></tr>
-      <tr><td><code>terraform state list</code></td><td>List all resources in state file</td></tr>
-      <tr><td><code>terraform state show resource</code></td><td>Show details of a specific resource</td></tr>
-      <tr><td><code>terraform output</code></td><td>Show output values from state</td></tr>
-      <tr><td><code>terraform workspace list</code></td><td>List Terraform workspaces</td></tr>
-      <tr><td><code>terraform workspace new env_name</code></td><td>Create new workspace (dev/staging/prod)</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- AWS CLI GENERAL -->
-  <div class="section" id="aws">
-    <h2>☁️ AWS CLI General Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws configure</code></td><td>Set up AWS CLI with Access Key, Secret, Region</td></tr>
-      <tr><td><code>aws configure list</code></td><td>Show current AWS CLI config</td></tr>
-      <tr><td><code>aws sts get-caller-identity</code></td><td>Check which AWS account/user/role you are</td></tr>
-      <tr><td><code>aws s3 ls</code></td><td>List all S3 buckets in your account</td></tr>
-      <tr><td><code>aws ec2 describe-instances</code></td><td>List all EC2 instances</td></tr>
-      <tr><td><code>aws iam list-users</code></td><td>List all IAM users</td></tr>
-      <tr><td><code>aws --version</code></td><td>Check AWS CLI version</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- AWS EC2 -->
-  <div class="section" id="aws-ec2">
-    <h2>🖥️ AWS EC2 Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws ec2 describe-instances --output table</code></td><td>List EC2 instances in table format</td></tr>
-      <tr><td><code>aws ec2 describe-instances --filters "Name=instance-state-name,Values=running"</code></td><td>List only running EC2 instances</td></tr>
-      <tr><td><code>aws ec2 start-instances --instance-ids i-xxxxxxxx</code></td><td>Start an EC2 instance</td></tr>
-      <tr><td><code>aws ec2 stop-instances --instance-ids i-xxxxxxxx</code></td><td>Stop an EC2 instance</td></tr>
-      <tr><td><code>aws ec2 reboot-instances --instance-ids i-xxxxxxxx</code></td><td>Reboot an EC2 instance</td></tr>
-      <tr><td><code>aws ec2 terminate-instances --instance-ids i-xxxxxxxx</code></td><td>Terminate (permanently delete) EC2 instance</td></tr>
-      <tr><td><code>aws ec2 describe-security-groups</code></td><td>List all security groups</td></tr>
-      <tr><td><code>aws ec2 describe-key-pairs</code></td><td>List EC2 key pairs</td></tr>
-      <tr><td><code>aws ec2 describe-vpcs</code></td><td>List all VPCs</td></tr>
-      <tr><td><code>aws ec2 describe-subnets</code></td><td>List all subnets</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- AWS IAM -->
-  <div class="section" id="aws-iam">
-    <h2>🔐 AWS IAM Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws iam list-users</code></td><td>List all IAM users</td></tr>
-      <tr><td><code>aws iam list-roles</code></td><td>List all IAM roles</td></tr>
-      <tr><td><code>aws iam list-groups</code></td><td>List all IAM groups</td></tr>
-      <tr><td><code>aws iam list-policies --scope Local</code></td><td>List custom (non-AWS) IAM policies</td></tr>
-      <tr><td><code>aws iam get-user --user-name username</code></td><td>Get details of an IAM user</td></tr>
-      <tr><td><code>aws iam create-user --user-name username</code></td><td>Create a new IAM user</td></tr>
-      <tr><td><code>aws iam delete-user --user-name username</code></td><td>Delete an IAM user</td></tr>
-      <tr><td><code>aws iam attach-user-policy --user-name username --policy-arn arn:aws:iam::aws:policy/AdministratorAccess</code></td><td>Attach a policy to IAM user</td></tr>
-      <tr><td><code>aws iam list-attached-user-policies --user-name username</code></td><td>List policies attached to a user</td></tr>
-      <tr><td><code>aws iam create-access-key --user-name username</code></td><td>Generate access key for IAM user</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- AWS EKS -->
-  <div class="section" id="aws-eks">
-    <h2>☸️ AWS EKS Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws eks list-clusters</code></td><td>List all EKS clusters in your account</td></tr>
-      <tr><td><code>aws eks describe-cluster --name cluster_name</code></td><td>Get details of an EKS cluster</td></tr>
-      <tr><td><code>aws eks update-kubeconfig --region us-east-1 --name cluster_name</code></td><td>Connect kubectl to EKS cluster</td></tr>
-      <tr><td><code>aws eks list-nodegroups --cluster-name cluster_name</code></td><td>List node groups in a cluster</td></tr>
-      <tr><td><code>aws eks describe-nodegroup --cluster-name cluster_name --nodegroup-name ng_name</code></td><td>Get node group details</td></tr>
-      <tr><td><code>eksctl create cluster --name cluster_name --region us-east-1 --nodes 2</code></td><td>Create EKS cluster using eksctl</td></tr>
-      <tr><td><code>eksctl delete cluster --name cluster_name</code></td><td>Delete EKS cluster using eksctl</td></tr>
-      <tr><td><code>eksctl get cluster</code></td><td>List EKS clusters via eksctl</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- AWS CLOUDWATCH -->
-  <div class="section" id="aws-cw">
-    <h2>📈 AWS CloudWatch Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws cloudwatch list-metrics</code></td><td>List all available CloudWatch metrics</td></tr>
-      <tr><td><code>aws cloudwatch list-alarms</code></td><td>List all CloudWatch alarms</td></tr>
-      <tr><td><code>aws cloudwatch describe-alarms --state-value ALARM</code></td><td>List alarms currently in ALARM state</td></tr>
-      <tr><td><code>aws logs describe-log-groups</code></td><td>List all CloudWatch log groups</td></tr>
-      <tr><td><code>aws logs describe-log-streams --log-group-name /aws/lambda/function_name</code></td><td>List log streams inside a log group</td></tr>
-      <tr><td><code>aws logs tail /aws/lambda/function_name --follow</code></td><td>Live tail CloudWatch logs</td></tr>
-      <tr><td><code>aws logs filter-log-events --log-group-name /aws/ec2/mygroup --filter-pattern "ERROR"</code></td><td>Filter logs by keyword (e.g. ERROR)</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- S3 FILE TRANSFER -->
-  <div class="section" id="s3">
-    <h2>🪣 S3 File Transfer Commands (EC2 ↔ S3)</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>aws s3 cp file.txt s3://your-bucket-name/</code></td><td>Upload file from EC2 to S3</td></tr>
-      <tr><td><code>aws s3 cp s3://your-bucket-name/filename .</code></td><td>Download file from S3 to EC2</td></tr>
-      <tr><td><code>aws s3 ls s3://your-bucket-name</code></td><td>List all files inside an S3 bucket</td></tr>
-      <tr><td><code>aws s3 sync ./local-folder s3://your-bucket-name/</code></td><td>Sync local folder to S3</td></tr>
-      <tr><td><code>aws s3 sync s3://your-bucket-name/ ./local-folder</code></td><td>Sync S3 bucket content to local folder</td></tr>
-      <tr><td><code>aws s3 rm s3://your-bucket-name/filename</code></td><td>Delete a specific file from S3</td></tr>
-      <tr><td><code>aws s3 rm s3://your-bucket-name/ --recursive</code></td><td>Delete all files inside S3 bucket</td></tr>
-      <tr><td><code>aws s3 mb s3://new-bucket-name</code></td><td>Create a new S3 bucket</td></tr>
-      <tr><td><code>aws s3 rb s3://bucket-name --force</code></td><td>Delete S3 bucket with all contents</td></tr>
-      <tr><td><code>aws s3 presign s3://bucket-name/file.txt --expires-in 3600</code></td><td>Generate pre-signed URL (valid 1 hour)</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
-  </div>
-
-  <!-- S3 POLICIES -->
-  <div class="section" id="s3policy">
-    <h2>📜 S3 Bucket Policies</h2>
-    <table>
-      <tr><th>Policy</th><th>JSON</th></tr>
-      <tr>
-        <td>Public Read Access (All Users)</td>
-        <td><pre>{
+    <div class="section" id="s3policy">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📜</span>
+        <span class="section-title">S3 Bucket Policies (JSON Templates)</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Policy Name</th><th>JSON</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Public Read Access<br><small style="color:var(--text-muted)">Allow anyone to read objects</small></td>
+              <td><pre>{
   "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "PublicReadGetObject",
-      "Principal": "*",
-      "Effect": "Allow",
-      "Action": ["s3:GetObject"],
-      "Resource": ["arn:aws:s3:::your-bucket-name/*"]
-    }
-  ]
+  "Statement": [{
+    "Sid": "PublicReadGetObject",
+    "Principal": "*",
+    "Effect": "Allow",
+    "Action": ["s3:GetObject"],
+    "Resource": ["arn:aws:s3:::your-bucket-name/*"]
+  }]
 }</pre></td>
-      </tr>
-      <tr>
-        <td>Restrict Access to Specific IP Only</td>
-        <td><pre>{
+            </tr>
+            <tr>
+              <td>Restrict to Specific IP<br><small style="color:var(--text-muted)">Only your IP can access</small></td>
+              <td><pre>{
   "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowOnlyMyIP",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::your-bucket-name/*",
-      "Condition": {
-        "IpAddress": {
-          "aws:SourceIp": "YOUR_PUBLIC_IP/32"
-        }
+  "Statement": [{
+    "Sid": "AllowOnlyMyIP",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::your-bucket-name/*",
+    "Condition": {
+      "IpAddress": {
+        "aws:SourceIp": "YOUR_IP/32"
       }
     }
-  ]
+  }]
 }</pre></td>
-      </tr>
-      <tr>
-        <td>Force HTTPS Only (Deny HTTP Access)</td>
-        <td><pre>{
+            </tr>
+            <tr>
+              <td>Force HTTPS Only<br><small style="color:var(--text-muted)">Deny all HTTP access</small></td>
+              <td><pre>{
   "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "DenyNonHTTPS",
-      "Effect": "Deny",
-      "Principal": "*",
-      "Action": "s3:*",
-      "Resource": [
-        "arn:aws:s3:::your-bucket-name",
-        "arn:aws:s3:::your-bucket-name/*"
-      ],
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "false"
-        }
+  "Statement": [{
+    "Sid": "DenyNonHTTPS",
+    "Effect": "Deny",
+    "Principal": "*",
+    "Action": "s3:*",
+    "Resource": [
+      "arn:aws:s3:::your-bucket-name",
+      "arn:aws:s3:::your-bucket-name/*"
+    ],
+    "Condition": {
+      "Bool": {
+        "aws:SecureTransport": "false"
       }
     }
-  ]
+  }]
 }</pre></td>
-      </tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+            </tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-  <!-- TRIVY -->
-  <div class="section" id="trivy">
-    <h2>🔍 Trivy Security Scan Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>trivy image image_name:tag</code></td><td>Scan Docker image for vulnerabilities</td></tr>
-      <tr><td><code>trivy image --severity HIGH,CRITICAL image_name</code></td><td>Show only HIGH and CRITICAL vulnerabilities</td></tr>
-      <tr><td><code>trivy fs .</code></td><td>Scan current filesystem / project folder</td></tr>
-      <tr><td><code>trivy fs --security-checks vuln,secret .</code></td><td>Scan for vulnerabilities and secrets</td></tr>
-      <tr><td><code>trivy repo https://github.com/user/repo</code></td><td>Scan a GitHub repository directly</td></tr>
-      <tr><td><code>trivy config .</code></td><td>Scan Terraform / Dockerfile for misconfigurations</td></tr>
-      <tr><td><code>trivy image --format json -o report.json image_name</code></td><td>Export scan result as JSON report</td></tr>
-      <tr><td><code>trivy --version</code></td><td>Check Trivy version</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  <!-- ===================== CI/CD GROUP ===================== -->
+  <div class="section-group" id="grp-cicd">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-cicd)"></span>
+      <h2>CI/CD — Git &amp; Jenkins</h2>
+      <span class="group-count">2 sections</span>
+    </div>
+
+    <div class="section" id="git">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🌿</span>
+        <span class="section-title">Git Commands</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>git init</code></td><td class="use-case">Initialize a new Git repository</td></tr>
+            <tr><td><code>git clone &lt;repo_url&gt;</code></td><td class="use-case">Clone a remote repository</td></tr>
+            <tr><td><code>git status</code></td><td class="use-case">Check working directory status</td></tr>
+            <tr><td><code>git add .</code></td><td class="use-case">Stage all changed files</td></tr>
+            <tr><td><code>git add &lt;file&gt;</code></td><td class="use-case">Stage a specific file</td></tr>
+            <tr><td><code>git commit -m "message"</code></td><td class="use-case">Commit staged changes with a message</td></tr>
+            <tr><td><code>git push origin main</code></td><td class="use-case">Push code to GitHub main branch</td></tr>
+            <tr><td><code>git pull origin main</code></td><td class="use-case">Pull latest code from main branch</td></tr>
+            <tr><td><code>git fetch --all</code></td><td class="use-case">Fetch all remote branches without merging</td></tr>
+            <tr><td><code>git branch</code></td><td class="use-case">List all local branches</td></tr>
+            <tr><td><code>git checkout -b &lt;branch&gt;</code></td><td class="use-case">Create and switch to a new branch</td></tr>
+            <tr><td><code>git merge &lt;branch&gt;</code></td><td class="use-case">Merge a branch into the current branch</td></tr>
+            <tr><td><code>git log --oneline --graph</code></td><td class="use-case">Compact commit history with branch graph</td></tr>
+            <tr><td><code>git diff</code></td><td class="use-case">Show unstaged changes</td></tr>
+            <tr><td><code>git stash</code></td><td class="use-case">Temporarily save uncommitted changes</td></tr>
+            <tr><td><code>git stash pop</code></td><td class="use-case">Restore most recent stashed changes</td></tr>
+            <tr><td><code>git reset --hard HEAD</code></td><td class="use-case"><span class="warn">Destructive</span> Discard all local uncommitted changes</td></tr>
+            <tr><td><code>git revert &lt;commit_hash&gt;</code></td><td class="use-case">Safely undo a commit (creates new commit)</td></tr>
+            <tr><td><code>git remote -v</code></td><td class="use-case">Show remote repository URLs</td></tr>
+            <tr><td><code>git tag v1.0.0</code></td><td class="use-case">Create a version tag at current commit</td></tr>
+            <tr><td><code>git push origin --tags</code></td><td class="use-case">Push all tags to remote</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="jenkins">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🤖</span>
+        <span class="section-title">Jenkins — Install &amp; Manage</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo apt install openjdk-17-jdk -y</code></td><td class="use-case"><span class="tip">Step 1</span> Install Java 17 (required for Jenkins)</td></tr>
+            <tr><td><code>curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg</code></td><td class="use-case"><span class="tip">Step 2</span> Add Jenkins GPG key</td></tr>
+            <tr><td><code>echo 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/' | sudo tee /etc/apt/sources.list.d/jenkins.list</code></td><td class="use-case"><span class="tip">Step 3</span> Add Jenkins repository</td></tr>
+            <tr><td><code>sudo apt update && sudo apt install jenkins -y</code></td><td class="use-case"><span class="tip">Step 4</span> Install Jenkins</td></tr>
+            <tr><td><code>sudo systemctl start jenkins && sudo systemctl enable jenkins</code></td><td class="use-case"><span class="tip">Step 5</span> Start Jenkins and enable on boot</td></tr>
+            <tr><td><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></td><td class="use-case">Get initial admin password — access at port 8080</td></tr>
+            <tr><td><code>sudo systemctl status jenkins</code></td><td class="use-case">Check Jenkins service status</td></tr>
+            <tr><td><code>sudo systemctl restart jenkins</code></td><td class="use-case">Restart Jenkins (after config changes)</td></tr>
+            <tr><td><code>sudo usermod -aG docker jenkins</code></td><td class="use-case">Allow Jenkins to run Docker commands</td></tr>
+            <tr><td><code>sudo journalctl -u jenkins -f</code></td><td class="use-case">Follow Jenkins live logs</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-  <!-- SONARQUBE -->
-  <div class="section" id="sonar">
-    <h2>🧪 SonarQube Commands</h2>
-    <table>
-      <tr><th>Command</th><th>Use Case</th></tr>
-      <tr><td><code>docker run -d --name sonarqube -p 9000:9000 sonarqube:lts</code></td><td>Run SonarQube server via Docker</td></tr>
-      <tr><td><code>docker start sonarqube</code></td><td>Start stopped SonarQube container</td></tr>
-      <tr><td><code>docker stop sonarqube</code></td><td>Stop SonarQube container</td></tr>
-      <tr><td><code>docker logs sonarqube</code></td><td>View SonarQube logs</td></tr>
-      <tr><td><code>sonar-scanner -Dsonar.projectKey=project_key -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=token</code></td><td>Run code quality scan on local project</td></tr>
-      <tr><td><code>sonar-scanner --version</code></td><td>Check sonar-scanner version</td></tr>
-    </table>
-    <a href="#top" class="back-to-top">↑ Back to Top</a>
+  <!-- ===================== IaC GROUP ===================== -->
+  <div class="section-group" id="grp-infra">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-infra)"></span>
+      <h2>Infrastructure as Code — Terraform</h2>
+      <span class="group-count">1 section</span>
+    </div>
+
+    <div class="section" id="terraform">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🏗️</span>
+        <span class="section-title">Terraform Commands</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>terraform init</code></td><td class="use-case"><span class="tip">Always First</span> Initialize working directory, download providers</td></tr>
+            <tr><td><code>terraform plan</code></td><td class="use-case">Preview what changes will be made</td></tr>
+            <tr><td><code>terraform apply</code></td><td class="use-case">Create or update infrastructure (prompts confirm)</td></tr>
+            <tr><td><code>terraform apply -auto-approve</code></td><td class="use-case">Apply without confirmation prompt (use in CI)</td></tr>
+            <tr><td><code>terraform destroy</code></td><td class="use-case">Destroy all managed infrastructure</td></tr>
+            <tr><td><code>terraform destroy -auto-approve</code></td><td class="use-case"><span class="warn">Careful</span> Destroy without confirmation</td></tr>
+            <tr><td><code>terraform validate</code></td><td class="use-case">Validate Terraform config for syntax errors</td></tr>
+            <tr><td><code>terraform fmt</code></td><td class="use-case">Auto-format all .tf files</td></tr>
+            <tr><td><code>terraform show</code></td><td class="use-case">Display current state in human-readable form</td></tr>
+            <tr><td><code>terraform state list</code></td><td class="use-case">List all resources in the state file</td></tr>
+            <tr><td><code>terraform state show &lt;resource&gt;</code></td><td class="use-case">Show details of a specific resource in state</td></tr>
+            <tr><td><code>terraform output</code></td><td class="use-case">Show output values from state</td></tr>
+            <tr><td><code>terraform workspace list</code></td><td class="use-case">List Terraform workspaces</td></tr>
+            <tr><td><code>terraform workspace new &lt;env&gt;</code></td><td class="use-case">Create new workspace (dev/staging/prod)</td></tr>
+            <tr><td><code>terraform workspace select &lt;env&gt;</code></td><td class="use-case">Switch to a different workspace</td></tr>
+            <tr><td><code>terraform import &lt;resource&gt; &lt;id&gt;</code></td><td class="use-case">Import existing cloud resource into state</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
   </div>
 
-</div>
+  <!-- ===================== MONITORING GROUP ===================== -->
+  <div class="section-group" id="grp-monitor">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-monitor)"></span>
+      <h2>Monitoring — Prometheus &amp; Grafana</h2>
+      <span class="group-count">3 sections</span>
+    </div>
+
+    <!-- PROMETHEUS INSTALL -->
+    <div class="section" id="prometheus">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔥</span>
+        <span class="section-title">Prometheus — Installation &amp; Setup</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table class="steps-table">
+          <thead><tr><th>#</th><th>Command / Step</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="step-num">1</span></td>
+              <td><code>sudo useradd --no-create-home --shell /bin/false prometheus</code></td>
+              <td class="use-case">Create a dedicated Prometheus system user</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">2</span></td>
+              <td><code>sudo mkdir /etc/prometheus /var/lib/prometheus</code></td>
+              <td class="use-case">Create config and data directories</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">3</span></td>
+              <td><code>wget https://github.com/prometheus/prometheus/releases/download/v2.51.0/prometheus-2.51.0.linux-amd64.tar.gz</code></td>
+              <td class="use-case">Download Prometheus binary (check latest version on GitHub)</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">4</span></td>
+              <td><code>tar -xzvf prometheus-2.51.0.linux-amd64.tar.gz</code></td>
+              <td class="use-case">Extract the downloaded archive</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">5</span></td>
+              <td><code>sudo cp prometheus-2.51.0.linux-amd64/prometheus /usr/local/bin/<br>sudo cp prometheus-2.51.0.linux-amd64/promtool /usr/local/bin/</code></td>
+              <td class="use-case">Copy binaries to system path</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">6</span></td>
+              <td><code>sudo cp -r prometheus-2.51.0.linux-amd64/consoles /etc/prometheus/<br>sudo cp -r prometheus-2.51.0.linux-amd64/console_libraries /etc/prometheus/<br>sudo cp prometheus-2.51.0.linux-amd64/prometheus.yml /etc/prometheus/</code></td>
+              <td class="use-case">Copy config files and consoles</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">7</span></td>
+              <td><code>sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus<br>sudo chown prometheus:prometheus /usr/local/bin/prometheus /usr/local/bin/promtool</code></td>
+              <td class="use-case">Set correct ownership for Prometheus user</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">8</span></td>
+              <td><pre>sudo tee /etc/systemd/system/prometheus.service &lt;&lt;EOF
+[Unit]
+Description=Prometheus
+After=network.target
+
+[Service]
+User=prometheus
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus/
+
+[Install]
+WantedBy=multi-user.target
+EOF</pre></td>
+              <td class="use-case">Create systemd service file to manage Prometheus</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">9</span></td>
+              <td><code>sudo systemctl daemon-reload<br>sudo systemctl start prometheus<br>sudo systemctl enable prometheus</code></td>
+              <td class="use-case">Reload systemd, start and enable Prometheus on boot</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">10</span></td>
+              <td><code>sudo systemctl status prometheus</code></td>
+              <td class="use-case"><span class="tip">Verify</span> Check Prometheus is running — UI at port 9090</td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- PROMETHEUS COMMANDS -->
+    <div class="section" id="prom-cmds">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">⚡</span>
+        <span class="section-title">Prometheus — Commands &amp; PromQL Basics</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command / Query</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo systemctl restart prometheus</code></td><td class="use-case">Restart Prometheus (after config changes)</td></tr>
+            <tr><td><code>sudo systemctl reload prometheus</code></td><td class="use-case">Reload config without full restart</td></tr>
+            <tr><td><code>promtool check config /etc/prometheus/prometheus.yml</code></td><td class="use-case"><span class="tip">Validate</span> Check config file before reloading</td></tr>
+            <tr><td><code>curl http://localhost:9090/-/healthy</code></td><td class="use-case">Check Prometheus health endpoint</td></tr>
+            <tr><td><code>curl http://localhost:9090/-/reload -X POST</code></td><td class="use-case">Trigger config reload via API</td></tr>
+            <tr><td><code>up</code></td><td class="use-case">PromQL: Check which targets are up (1=up, 0=down)</td></tr>
+            <tr><td><code>rate(http_requests_total[5m])</code></td><td class="use-case">PromQL: HTTP request rate over last 5 minutes</td></tr>
+            <tr><td><code>node_cpu_seconds_total</code></td><td class="use-case">PromQL: CPU usage from node_exporter</td></tr>
+            <tr><td><code>node_memory_MemAvailable_bytes</code></td><td class="use-case">PromQL: Available memory in bytes</td></tr>
+            <tr><td><code>node_filesystem_avail_bytes</code></td><td class="use-case">PromQL: Available disk space per filesystem</td></tr>
+            <tr><td><code>sudo journalctl -u prometheus -f</code></td><td class="use-case">Follow Prometheus live logs</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Node Exporter install tip -->
+        <table style="margin-top:0; border-top: 2px solid var(--border)">
+          <thead><tr><th colspan="2" style="color: var(--cat-monitor); background: #f0fdfb;">📦 Node Exporter — Install on servers you want to monitor</th></tr></thead>
+          <tbody>
+            <tr><td><code>wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz</code></td><td class="use-case">Download Node Exporter binary</td></tr>
+            <tr><td><code>tar -xzvf node_exporter-1.7.0.linux-amd64.tar.gz</code></td><td class="use-case">Extract binary</td></tr>
+            <tr><td><code>sudo cp node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/</code></td><td class="use-case">Install binary to system path</td></tr>
+            <tr><td><code>sudo useradd --no-create-home --shell /bin/false node_exporter</code></td><td class="use-case">Create dedicated system user</td></tr>
+            <tr><td><code>sudo systemctl start node_exporter && sudo systemctl enable node_exporter</code></td><td class="use-case">Start and enable Node Exporter (port 9100)</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <!-- GRAFANA INSTALL -->
+    <div class="section" id="grafana">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">📊</span>
+        <span class="section-title">Grafana — Installation &amp; Setup</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table class="steps-table">
+          <thead><tr><th>#</th><th>Command / Step</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="step-num">1</span></td>
+              <td><code>sudo apt install -y apt-transport-https software-properties-common wget</code></td>
+              <td class="use-case">Install prerequisites</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">2</span></td>
+              <td><code>sudo mkdir -p /etc/apt/keyrings/<br>wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg &gt; /dev/null</code></td>
+              <td class="use-case">Add Grafana GPG key</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">3</span></td>
+              <td><code>echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list</code></td>
+              <td class="use-case">Add Grafana apt repository</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">4</span></td>
+              <td><code>sudo apt update && sudo apt install grafana -y</code></td>
+              <td class="use-case">Install Grafana</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">5</span></td>
+              <td><code>sudo systemctl start grafana-server<br>sudo systemctl enable grafana-server</code></td>
+              <td class="use-case">Start Grafana and enable on boot</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">6</span></td>
+              <td><code>sudo systemctl status grafana-server</code></td>
+              <td class="use-case"><span class="tip">Verify</span> Check Grafana is running — UI at port 3000</td>
+            </tr>
+            <tr>
+              <td><span class="step-num">7</span></td>
+              <td><code>Default login: admin / admin (change on first login)</code></td>
+              <td class="use-case">Access Grafana at http://&lt;server-ip&gt;:3000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table style="margin-top:0; border-top: 2px solid var(--border)">
+          <thead><tr><th colspan="2" style="color: var(--cat-monitor); background: #f0fdfb;">⚙️ Grafana — Management Commands</th></tr></thead>
+          <tbody>
+            <tr><td><code>sudo systemctl restart grafana-server</code></td><td class="use-case">Restart Grafana (after config changes)</td></tr>
+            <tr><td><code>sudo journalctl -u grafana-server -f</code></td><td class="use-case">Follow Grafana live logs</td></tr>
+            <tr><td><code>grafana-cli --version</code></td><td class="use-case">Check Grafana CLI version</td></tr>
+            <tr><td><code>grafana-cli plugins list-remote</code></td><td class="use-case">List all available plugins</td></tr>
+            <tr><td><code>sudo grafana-cli plugins install &lt;plugin-id&gt;</code></td><td class="use-case">Install a Grafana plugin</td></tr>
+            <tr><td><code>sudo grafana-cli plugins ls</code></td><td class="use-case">List all installed plugins</td></tr>
+            <tr><td><code>sudo grafana-cli admin reset-admin-password &lt;newpassword&gt;</code></td><td class="use-case">Reset admin password from CLI</td></tr>
+            <tr><td><code>cat /etc/grafana/grafana.ini</code></td><td class="use-case">View Grafana configuration file</td></tr>
+            <tr><td><code>sudo nano /etc/grafana/grafana.ini</code></td><td class="use-case">Edit Grafana config (SMTP, auth, port, etc.)</td></tr>
+          </tbody>
+        </table>
+
+        <table style="margin-top:0; border-top: 2px solid var(--border)">
+          <thead><tr><th colspan="2" style="color: var(--cat-monitor); background: #f0fdfb;">🔌 Connect Prometheus as Data Source in Grafana</th></tr></thead>
+          <tbody>
+            <tr><td colspan="2" style="padding: 14px 20px; font-size: 13px; color: var(--text-muted);">After installing both: Go to <strong>Grafana UI → Connections → Data Sources → Add data source → Prometheus</strong><br>Set URL to <code>http://localhost:9090</code> → Click <strong>Save &amp; Test</strong><br>Then import dashboard ID <strong>1860</strong> (Node Exporter Full) from grafana.com/grafana/dashboards</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SECURITY GROUP ===================== -->
+  <div class="section-group" id="grp-security">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--cat-sec)"></span>
+      <h2>Security — Trivy &amp; SonarQube</h2>
+      <span class="group-count">2 sections</span>
+    </div>
+
+    <div class="section" id="trivy">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔍</span>
+        <span class="section-title">Trivy — Container &amp; Code Security Scanner</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>trivy --version</code></td><td class="use-case">Check Trivy version</td></tr>
+            <tr><td><code>trivy image &lt;image&gt;:&lt;tag&gt;</code></td><td class="use-case">Scan Docker image for all vulnerabilities</td></tr>
+            <tr><td><code>trivy image --severity HIGH,CRITICAL &lt;image&gt;</code></td><td class="use-case">Show only HIGH and CRITICAL issues</td></tr>
+            <tr><td><code>trivy image --format json -o report.json &lt;image&gt;</code></td><td class="use-case">Export scan report as JSON file</td></tr>
+            <tr><td><code>trivy fs .</code></td><td class="use-case">Scan current filesystem / project folder</td></tr>
+            <tr><td><code>trivy fs --scanners vuln,secret .</code></td><td class="use-case">Scan for both vulnerabilities and hardcoded secrets</td></tr>
+            <tr><td><code>trivy repo https://github.com/user/repo</code></td><td class="use-case">Scan a GitHub repository directly</td></tr>
+            <tr><td><code>trivy config .</code></td><td class="use-case">Scan Terraform / Dockerfile for misconfigurations</td></tr>
+            <tr><td><code>trivy k8s --report summary cluster</code></td><td class="use-case">Scan entire Kubernetes cluster for vulnerabilities</td></tr>
+            <tr><td><code>trivy image --ignore-unfixed &lt;image&gt;</code></td><td class="use-case">Show only issues that have fixes available</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="sonar">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🧪</span>
+        <span class="section-title">SonarQube — Code Quality Analysis</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Command</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>docker run -d --name sonarqube -p 9000:9000 sonarqube:lts</code></td><td class="use-case"><span class="tip">Quick Start</span> Run SonarQube server via Docker (port 9000)</td></tr>
+            <tr><td><code>docker run -d --name sonarqube -p 9000:9000 -v sonarqube_data:/opt/sonarqube/data sonarqube:lts</code></td><td class="use-case">Run with persistent data volume</td></tr>
+            <tr><td><code>docker start sonarqube</code></td><td class="use-case">Start stopped SonarQube container</td></tr>
+            <tr><td><code>docker stop sonarqube</code></td><td class="use-case">Stop SonarQube container</td></tr>
+            <tr><td><code>docker logs sonarqube -f</code></td><td class="use-case">Follow SonarQube logs live</td></tr>
+            <tr><td><code>sonar-scanner --version</code></td><td class="use-case">Check sonar-scanner CLI version</td></tr>
+            <tr><td><code>sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=&lt;token&gt;</code></td><td class="use-case">Run code quality scan on your project</td></tr>
+            <tr><td><code>sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.exclusions="**/node_modules/**" -Dsonar.host.url=http://localhost:9000 -Dsonar.login=&lt;token&gt;</code></td><td class="use-case">Scan with exclusions (skip node_modules, etc.)</td></tr>
+          </tbody>
+        </table>
+        <table style="margin-top:0; border-top: 2px solid var(--border)">
+          <thead><tr><th colspan="2" style="color: var(--cat-sec); background: #fff1f4;">💡 SonarQube Quick Start Guide</th></tr></thead>
+          <tbody>
+            <tr><td colspan="2" style="padding: 14px 20px; font-size: 13px; color: var(--text-muted);">
+              1. Start SonarQube with Docker command above<br>
+              2. Open <strong>http://&lt;server-ip&gt;:9000</strong> — default login: <code>admin / admin</code><br>
+              3. Create a project → Generate a token<br>
+              4. Install <strong>sonar-scanner</strong> on your machine<br>
+              5. Run the scanner command with your project key and token<br>
+              6. View results on the SonarQube dashboard
+            </td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== THEORY & USE CASES GROUP ===================== -->
+  <div class="section-group" id="grp-knowledge">
+    <div class="group-heading">
+      <span class="group-dot" style="background:var(--accent2)"></span>
+      <h2>Cloud, DevOps Theory &amp; Use Cases</h2>
+      <span class="group-count">7 sections</span>
+    </div>
+
+    <div class="section" id="cloud-theory">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☁️</span>
+        <span class="section-title">Cloud Computing Theory</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>Cloud Computing</code></td><td class="use-case">Using internet-based compute, storage, networking, database, security, and managed services instead of buying physical servers. Use it to launch applications faster, scale during traffic, and pay only for what you use.</td></tr>
+            <tr><td><code>IaaS</code></td><td class="use-case">Infrastructure as a Service gives virtual machines, disks, networks, and firewalls. Use case: run a custom Linux server on EC2 when you need full OS control.</td></tr>
+            <tr><td><code>PaaS</code></td><td class="use-case">Platform as a Service manages runtime, scaling, and deployment platform. Use case: deploy code without managing the base server, patching, or capacity planning.</td></tr>
+            <tr><td><code>SaaS</code></td><td class="use-case">Software as a Service is ready-made software accessed through browser/API. Use case: GitHub, Jira, Gmail, Datadog, and other tools consumed directly by teams.</td></tr>
+            <tr><td><code>Public Cloud</code></td><td class="use-case">Provider-owned infrastructure shared securely by many customers. Use case: quickly launch workloads across regions.</td></tr>
+            <tr><td><code>Private Cloud</code></td><td class="use-case">Cloud-like platform dedicated to one organization. Use case: banking, government, or regulated systems needing stricter control.</td></tr>
+            <tr><td><code>Hybrid Cloud</code></td><td class="use-case">Mix of on-premises/private cloud and public cloud. Use case: keep sensitive databases on-premises while running web apps or analytics in AWS.</td></tr>
+            <tr><td><code>Multi Cloud</code></td><td class="use-case">Using more than one cloud provider. Use case: avoid vendor lock-in, meet regional requirements, or use the best service from each provider.</td></tr>
+            <tr><td><code>Region</code></td><td class="use-case">Geographic cloud location containing multiple Availability Zones. Use case: deploy close to users for lower latency and data residency.</td></tr>
+            <tr><td><code>Availability Zone</code></td><td class="use-case">Separate data center zone inside a region. Use case: place app servers across multiple AZs so one data center failure does not stop the app.</td></tr>
+            <tr><td><code>Scalability</code></td><td class="use-case">Ability to handle more load by adding resources vertically or horizontally. Use case: add EC2 instances during sale traffic.</td></tr>
+            <tr><td><code>Elasticity</code></td><td class="use-case">Automatic scaling up and down based on demand. Use case: Auto Scaling increases capacity at peak hours and reduces cost at night.</td></tr>
+            <tr><td><code>High Availability</code></td><td class="use-case">Designing systems to stay running even when components fail. Use case: Load Balancer plus EC2 instances across two AZs.</td></tr>
+            <tr><td><code>Fault Tolerance</code></td><td class="use-case">System continues operating after failure. Use case: replicated database, queue retries, backups, and multi-AZ deployment.</td></tr>
+            <tr><td><code>Disaster Recovery</code></td><td class="use-case">Plan to restore service after a major outage. Use case: backups, snapshots, cross-region replication, RTO, and RPO planning.</td></tr>
+            <tr><td><code>Shared Responsibility</code></td><td class="use-case">Provider secures cloud infrastructure; customer secures data, IAM, network rules, OS patches, and app configuration. Interview point: responsibility changes across IaaS, PaaS, and SaaS.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="aws-use-cases">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🧩</span>
+        <span class="section-title">AWS Services Theory &amp; Real Use Cases</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>AWS Service</th><th>Theory &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>EC2</code></td><td class="use-case">Virtual server in AWS. Use case: host a web app, Jenkins server, Docker host, bastion server, or custom Linux workload.</td></tr>
+            <tr><td><code>S3</code></td><td class="use-case">Object storage for files, backups, logs, static assets, and artifacts. Use case: store website images, Terraform state, build artifacts, database backups, and static website files.</td></tr>
+            <tr><td><code>VPC</code></td><td class="use-case">Private network boundary for AWS resources. Use case: create public subnets for load balancers and private subnets for app/database servers.</td></tr>
+            <tr><td><code>Subnet</code></td><td class="use-case">Smaller network range inside a VPC and Availability Zone. Use case: separate public, private app, and private database layers.</td></tr>
+            <tr><td><code>Internet Gateway</code></td><td class="use-case">Allows public subnet resources to reach the internet. Use case: public ALB or bastion host receives internet traffic.</td></tr>
+            <tr><td><code>NAT Gateway</code></td><td class="use-case">Allows private subnet instances to access internet outbound without receiving inbound internet traffic. Use case: private EC2 downloads packages safely.</td></tr>
+            <tr><td><code>Route Table</code></td><td class="use-case">Controls where subnet traffic goes. Use case: route public subnet traffic to Internet Gateway and private subnet traffic to NAT Gateway.</td></tr>
+            <tr><td><code>Security Group</code></td><td class="use-case">Stateful virtual firewall attached to resources. Use case: allow port 443 from internet to ALB and app port only from ALB to EC2.</td></tr>
+            <tr><td><code>NACL</code></td><td class="use-case">Stateless subnet-level firewall. Use case: add an extra network boundary for compliance or block unwanted CIDR ranges.</td></tr>
+            <tr><td><code>IAM</code></td><td class="use-case">Identity and access management for users, groups, roles, and policies. Use case: give EC2 an IAM role to read S3 without storing access keys on the server.</td></tr>
+            <tr><td><code>Lambda</code></td><td class="use-case">Serverless function that runs code on events. Use case: process S3 uploads, run scheduled cleanup, handle API Gateway requests, or automate alerts.</td></tr>
+            <tr><td><code>RDS</code></td><td class="use-case">Managed relational database service. Use case: run MySQL, PostgreSQL, MariaDB, Oracle, or SQL Server with backups, patching, and Multi-AZ support.</td></tr>
+            <tr><td><code>DynamoDB</code></td><td class="use-case">Managed NoSQL key-value/document database. Use case: store session data, user preferences, IoT events, or high-scale application metadata.</td></tr>
+            <tr><td><code>EKS</code></td><td class="use-case">Managed Kubernetes control plane. Use case: run containerized microservices with Kubernetes while AWS manages control-plane components.</td></tr>
+            <tr><td><code>ECS</code></td><td class="use-case">AWS container orchestration service. Use case: run Docker containers without managing Kubernetes complexity.</td></tr>
+            <tr><td><code>ECR</code></td><td class="use-case">Private container image registry. Use case: Jenkins builds Docker image, pushes to ECR, then ECS/EKS pulls the image for deployment.</td></tr>
+            <tr><td><code>Elastic Load Balancer</code></td><td class="use-case">Distributes traffic across targets. Use case: ALB routes HTTP/HTTPS traffic to multiple EC2 instances or Kubernetes services.</td></tr>
+            <tr><td><code>Auto Scaling Group</code></td><td class="use-case">Automatically adds/removes EC2 instances based on demand or health. Use case: scale application servers when CPU or request count increases.</td></tr>
+            <tr><td><code>CloudWatch</code></td><td class="use-case">Metrics, logs, alarms, and dashboards. Use case: monitor EC2 CPU, Lambda errors, application logs, and trigger alerts when thresholds cross.</td></tr>
+            <tr><td><code>CloudTrail</code></td><td class="use-case">Records AWS API activity for auditing. Use case: find who deleted an S3 bucket policy, changed security groups, or created an IAM user.</td></tr>
+            <tr><td><code>Route 53</code></td><td class="use-case">DNS and domain routing service. Use case: point app.example.com to an ALB and use health checks for failover.</td></tr>
+            <tr><td><code>CloudFront</code></td><td class="use-case">Content delivery network for low-latency global access. Use case: cache static website files, images, and APIs near users worldwide.</td></tr>
+            <tr><td><code>API Gateway</code></td><td class="use-case">Managed API front door. Use case: expose REST/HTTP APIs backed by Lambda, ECS, EKS, or private services with auth and throttling.</td></tr>
+            <tr><td><code>SNS</code></td><td class="use-case">Pub/sub notification service. Use case: send alerts to email, SMS, Lambda, or SQS when a CloudWatch alarm fires.</td></tr>
+            <tr><td><code>SQS</code></td><td class="use-case">Managed message queue. Use case: decouple services, retry failed work, and handle traffic spikes without losing requests.</td></tr>
+            <tr><td><code>EBS</code></td><td class="use-case">Block storage volume for EC2. Use case: attach persistent disk to a Linux server for application data or database files.</td></tr>
+            <tr><td><code>EFS</code></td><td class="use-case">Shared file system for Linux workloads. Use case: multiple EC2 instances or containers share uploaded files.</td></tr>
+            <tr><td><code>Secrets Manager</code></td><td class="use-case">Stores and rotates secrets. Use case: keep database passwords, API tokens, and credentials out of code and Jenkins variables.</td></tr>
+            <tr><td><code>KMS</code></td><td class="use-case">Key management and encryption service. Use case: encrypt S3 objects, EBS volumes, RDS databases, and application secrets.</td></tr>
+            <tr><td><code>CloudFormation</code></td><td class="use-case">AWS native Infrastructure as Code. Use case: create VPC, EC2, IAM, and RDS through repeatable templates.</td></tr>
+            <tr><td><code>CodePipeline</code></td><td class="use-case">AWS CI/CD orchestration service. Use case: source from Git, build with CodeBuild, deploy to ECS, EC2, Lambda, or S3.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="devops-lifecycle">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🔁</span>
+        <span class="section-title">DevOps Lifecycle &amp; Tools Overview</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Stage</th><th>Theory, Tools &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>Plan</code></td><td class="use-case">Define requirement, task, sprint, and acceptance criteria. Tools: Jira, Azure Boards, Trello. Use case: track application feature work before coding starts.</td></tr>
+            <tr><td><code>Code</code></td><td class="use-case">Develop and version source code. Tools: Git, GitHub, GitLab, Bitbucket. Use case: developers create feature branches and pull requests.</td></tr>
+            <tr><td><code>Build</code></td><td class="use-case">Compile/package code and create artifacts. Tools: Maven, Gradle, npm, Docker, Jenkins. Use case: convert app source into JAR, image, or deployable package.</td></tr>
+            <tr><td><code>Test</code></td><td class="use-case">Validate functionality, security, and quality. Tools: JUnit, PyTest, Selenium, SonarQube, Trivy. Use case: stop bad code before production.</td></tr>
+            <tr><td><code>Release</code></td><td class="use-case">Approve and prepare a version for deployment. Tools: Jenkins, GitHub Actions, GitLab CI, ArgoCD. Use case: tag v1.2.0 and prepare changelog.</td></tr>
+            <tr><td><code>Deploy</code></td><td class="use-case">Move artifact to environment. Tools: Docker, Kubernetes, Helm, Terraform, Ansible, ArgoCD. Use case: deploy container image to EKS.</td></tr>
+            <tr><td><code>Operate</code></td><td class="use-case">Run and maintain systems. Tools: Linux, systemd, AWS, Kubernetes, Nginx. Use case: patch servers, restart failed services, manage capacity.</td></tr>
+            <tr><td><code>Monitor</code></td><td class="use-case">Collect metrics, logs, traces, and alerts. Tools: Prometheus, Grafana, CloudWatch, ELK, Loki. Use case: alert when API latency or error rate is high.</td></tr>
+            <tr><td><code>Feedback</code></td><td class="use-case">Learn from incidents and user behavior. Tools: dashboards, incident reports, retrospectives. Use case: improve deployment checks after production issue.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="cicd-theory">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🤖</span>
+        <span class="section-title">CI/CD Pipeline Concepts &amp; Theory</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>Continuous Integration</code></td><td class="use-case">Developers merge code frequently and every change is built/tested automatically. Use case: Jenkins runs tests whenever code is pushed to GitHub.</td></tr>
+            <tr><td><code>Continuous Delivery</code></td><td class="use-case">Code is always ready to deploy after automated checks, but production release may need manual approval. Use case: staging deployment auto, production button approval.</td></tr>
+            <tr><td><code>Continuous Deployment</code></td><td class="use-case">Every successful change automatically reaches production. Use case: mature teams deploy small safe changes many times per day.</td></tr>
+            <tr><td><code>Pipeline Stages</code></td><td class="use-case">Common flow: checkout, install dependencies, unit test, build artifact/image, scan, push artifact, deploy, smoke test, notify.</td></tr>
+            <tr><td><code>Artifact</code></td><td class="use-case">Versioned output of build process. Use case: JAR file, Docker image, ZIP package, Helm chart, or frontend build folder.</td></tr>
+            <tr><td><code>Quality Gate</code></td><td class="use-case">A rule that must pass before release. Use case: fail pipeline if SonarQube coverage is low or Trivy finds critical vulnerability.</td></tr>
+            <tr><td><code>Rollback</code></td><td class="use-case">Return to previous stable version. Use case: Kubernetes rollout undo or redeploy previous Docker image tag.</td></tr>
+            <tr><td><code>Blue-Green Deployment</code></td><td class="use-case">Run old and new versions separately, switch traffic after validation. Use case: near-zero downtime production release.</td></tr>
+            <tr><td><code>Canary Deployment</code></td><td class="use-case">Release to small percentage first, then increase traffic. Use case: send 5% traffic to new version and monitor errors.</td></tr>
+            <tr><td><code>Pipeline Secrets</code></td><td class="use-case">Credentials used by CI/CD must be stored securely. Use case: Jenkins credentials, GitHub Actions secrets, AWS IAM role, or Secrets Manager.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="networking-theory">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🌐</span>
+        <span class="section-title">Networking Basics for DevOps &amp; Cloud</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>IP Address</code></td><td class="use-case">Unique network address of a machine or service. Use case: connect to EC2 through its public IP or private IP.</td></tr>
+            <tr><td><code>CIDR</code></td><td class="use-case">Defines IP range like 10.0.0.0/16. Use case: create VPC and subnet ranges without overlap.</td></tr>
+            <tr><td><code>DNS</code></td><td class="use-case">Converts domain name to IP address. Use case: users access app.example.com instead of remembering ALB DNS/IP.</td></tr>
+            <tr><td><code>Port</code></td><td class="use-case">Application communication endpoint. Use case: SSH 22, HTTP 80, HTTPS 443, Jenkins 8080, SonarQube 9000.</td></tr>
+            <tr><td><code>TCP</code></td><td class="use-case">Reliable connection-based protocol. Use case: SSH, HTTP/HTTPS, database connections.</td></tr>
+            <tr><td><code>UDP</code></td><td class="use-case">Faster connectionless protocol. Use case: DNS queries, streaming, and some monitoring traffic.</td></tr>
+            <tr><td><code>Load Balancer</code></td><td class="use-case">Distributes traffic across servers. Use case: ALB sends requests to healthy EC2/Kubernetes pods.</td></tr>
+            <tr><td><code>Public Subnet</code></td><td class="use-case">Subnet with route to Internet Gateway. Use case: load balancer, NAT Gateway, or bastion host.</td></tr>
+            <tr><td><code>Private Subnet</code></td><td class="use-case">Subnet without direct inbound internet route. Use case: app servers, databases, EKS worker nodes.</td></tr>
+            <tr><td><code>VPN</code></td><td class="use-case">Encrypted private connection between networks. Use case: connect office/on-premises network to AWS VPC.</td></tr>
+            <tr><td><code>Peering</code></td><td class="use-case">Connect two VPCs privately. Use case: app VPC talks to shared services VPC without public internet.</td></tr>
+            <tr><td><code>Troubleshooting Flow</code></td><td class="use-case">Check DNS, route table, security group, NACL, service port, app logs, and firewall. Use case: debug "site not reachable" issues step by step.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="docker-k8s-theory">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">☸️</span>
+        <span class="section-title">Docker &amp; Kubernetes Concepts / Theory</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>Container</code></td><td class="use-case">Lightweight isolated runtime for an application and its dependencies. Use case: run the same app on laptop, Jenkins, and production.</td></tr>
+            <tr><td><code>Image</code></td><td class="use-case">Read-only template used to create containers. Use case: build app image once and deploy the same tag everywhere.</td></tr>
+            <tr><td><code>Dockerfile</code></td><td class="use-case">Recipe to build an image. Use case: define base image, copy code, install dependencies, expose port, and start command.</td></tr>
+            <tr><td><code>Volume</code></td><td class="use-case">Persistent storage for containers. Use case: keep database files even if container is recreated.</td></tr>
+            <tr><td><code>Docker Compose</code></td><td class="use-case">Run multi-container apps locally. Use case: start app, database, Redis, and SonarQube with one YAML file.</td></tr>
+            <tr><td><code>Kubernetes Cluster</code></td><td class="use-case">Group of nodes managed by Kubernetes. Use case: run production microservices with scheduling, self-healing, and scaling.</td></tr>
+            <tr><td><code>Pod</code></td><td class="use-case">Smallest deployable unit in Kubernetes. Use case: one app container plus optional sidecar container.</td></tr>
+            <tr><td><code>Deployment</code></td><td class="use-case">Manages desired number of pods and rolling updates. Use case: keep three replicas of frontend app running.</td></tr>
+            <tr><td><code>Service</code></td><td class="use-case">Stable network endpoint for pods. Use case: frontend calls backend service name even if backend pods change.</td></tr>
+            <tr><td><code>Ingress</code></td><td class="use-case">HTTP/HTTPS routing into cluster. Use case: route app.example.com/api to backend and app.example.com to frontend.</td></tr>
+            <tr><td><code>ConfigMap</code></td><td class="use-case">Stores non-secret configuration. Use case: app environment values like LOG_LEVEL or feature flags.</td></tr>
+            <tr><td><code>Secret</code></td><td class="use-case">Stores sensitive values. Use case: database password or API token mounted into pod environment.</td></tr>
+            <tr><td><code>Helm</code></td><td class="use-case">Package manager for Kubernetes. Use case: install Prometheus, Grafana, Nginx Ingress, or your own app with templates.</td></tr>
+            <tr><td><code>ArgoCD</code></td><td class="use-case">GitOps deployment controller. Use case: Kubernetes state is stored in Git and ArgoCD syncs the cluster automatically.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+
+    <div class="section" id="linux-interview">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">🎯</span>
+        <span class="section-title">Linux Interview Q&amp;A Tips</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead><tr><th>Question</th><th>Strong Answer / Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>How do you check CPU and memory?</code></td><td class="use-case">Use <code>top</code>, <code>htop</code>, <code>free -h</code>, <code>vmstat</code>. Explain that you check current usage, load average, memory pressure, and top processes.</td></tr>
+            <tr><td><code>How do you check disk usage?</code></td><td class="use-case">Use <code>df -h</code> for filesystem usage and <code>du -sh *</code> for folder size. Use case: find which folder filled the server disk.</td></tr>
+            <tr><td><code>How do you check logs?</code></td><td class="use-case">Use <code>journalctl -u service</code>, <code>tail -f /var/log/syslog</code>, or app log path. Mention filtering errors with <code>grep</code>.</td></tr>
+            <tr><td><code>How do you troubleshoot service down?</code></td><td class="use-case">Check <code>systemctl status</code>, logs, port listening with <code>ss -tulpn</code>, config changes, disk, memory, and recent deployments.</td></tr>
+            <tr><td><code>Permission denied issue?</code></td><td class="use-case">Check owner, group, mode, parent directory permission, and SELinux/AppArmor if enabled. Commands: <code>ls -l</code>, <code>chmod</code>, <code>chown</code>.</td></tr>
+            <tr><td><code>Process is using high CPU?</code></td><td class="use-case">Find PID using <code>top</code> or <code>ps aux --sort=-%cpu</code>, inspect logs, thread dump if Java, and restart only after understanding impact.</td></tr>
+            <tr><td><code>How do you check network connectivity?</code></td><td class="use-case">Use <code>ping</code>, <code>curl -v</code>, <code>telnet/nc</code>, <code>traceroute</code>, <code>dig/nslookup</code>. Check DNS, port, route, firewall, and service status.</td></tr>
+            <tr><td><code>Hard link vs soft link?</code></td><td class="use-case">Hard link points to same inode and cannot cross filesystems easily; soft link points to path and can break if target is removed. Use case: symlink config paths.</td></tr>
+            <tr><td><code>What is load average?</code></td><td class="use-case">Average number of runnable/waiting processes over 1, 5, 15 minutes. Compare with CPU core count to understand pressure.</td></tr>
+            <tr><td><code>How do you safely edit production config?</code></td><td class="use-case">Backup file, validate syntax, change with least scope, reload service if supported, watch logs, and keep rollback ready.</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end container -->
 
 <footer>
-  <p>DevOps &amp; Cloud Commands Cheat Sheet | Created for GitHub Pages by Jarvis</p>
+  <p>DevOps &amp; Cloud Commands Cheat Sheet &nbsp;|&nbsp; <strong>Personal Reference by Jarvis</strong> &nbsp;|&nbsp; Linux · Docker · K8s · AWS · Terraform · Prometheus · Grafana · Git · Cloud Theory · Use Cases</p>
 </footer>
+
+<script>
+  // Toggle section collapse
+  function toggleSection(header) {
+    header.parentElement.classList.toggle('collapsed');
+  }
+
+  // Search
+  const input = document.getElementById('search-input');
+  const clearBtn = document.getElementById('search-clear');
+  const allRows = document.querySelectorAll('tbody tr');
+  const allSections = document.querySelectorAll('.section');
+
+  function clearHighlights() {
+    document.querySelectorAll('.highlight').forEach(el => {
+      el.outerHTML = el.textContent;
+    });
+  }
+
+  function highlightText(element, term) {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      const idx = node.textContent.toLowerCase().indexOf(term.toLowerCase());
+      if (idx === -1) return;
+      const span = document.createElement('span');
+      span.className = 'highlight';
+      const before = document.createTextNode(node.textContent.substring(0, idx));
+      span.textContent = node.textContent.substring(idx, idx + term.length);
+      const after = document.createTextNode(node.textContent.substring(idx + term.length));
+      node.parentNode.replaceChild(after, node);
+      node.parentNode.insertBefore(span, after);
+      node.parentNode.insertBefore(before, span);
+    });
+  }
+
+  input.addEventListener('input', () => {
+    const term = input.value.trim();
+    clearBtn.style.display = term ? 'block' : 'none';
+    clearHighlights();
+
+    if (!term) {
+      allRows.forEach(r => r.style.display = '');
+      allSections.forEach(s => s.classList.remove('collapsed'));
+      return;
+    }
+
+    const lowerTerm = term.toLowerCase();
+    allSections.forEach(section => {
+      const rows = section.querySelectorAll('tbody tr');
+      let anyVisible = false;
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(lowerTerm)) {
+          row.style.display = '';
+          highlightText(row, term);
+          anyVisible = true;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      if (anyVisible) {
+        section.classList.remove('collapsed');
+      }
+    });
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.style.display = 'none';
+    clearHighlights();
+    allRows.forEach(r => r.style.display = '');
+  });
+
+  // Sticky nav active highlight
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const groups = document.querySelectorAll('.section-group');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = '#' + entry.target.id;
+        navBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('href') === id);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+  groups.forEach(g => observer.observe(g));
+</script>
 
 </body>
 </html>
