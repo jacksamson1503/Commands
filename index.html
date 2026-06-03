@@ -444,7 +444,22 @@
     footer strong { color: var(--text); }
 
     @media (max-width: 768px) {
-      td:first-child { width: auto; }
+      .section-body { overflow-x: auto; }
+      table { min-width: 520px; }
+      td {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      td:first-child { width: 45%; }
+      code {
+        max-width: 100%;
+        font-size: 11.5px;
+        padding: 4px 8px;
+      }
+      .use-case {
+        white-space: nowrap;
+        font-size: 12.5px;
+      }
       .index-cat-row { flex-direction: column; gap: 6px; }
       .index-cat-label { width: auto; }
     }
@@ -1739,22 +1754,19 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>Cloud Computing</code></td><td class="use-case">Using internet-based compute, storage, networking, database, security, and managed services instead of buying physical servers. Use it to launch applications faster, scale during traffic, and pay only for what you use.</td></tr>
-            <tr><td><code>IaaS</code></td><td class="use-case">Infrastructure as a Service gives virtual machines, disks, networks, and firewalls. Use case: run a custom Linux server on EC2 when you need full OS control.</td></tr>
-            <tr><td><code>PaaS</code></td><td class="use-case">Platform as a Service manages runtime, scaling, and deployment platform. Use case: deploy code without managing the base server, patching, or capacity planning.</td></tr>
-            <tr><td><code>SaaS</code></td><td class="use-case">Software as a Service is ready-made software accessed through browser/API. Use case: GitHub, Jira, Gmail, Datadog, and other tools consumed directly by teams.</td></tr>
-            <tr><td><code>Public Cloud</code></td><td class="use-case">Provider-owned infrastructure shared securely by many customers. Use case: quickly launch workloads across regions.</td></tr>
-            <tr><td><code>Private Cloud</code></td><td class="use-case">Cloud-like platform dedicated to one organization. Use case: banking, government, or regulated systems needing stricter control.</td></tr>
-            <tr><td><code>Hybrid Cloud</code></td><td class="use-case">Mix of on-premises/private cloud and public cloud. Use case: keep sensitive databases on-premises while running web apps or analytics in AWS.</td></tr>
-            <tr><td><code>Multi Cloud</code></td><td class="use-case">Using more than one cloud provider. Use case: avoid vendor lock-in, meet regional requirements, or use the best service from each provider.</td></tr>
-            <tr><td><code>Region</code></td><td class="use-case">Geographic cloud location containing multiple Availability Zones. Use case: deploy close to users for lower latency and data residency.</td></tr>
-            <tr><td><code>Availability Zone</code></td><td class="use-case">Separate data center zone inside a region. Use case: place app servers across multiple AZs so one data center failure does not stop the app.</td></tr>
-            <tr><td><code>Scalability</code></td><td class="use-case">Ability to handle more load by adding resources vertically or horizontally. Use case: add EC2 instances during sale traffic.</td></tr>
-            <tr><td><code>Elasticity</code></td><td class="use-case">Automatic scaling up and down based on demand. Use case: Auto Scaling increases capacity at peak hours and reduces cost at night.</td></tr>
-            <tr><td><code>High Availability</code></td><td class="use-case">Designing systems to stay running even when components fail. Use case: Load Balancer plus EC2 instances across two AZs.</td></tr>
-            <tr><td><code>Fault Tolerance</code></td><td class="use-case">System continues operating after failure. Use case: replicated database, queue retries, backups, and multi-AZ deployment.</td></tr>
-            <tr><td><code>Disaster Recovery</code></td><td class="use-case">Plan to restore service after a major outage. Use case: backups, snapshots, cross-region replication, RTO, and RPO planning.</td></tr>
-            <tr><td><code>Shared Responsibility</code></td><td class="use-case">Provider secures cloud infrastructure; customer secures data, IAM, network rules, OS patches, and app configuration. Interview point: responsibility changes across IaaS, PaaS, and SaaS.</td></tr>
+            <tr><td><code>Cloud Computing</code></td><td class="use-case">Internet-based compute, storage, networking, database, and managed services. Use it to launch faster, scale on demand, and pay for actual usage.</td></tr>
+            <tr><td><code>IaaS</code></td><td class="use-case">Virtual machines, disks, networks, and firewalls. Use case: EC2 Linux server with full OS control.</td></tr>
+            <tr><td><code>PaaS</code></td><td class="use-case">Provider manages runtime and platform. Use case: deploy code without managing server patching.</td></tr>
+            <tr><td><code>SaaS</code></td><td class="use-case">Ready software used through browser/API. Use case: GitHub, Jira, Gmail, Datadog.</td></tr>
+            <tr><td><code>Public Cloud</code></td><td class="use-case">Provider-owned shared infrastructure. Use case: quick app launch across global regions.</td></tr>
+            <tr><td><code>Private Cloud</code></td><td class="use-case">Dedicated cloud for one organization. Use case: banking, government, strict compliance workloads.</td></tr>
+            <tr><td><code>Hybrid Cloud</code></td><td class="use-case">On-premises plus public cloud. Use case: database on-premises, app and analytics in AWS.</td></tr>
+            <tr><td><code>Region / AZ</code></td><td class="use-case">Region is geography; AZ is isolated data center area. Use case: deploy across two AZs for high availability.</td></tr>
+            <tr><td><code>Scalability</code></td><td class="use-case">Handle more load by adding resources. Use case: add EC2 instances during peak traffic.</td></tr>
+            <tr><td><code>Elasticity</code></td><td class="use-case">Scale up and down automatically. Use case: Auto Scaling adds capacity at peak and saves cost at night.</td></tr>
+            <tr><td><code>High Availability</code></td><td class="use-case">System stays running during component failure. Use case: ALB plus EC2 in multiple AZs.</td></tr>
+            <tr><td><code>Disaster Recovery</code></td><td class="use-case">Restore service after major outage. Use case: backups, snapshots, cross-region replication, RTO/RPO.</td></tr>
+            <tr><td><code>Shared Responsibility</code></td><td class="use-case">AWS secures cloud infrastructure; customer secures IAM, data, OS, network rules, and app configuration.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1771,37 +1783,37 @@ EOF</pre></td>
         <table>
           <thead><tr><th>AWS Service</th><th>Theory &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>EC2</code></td><td class="use-case">Virtual server in AWS. Use case: host a web app, Jenkins server, Docker host, bastion server, or custom Linux workload.</td></tr>
-            <tr><td><code>S3</code></td><td class="use-case">Object storage for files, backups, logs, static assets, and artifacts. Use case: store website images, Terraform state, build artifacts, database backups, and static website files.</td></tr>
-            <tr><td><code>VPC</code></td><td class="use-case">Private network boundary for AWS resources. Use case: create public subnets for load balancers and private subnets for app/database servers.</td></tr>
-            <tr><td><code>Subnet</code></td><td class="use-case">Smaller network range inside a VPC and Availability Zone. Use case: separate public, private app, and private database layers.</td></tr>
-            <tr><td><code>Internet Gateway</code></td><td class="use-case">Allows public subnet resources to reach the internet. Use case: public ALB or bastion host receives internet traffic.</td></tr>
-            <tr><td><code>NAT Gateway</code></td><td class="use-case">Allows private subnet instances to access internet outbound without receiving inbound internet traffic. Use case: private EC2 downloads packages safely.</td></tr>
-            <tr><td><code>Route Table</code></td><td class="use-case">Controls where subnet traffic goes. Use case: route public subnet traffic to Internet Gateway and private subnet traffic to NAT Gateway.</td></tr>
-            <tr><td><code>Security Group</code></td><td class="use-case">Stateful virtual firewall attached to resources. Use case: allow port 443 from internet to ALB and app port only from ALB to EC2.</td></tr>
-            <tr><td><code>NACL</code></td><td class="use-case">Stateless subnet-level firewall. Use case: add an extra network boundary for compliance or block unwanted CIDR ranges.</td></tr>
-            <tr><td><code>IAM</code></td><td class="use-case">Identity and access management for users, groups, roles, and policies. Use case: give EC2 an IAM role to read S3 without storing access keys on the server.</td></tr>
-            <tr><td><code>Lambda</code></td><td class="use-case">Serverless function that runs code on events. Use case: process S3 uploads, run scheduled cleanup, handle API Gateway requests, or automate alerts.</td></tr>
-            <tr><td><code>RDS</code></td><td class="use-case">Managed relational database service. Use case: run MySQL, PostgreSQL, MariaDB, Oracle, or SQL Server with backups, patching, and Multi-AZ support.</td></tr>
-            <tr><td><code>DynamoDB</code></td><td class="use-case">Managed NoSQL key-value/document database. Use case: store session data, user preferences, IoT events, or high-scale application metadata.</td></tr>
-            <tr><td><code>EKS</code></td><td class="use-case">Managed Kubernetes control plane. Use case: run containerized microservices with Kubernetes while AWS manages control-plane components.</td></tr>
-            <tr><td><code>ECS</code></td><td class="use-case">AWS container orchestration service. Use case: run Docker containers without managing Kubernetes complexity.</td></tr>
-            <tr><td><code>ECR</code></td><td class="use-case">Private container image registry. Use case: Jenkins builds Docker image, pushes to ECR, then ECS/EKS pulls the image for deployment.</td></tr>
-            <tr><td><code>Elastic Load Balancer</code></td><td class="use-case">Distributes traffic across targets. Use case: ALB routes HTTP/HTTPS traffic to multiple EC2 instances or Kubernetes services.</td></tr>
-            <tr><td><code>Auto Scaling Group</code></td><td class="use-case">Automatically adds/removes EC2 instances based on demand or health. Use case: scale application servers when CPU or request count increases.</td></tr>
-            <tr><td><code>CloudWatch</code></td><td class="use-case">Metrics, logs, alarms, and dashboards. Use case: monitor EC2 CPU, Lambda errors, application logs, and trigger alerts when thresholds cross.</td></tr>
-            <tr><td><code>CloudTrail</code></td><td class="use-case">Records AWS API activity for auditing. Use case: find who deleted an S3 bucket policy, changed security groups, or created an IAM user.</td></tr>
-            <tr><td><code>Route 53</code></td><td class="use-case">DNS and domain routing service. Use case: point app.example.com to an ALB and use health checks for failover.</td></tr>
-            <tr><td><code>CloudFront</code></td><td class="use-case">Content delivery network for low-latency global access. Use case: cache static website files, images, and APIs near users worldwide.</td></tr>
-            <tr><td><code>API Gateway</code></td><td class="use-case">Managed API front door. Use case: expose REST/HTTP APIs backed by Lambda, ECS, EKS, or private services with auth and throttling.</td></tr>
-            <tr><td><code>SNS</code></td><td class="use-case">Pub/sub notification service. Use case: send alerts to email, SMS, Lambda, or SQS when a CloudWatch alarm fires.</td></tr>
-            <tr><td><code>SQS</code></td><td class="use-case">Managed message queue. Use case: decouple services, retry failed work, and handle traffic spikes without losing requests.</td></tr>
-            <tr><td><code>EBS</code></td><td class="use-case">Block storage volume for EC2. Use case: attach persistent disk to a Linux server for application data or database files.</td></tr>
-            <tr><td><code>EFS</code></td><td class="use-case">Shared file system for Linux workloads. Use case: multiple EC2 instances or containers share uploaded files.</td></tr>
-            <tr><td><code>Secrets Manager</code></td><td class="use-case">Stores and rotates secrets. Use case: keep database passwords, API tokens, and credentials out of code and Jenkins variables.</td></tr>
-            <tr><td><code>KMS</code></td><td class="use-case">Key management and encryption service. Use case: encrypt S3 objects, EBS volumes, RDS databases, and application secrets.</td></tr>
-            <tr><td><code>CloudFormation</code></td><td class="use-case">AWS native Infrastructure as Code. Use case: create VPC, EC2, IAM, and RDS through repeatable templates.</td></tr>
-            <tr><td><code>CodePipeline</code></td><td class="use-case">AWS CI/CD orchestration service. Use case: source from Git, build with CodeBuild, deploy to ECS, EC2, Lambda, or S3.</td></tr>
+            <tr><td><code>EC2</code></td><td class="use-case">Virtual server. Use case: host app, Jenkins, Docker, bastion, or custom Linux workload.</td></tr>
+            <tr><td><code>S3</code></td><td class="use-case">Object storage. Use case: backups, logs, static assets, build artifacts, Terraform state.</td></tr>
+            <tr><td><code>VPC</code></td><td class="use-case">Private network boundary. Use case: public ALB subnet and private app/database subnet.</td></tr>
+            <tr><td><code>Subnet</code></td><td class="use-case">Network range inside a VPC/AZ. Use case: separate public, app, and database layers.</td></tr>
+            <tr><td><code>Internet Gateway</code></td><td class="use-case">Internet route for public subnets. Use case: expose ALB or bastion host.</td></tr>
+            <tr><td><code>NAT Gateway</code></td><td class="use-case">Outbound internet for private subnets. Use case: private EC2 downloads packages safely.</td></tr>
+            <tr><td><code>Route Table</code></td><td class="use-case">Controls traffic path. Use case: public traffic to IGW, private traffic to NAT.</td></tr>
+            <tr><td><code>Security Group</code></td><td class="use-case">Stateful firewall. Use case: allow HTTPS to ALB and app port only from ALB.</td></tr>
+            <tr><td><code>NACL</code></td><td class="use-case">Stateless subnet firewall. Use case: extra subnet-level compliance boundary.</td></tr>
+            <tr><td><code>IAM</code></td><td class="use-case">Users, roles, and policies. Use case: EC2 role reads S3 without access keys.</td></tr>
+            <tr><td><code>Lambda</code></td><td class="use-case">Serverless function. Use case: process S3 upload, scheduled cleanup, API automation.</td></tr>
+            <tr><td><code>RDS</code></td><td class="use-case">Managed relational database. Use case: MySQL/PostgreSQL with backups, patching, Multi-AZ.</td></tr>
+            <tr><td><code>DynamoDB</code></td><td class="use-case">Managed NoSQL database. Use case: sessions, preferences, IoT events, metadata.</td></tr>
+            <tr><td><code>EKS</code></td><td class="use-case">Managed Kubernetes control plane. Use case: production containerized microservices.</td></tr>
+            <tr><td><code>ECS</code></td><td class="use-case">AWS container orchestration. Use case: run Docker containers without Kubernetes complexity.</td></tr>
+            <tr><td><code>ECR</code></td><td class="use-case">Container image registry. Use case: Jenkins pushes image, EKS/ECS pulls it.</td></tr>
+            <tr><td><code>ELB / ALB</code></td><td class="use-case">Traffic distribution. Use case: route HTTP/HTTPS traffic to healthy targets.</td></tr>
+            <tr><td><code>Auto Scaling</code></td><td class="use-case">Add/remove EC2 automatically. Use case: scale app servers by CPU or request count.</td></tr>
+            <tr><td><code>CloudWatch</code></td><td class="use-case">Metrics, logs, alarms, dashboards. Use case: monitor CPU, errors, app logs, alerts.</td></tr>
+            <tr><td><code>CloudTrail</code></td><td class="use-case">AWS API audit logs. Use case: find who changed IAM, S3 policy, or security group.</td></tr>
+            <tr><td><code>Route 53</code></td><td class="use-case">DNS service. Use case: point app.example.com to ALB with health checks.</td></tr>
+            <tr><td><code>CloudFront</code></td><td class="use-case">CDN. Use case: cache static website files and images near users globally.</td></tr>
+            <tr><td><code>API Gateway</code></td><td class="use-case">Managed API front door. Use case: expose Lambda or backend APIs with throttling/auth.</td></tr>
+            <tr><td><code>SNS</code></td><td class="use-case">Pub/sub notifications. Use case: email/SMS/Lambda alerts from CloudWatch.</td></tr>
+            <tr><td><code>SQS</code></td><td class="use-case">Managed queue. Use case: decouple services, retry jobs, absorb traffic spikes.</td></tr>
+            <tr><td><code>EBS</code></td><td class="use-case">Block storage for EC2. Use case: persistent disk for app or database files.</td></tr>
+            <tr><td><code>EFS</code></td><td class="use-case">Shared Linux file system. Use case: multiple EC2/container tasks share uploads.</td></tr>
+            <tr><td><code>Secrets Manager</code></td><td class="use-case">Secret storage/rotation. Use case: database passwords and API tokens outside code.</td></tr>
+            <tr><td><code>KMS</code></td><td class="use-case">Encryption key management. Use case: encrypt S3, EBS, RDS, and secrets.</td></tr>
+            <tr><td><code>CloudFormation</code></td><td class="use-case">AWS Infrastructure as Code. Use case: repeatable VPC, EC2, IAM, RDS stacks.</td></tr>
+            <tr><td><code>CodePipeline</code></td><td class="use-case">AWS CI/CD. Use case: source, build, approve, and deploy to ECS/EC2/Lambda/S3.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1818,15 +1830,14 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Stage</th><th>Theory, Tools &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>Plan</code></td><td class="use-case">Define requirement, task, sprint, and acceptance criteria. Tools: Jira, Azure Boards, Trello. Use case: track application feature work before coding starts.</td></tr>
-            <tr><td><code>Code</code></td><td class="use-case">Develop and version source code. Tools: Git, GitHub, GitLab, Bitbucket. Use case: developers create feature branches and pull requests.</td></tr>
-            <tr><td><code>Build</code></td><td class="use-case">Compile/package code and create artifacts. Tools: Maven, Gradle, npm, Docker, Jenkins. Use case: convert app source into JAR, image, or deployable package.</td></tr>
-            <tr><td><code>Test</code></td><td class="use-case">Validate functionality, security, and quality. Tools: JUnit, PyTest, Selenium, SonarQube, Trivy. Use case: stop bad code before production.</td></tr>
-            <tr><td><code>Release</code></td><td class="use-case">Approve and prepare a version for deployment. Tools: Jenkins, GitHub Actions, GitLab CI, ArgoCD. Use case: tag v1.2.0 and prepare changelog.</td></tr>
-            <tr><td><code>Deploy</code></td><td class="use-case">Move artifact to environment. Tools: Docker, Kubernetes, Helm, Terraform, Ansible, ArgoCD. Use case: deploy container image to EKS.</td></tr>
-            <tr><td><code>Operate</code></td><td class="use-case">Run and maintain systems. Tools: Linux, systemd, AWS, Kubernetes, Nginx. Use case: patch servers, restart failed services, manage capacity.</td></tr>
-            <tr><td><code>Monitor</code></td><td class="use-case">Collect metrics, logs, traces, and alerts. Tools: Prometheus, Grafana, CloudWatch, ELK, Loki. Use case: alert when API latency or error rate is high.</td></tr>
-            <tr><td><code>Feedback</code></td><td class="use-case">Learn from incidents and user behavior. Tools: dashboards, incident reports, retrospectives. Use case: improve deployment checks after production issue.</td></tr>
+            <tr><td><code>Plan</code></td><td class="use-case">Requirement and sprint planning. Tools: Jira, Trello, Azure Boards.</td></tr>
+            <tr><td><code>Code</code></td><td class="use-case">Version source code. Tools: Git, GitHub, GitLab, Bitbucket.</td></tr>
+            <tr><td><code>Build</code></td><td class="use-case">Create artifact/image. Tools: Maven, Gradle, npm, Docker, Jenkins.</td></tr>
+            <tr><td><code>Test</code></td><td class="use-case">Validate quality/security. Tools: JUnit, PyTest, Selenium, SonarQube, Trivy.</td></tr>
+            <tr><td><code>Release</code></td><td class="use-case">Approve version for deployment. Tools: Jenkins, GitHub Actions, GitLab CI.</td></tr>
+            <tr><td><code>Deploy</code></td><td class="use-case">Move artifact to environment. Tools: Kubernetes, Helm, Terraform, Ansible, ArgoCD.</td></tr>
+            <tr><td><code>Operate</code></td><td class="use-case">Run and maintain services. Tools: Linux, systemd, AWS, Kubernetes, Nginx.</td></tr>
+            <tr><td><code>Monitor</code></td><td class="use-case">Metrics, logs, traces, alerts. Tools: Prometheus, Grafana, CloudWatch, ELK.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1843,16 +1854,15 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>Continuous Integration</code></td><td class="use-case">Developers merge code frequently and every change is built/tested automatically. Use case: Jenkins runs tests whenever code is pushed to GitHub.</td></tr>
-            <tr><td><code>Continuous Delivery</code></td><td class="use-case">Code is always ready to deploy after automated checks, but production release may need manual approval. Use case: staging deployment auto, production button approval.</td></tr>
-            <tr><td><code>Continuous Deployment</code></td><td class="use-case">Every successful change automatically reaches production. Use case: mature teams deploy small safe changes many times per day.</td></tr>
-            <tr><td><code>Pipeline Stages</code></td><td class="use-case">Common flow: checkout, install dependencies, unit test, build artifact/image, scan, push artifact, deploy, smoke test, notify.</td></tr>
-            <tr><td><code>Artifact</code></td><td class="use-case">Versioned output of build process. Use case: JAR file, Docker image, ZIP package, Helm chart, or frontend build folder.</td></tr>
-            <tr><td><code>Quality Gate</code></td><td class="use-case">A rule that must pass before release. Use case: fail pipeline if SonarQube coverage is low or Trivy finds critical vulnerability.</td></tr>
-            <tr><td><code>Rollback</code></td><td class="use-case">Return to previous stable version. Use case: Kubernetes rollout undo or redeploy previous Docker image tag.</td></tr>
-            <tr><td><code>Blue-Green Deployment</code></td><td class="use-case">Run old and new versions separately, switch traffic after validation. Use case: near-zero downtime production release.</td></tr>
-            <tr><td><code>Canary Deployment</code></td><td class="use-case">Release to small percentage first, then increase traffic. Use case: send 5% traffic to new version and monitor errors.</td></tr>
-            <tr><td><code>Pipeline Secrets</code></td><td class="use-case">Credentials used by CI/CD must be stored securely. Use case: Jenkins credentials, GitHub Actions secrets, AWS IAM role, or Secrets Manager.</td></tr>
+            <tr><td><code>Continuous Integration</code></td><td class="use-case">Every code push is built/tested automatically. Use case: Jenkins runs tests after GitHub push.</td></tr>
+            <tr><td><code>Continuous Delivery</code></td><td class="use-case">Code is always release-ready, production may need approval. Use case: auto staging, manual prod approval.</td></tr>
+            <tr><td><code>Continuous Deployment</code></td><td class="use-case">Successful changes auto-deploy to production. Use case: small frequent releases.</td></tr>
+            <tr><td><code>Pipeline Stages</code></td><td class="use-case">Checkout, install, test, build, scan, push, deploy, smoke test, notify.</td></tr>
+            <tr><td><code>Artifact</code></td><td class="use-case">Build output like JAR, Docker image, ZIP, Helm chart, frontend dist folder.</td></tr>
+            <tr><td><code>Quality Gate</code></td><td class="use-case">Rule required before release. Use case: fail build on critical Trivy/Sonar issue.</td></tr>
+            <tr><td><code>Rollback</code></td><td class="use-case">Return to previous version. Use case: Kubernetes rollout undo or old image tag.</td></tr>
+            <tr><td><code>Blue-Green</code></td><td class="use-case">Old and new versions run separately, traffic switches after validation.</td></tr>
+            <tr><td><code>Canary</code></td><td class="use-case">Release to small traffic first. Use case: 5% users, monitor errors, then increase.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1869,18 +1879,16 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>IP Address</code></td><td class="use-case">Unique network address of a machine or service. Use case: connect to EC2 through its public IP or private IP.</td></tr>
-            <tr><td><code>CIDR</code></td><td class="use-case">Defines IP range like 10.0.0.0/16. Use case: create VPC and subnet ranges without overlap.</td></tr>
-            <tr><td><code>DNS</code></td><td class="use-case">Converts domain name to IP address. Use case: users access app.example.com instead of remembering ALB DNS/IP.</td></tr>
-            <tr><td><code>Port</code></td><td class="use-case">Application communication endpoint. Use case: SSH 22, HTTP 80, HTTPS 443, Jenkins 8080, SonarQube 9000.</td></tr>
-            <tr><td><code>TCP</code></td><td class="use-case">Reliable connection-based protocol. Use case: SSH, HTTP/HTTPS, database connections.</td></tr>
-            <tr><td><code>UDP</code></td><td class="use-case">Faster connectionless protocol. Use case: DNS queries, streaming, and some monitoring traffic.</td></tr>
-            <tr><td><code>Load Balancer</code></td><td class="use-case">Distributes traffic across servers. Use case: ALB sends requests to healthy EC2/Kubernetes pods.</td></tr>
-            <tr><td><code>Public Subnet</code></td><td class="use-case">Subnet with route to Internet Gateway. Use case: load balancer, NAT Gateway, or bastion host.</td></tr>
-            <tr><td><code>Private Subnet</code></td><td class="use-case">Subnet without direct inbound internet route. Use case: app servers, databases, EKS worker nodes.</td></tr>
-            <tr><td><code>VPN</code></td><td class="use-case">Encrypted private connection between networks. Use case: connect office/on-premises network to AWS VPC.</td></tr>
-            <tr><td><code>Peering</code></td><td class="use-case">Connect two VPCs privately. Use case: app VPC talks to shared services VPC without public internet.</td></tr>
-            <tr><td><code>Troubleshooting Flow</code></td><td class="use-case">Check DNS, route table, security group, NACL, service port, app logs, and firewall. Use case: debug "site not reachable" issues step by step.</td></tr>
+            <tr><td><code>IP Address</code></td><td class="use-case">Network address of a machine/service. Use case: connect to EC2 public/private IP.</td></tr>
+            <tr><td><code>CIDR</code></td><td class="use-case">IP range like 10.0.0.0/16. Use case: plan VPC and subnet ranges.</td></tr>
+            <tr><td><code>DNS</code></td><td class="use-case">Domain to IP resolution. Use case: app.example.com points to ALB.</td></tr>
+            <tr><td><code>Port</code></td><td class="use-case">Application endpoint. Use case: SSH 22, HTTP 80, HTTPS 443, Jenkins 8080.</td></tr>
+            <tr><td><code>TCP / UDP</code></td><td class="use-case">TCP is reliable; UDP is faster connectionless. Use case: HTTP over TCP, DNS often UDP.</td></tr>
+            <tr><td><code>Load Balancer</code></td><td class="use-case">Distributes requests. Use case: ALB sends traffic to healthy EC2 or pods.</td></tr>
+            <tr><td><code>Public Subnet</code></td><td class="use-case">Has route to internet gateway. Use case: ALB, NAT Gateway, bastion.</td></tr>
+            <tr><td><code>Private Subnet</code></td><td class="use-case">No direct inbound internet route. Use case: app servers, databases, worker nodes.</td></tr>
+            <tr><td><code>VPN / Peering</code></td><td class="use-case">Private network connectivity. Use case: office-to-VPC or VPC-to-VPC traffic.</td></tr>
+            <tr><td><code>Troubleshooting</code></td><td class="use-case">Check DNS, route table, security group, NACL, port, service, logs, firewall.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1897,20 +1905,18 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Concept</th><th>Theory &amp; Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>Container</code></td><td class="use-case">Lightweight isolated runtime for an application and its dependencies. Use case: run the same app on laptop, Jenkins, and production.</td></tr>
-            <tr><td><code>Image</code></td><td class="use-case">Read-only template used to create containers. Use case: build app image once and deploy the same tag everywhere.</td></tr>
-            <tr><td><code>Dockerfile</code></td><td class="use-case">Recipe to build an image. Use case: define base image, copy code, install dependencies, expose port, and start command.</td></tr>
-            <tr><td><code>Volume</code></td><td class="use-case">Persistent storage for containers. Use case: keep database files even if container is recreated.</td></tr>
-            <tr><td><code>Docker Compose</code></td><td class="use-case">Run multi-container apps locally. Use case: start app, database, Redis, and SonarQube with one YAML file.</td></tr>
-            <tr><td><code>Kubernetes Cluster</code></td><td class="use-case">Group of nodes managed by Kubernetes. Use case: run production microservices with scheduling, self-healing, and scaling.</td></tr>
-            <tr><td><code>Pod</code></td><td class="use-case">Smallest deployable unit in Kubernetes. Use case: one app container plus optional sidecar container.</td></tr>
-            <tr><td><code>Deployment</code></td><td class="use-case">Manages desired number of pods and rolling updates. Use case: keep three replicas of frontend app running.</td></tr>
-            <tr><td><code>Service</code></td><td class="use-case">Stable network endpoint for pods. Use case: frontend calls backend service name even if backend pods change.</td></tr>
-            <tr><td><code>Ingress</code></td><td class="use-case">HTTP/HTTPS routing into cluster. Use case: route app.example.com/api to backend and app.example.com to frontend.</td></tr>
-            <tr><td><code>ConfigMap</code></td><td class="use-case">Stores non-secret configuration. Use case: app environment values like LOG_LEVEL or feature flags.</td></tr>
-            <tr><td><code>Secret</code></td><td class="use-case">Stores sensitive values. Use case: database password or API token mounted into pod environment.</td></tr>
-            <tr><td><code>Helm</code></td><td class="use-case">Package manager for Kubernetes. Use case: install Prometheus, Grafana, Nginx Ingress, or your own app with templates.</td></tr>
-            <tr><td><code>ArgoCD</code></td><td class="use-case">GitOps deployment controller. Use case: Kubernetes state is stored in Git and ArgoCD syncs the cluster automatically.</td></tr>
+            <tr><td><code>Container</code></td><td class="use-case">Isolated app runtime. Use case: same app runs on laptop, Jenkins, production.</td></tr>
+            <tr><td><code>Image</code></td><td class="use-case">Template for containers. Use case: build once, deploy same tag everywhere.</td></tr>
+            <tr><td><code>Dockerfile</code></td><td class="use-case">Image build recipe. Use case: base image, copy code, install deps, start app.</td></tr>
+            <tr><td><code>Volume</code></td><td class="use-case">Persistent container storage. Use case: database files survive container recreate.</td></tr>
+            <tr><td><code>Compose</code></td><td class="use-case">Run multi-container local app. Use case: app, DB, Redis, SonarQube together.</td></tr>
+            <tr><td><code>Cluster</code></td><td class="use-case">Kubernetes nodes working together. Use case: production microservices platform.</td></tr>
+            <tr><td><code>Pod</code></td><td class="use-case">Smallest K8s unit. Use case: app container plus optional sidecar.</td></tr>
+            <tr><td><code>Deployment</code></td><td class="use-case">Manages replicas and rolling updates. Use case: keep three frontend pods running.</td></tr>
+            <tr><td><code>Service</code></td><td class="use-case">Stable network endpoint. Use case: frontend calls backend service name.</td></tr>
+            <tr><td><code>Ingress</code></td><td class="use-case">HTTP routing into cluster. Use case: app.example.com routes to services.</td></tr>
+            <tr><td><code>ConfigMap / Secret</code></td><td class="use-case">Store config and sensitive values. Use case: app env vars and DB passwords.</td></tr>
+            <tr><td><code>Helm / ArgoCD</code></td><td class="use-case">Package and GitOps deployment tools. Use case: install charts and sync cluster from Git.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1927,16 +1933,14 @@ EOF</pre></td>
         <table>
           <thead><tr><th>Question</th><th>Strong Answer / Use Case</th></tr></thead>
           <tbody>
-            <tr><td><code>How do you check CPU and memory?</code></td><td class="use-case">Use <code>top</code>, <code>htop</code>, <code>free -h</code>, <code>vmstat</code>. Explain that you check current usage, load average, memory pressure, and top processes.</td></tr>
-            <tr><td><code>How do you check disk usage?</code></td><td class="use-case">Use <code>df -h</code> for filesystem usage and <code>du -sh *</code> for folder size. Use case: find which folder filled the server disk.</td></tr>
-            <tr><td><code>How do you check logs?</code></td><td class="use-case">Use <code>journalctl -u service</code>, <code>tail -f /var/log/syslog</code>, or app log path. Mention filtering errors with <code>grep</code>.</td></tr>
-            <tr><td><code>How do you troubleshoot service down?</code></td><td class="use-case">Check <code>systemctl status</code>, logs, port listening with <code>ss -tulpn</code>, config changes, disk, memory, and recent deployments.</td></tr>
-            <tr><td><code>Permission denied issue?</code></td><td class="use-case">Check owner, group, mode, parent directory permission, and SELinux/AppArmor if enabled. Commands: <code>ls -l</code>, <code>chmod</code>, <code>chown</code>.</td></tr>
-            <tr><td><code>Process is using high CPU?</code></td><td class="use-case">Find PID using <code>top</code> or <code>ps aux --sort=-%cpu</code>, inspect logs, thread dump if Java, and restart only after understanding impact.</td></tr>
-            <tr><td><code>How do you check network connectivity?</code></td><td class="use-case">Use <code>ping</code>, <code>curl -v</code>, <code>telnet/nc</code>, <code>traceroute</code>, <code>dig/nslookup</code>. Check DNS, port, route, firewall, and service status.</td></tr>
-            <tr><td><code>Hard link vs soft link?</code></td><td class="use-case">Hard link points to same inode and cannot cross filesystems easily; soft link points to path and can break if target is removed. Use case: symlink config paths.</td></tr>
-            <tr><td><code>What is load average?</code></td><td class="use-case">Average number of runnable/waiting processes over 1, 5, 15 minutes. Compare with CPU core count to understand pressure.</td></tr>
-            <tr><td><code>How do you safely edit production config?</code></td><td class="use-case">Backup file, validate syntax, change with least scope, reload service if supported, watch logs, and keep rollback ready.</td></tr>
+            <tr><td><code>CPU and memory?</code></td><td class="use-case">Use top, htop, free -h, vmstat. Check load, memory pressure, top processes.</td></tr>
+            <tr><td><code>Disk usage?</code></td><td class="use-case">Use df -h and du -sh *. Find which filesystem/folder filled the server.</td></tr>
+            <tr><td><code>Check logs?</code></td><td class="use-case">Use journalctl, tail -f, grep ERROR. Match logs with deployment/change time.</td></tr>
+            <tr><td><code>Service down?</code></td><td class="use-case">Check systemctl status, logs, listening port, config, disk, memory, recent deploy.</td></tr>
+            <tr><td><code>Permission denied?</code></td><td class="use-case">Check owner, group, mode, parent permission. Use ls -l, chmod, chown.</td></tr>
+            <tr><td><code>High CPU?</code></td><td class="use-case">Find PID with top/ps, inspect logs/thread dump, restart only after impact check.</td></tr>
+            <tr><td><code>Network issue?</code></td><td class="use-case">Use ping, curl -v, nc, traceroute, dig. Check DNS, port, route, firewall.</td></tr>
+            <tr><td><code>Soft vs hard link?</code></td><td class="use-case">Hard link points to inode; soft link points to path and can break if target moves.</td></tr>
           </tbody>
         </table>
         <a href="#top" class="back-top">↑ Back to Top</a>
@@ -1947,7 +1951,7 @@ EOF</pre></td>
 </div><!-- end container -->
 
 <footer>
-  <p>DevOps &amp; Cloud Commands Cheat Sheet &nbsp;|&nbsp; <strong>Personal Reference by Jarvis</strong> &nbsp;|&nbsp; Linux · Docker · K8s · AWS · Terraform · Prometheus · Grafana · Git · Cloud Theory · Use Cases</p>
+  <p>DevOps &amp; Cloud Commands Cheat Sheet &nbsp;|&nbsp; <strong>Personal Reference by Jarvis</strong> &nbsp;|&nbsp; Linux · Docker · K8s · AWS · Terraform · Prometheus · Grafana · Git</p>
 </footer>
 
 <script>
