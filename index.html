@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ops Notebook — Linux · Git &amp; GitHub · AWS</title>
+<title>Ops Notebook — Linux · Git &amp; GitHub · AWS · DevOps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,6 +24,8 @@
     --git-soft:#ece8fb;
     --aws:#128272;
     --aws-soft:#dcf3ef;
+    --devops:#c0356e;
+    --devops-soft:#fbe1ec;
     --radius:8px;
     --shadow:0 1px 2px rgba(20,25,35,0.04), 0 1px 8px rgba(20,25,35,0.05);
   }
@@ -70,6 +72,7 @@
   .dot.linux{background:var(--linux);}
   .dot.git{background:var(--git);}
   .dot.aws{background:var(--aws);}
+  .dot.devops{background:var(--devops);}
 
   .navlinks{list-style:none;margin:0 0 10px;padding:0 0 0 21px;border-left:1px solid var(--border-soft);}
   .navlinks li{margin:0;}
@@ -133,6 +136,7 @@
   .card.acc-linux{border-left-color:var(--linux);}
   .card.acc-git{border-left-color:var(--git);}
   .card.acc-aws{border-left-color:var(--aws);}
+  .card.acc-devops{border-left-color:var(--devops);}
 
   .card-title{font-size:14.5px;font-weight:600;margin:0 0 9px;color:var(--text);}
   .card-title.mono{font-size:13.5px;background:var(--surface-2);display:inline-block;padding:3px 8px;border-radius:5px;color:var(--text);}
@@ -189,7 +193,7 @@
   <nav class="sidebar" id="sidebar">
     <div class="brand">
       <p class="brand-title">Ops Notebook</p>
-      <p class="brand-sub">Daily-driver reference — Linux, Git &amp; GitHub, AWS. Command, use case, where and why.</p>
+      <p class="brand-sub">Daily-driver reference — Linux, Git &amp; GitHub, AWS, DevOps tooling. Command, use case, where and why.</p>
     </div>
     <div id="navroot"></div>
     <a class="repo-link" href="https://github.com/jacksamson1503/learning_githubactions/tree/main" target="_blank" rel="noopener">
@@ -214,13 +218,13 @@
     <div class="content">
       <div class="hero">
         <h1>A working notebook, not a manual</h1>
-        <p>Everything from Day 1 Linux, Git &amp; GitHub, and the AWS core services in one place — built to be scanned in under a minute when you are mid-task. New topics get added here as you cover them.</p>
+        <p>Everything from Day 1 Linux, Git &amp; GitHub, the AWS core services, and the DevOps tool stack in one place — built to be scanned in under a minute when you are mid-task. New topics get added here as you cover them.</p>
       </div>
       <div id="app"></div>
     </div>
 
     <footer>
-      Built from personal study notes · Linux fundamentals, Git/GitHub workflows, and AWS core services (EC2, IAM, S3, VPC, CloudWatch, Auto Scaling, Load Balancer, RDS, DynamoDB, Lambda) · Keep adding sections to the DATA object in this file as you learn more.
+      Built from personal study notes · Linux fundamentals, Git/GitHub workflows, AWS core + DevOps services, and the CI/CD + observability + IaC tool stack · Keep adding sections to the DATA object in this file as you learn more.
     </footer>
   </div>
 </div>
@@ -963,6 +967,398 @@ aws: [
     cmd("Create a function","aws lambda create-function --function-name resize-image --runtime python3.12 --handler app.handler --role arn:aws:iam::123:role/lambda-role --zip-file fileb://function.zip","Deploy code that runs without provisioning or managing a server.","Event-driven tasks, e.g. resizing an image when it lands in S3, or handling an API Gateway request.","Pay only for execution time; scales automatically with no server management."),
     cmd("Invoke a function","aws lambda invoke --function-name resize-image out.json","Run a Lambda function manually or for testing.","Verifying a function works before wiring up its trigger.","Quick way to test function behavior in isolation."),
     cmd("Update function code","aws lambda update-function-code --function-name resize-image --zip-file fileb://function.zip","Deploy a new version of a function's code.","Shipping a fix or feature update to an existing function.","Updates the running function without recreating it from scratch.")
+  ]},
+
+  { id:"aws-cli-setup", title:"AWS CLI — install &amp; configure", entries:[
+    { title:"Install the AWS CLI (Ubuntu/Linux)", steps:[
+      "Download the installer: <code>curl \"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\" -o \"awscliv2.zip\"</code>",
+      "Install unzip if missing: <code>sudo apt install unzip -y</code>",
+      "Unzip the package: <code>unzip awscliv2.zip</code>",
+      "Run the installer: <code>sudo ./aws/install</code>",
+      "Confirm it installed: <code>aws --version</code>",
+      "Configure credentials: <code>aws configure</code> — enter Access Key ID, Secret Access Key, region, and output format"
+    ]},
+    cmd("Check CLI version","aws --version","Confirm the CLI is installed and see its version.","Right after installing, or when troubleshooting CLI errors.","Quick sanity check before running any AWS command."),
+    cmd("Configure credentials","aws configure","Set the access key, secret key, region, and output format the CLI will use.","First-time setup, or switching to a different IAM user/profile.","Every AWS CLI command needs valid credentials to authenticate.")
+  ]},
+
+  { id:"aws-messaging", title:"SQS, SNS &amp; SES — messaging &amp; notifications", entries:[
+    concept("SQS (Simple Queue Service)", [
+      ["What it is","A fully managed message queue that decouples producers from consumers — one service sends a message, another processes it independently."],
+      ["Why it matters","If the consumer, e.g. an EC2 instance, is down or slow, messages just wait in the queue instead of being lost."],
+      ["Standard vs FIFO","Standard queues give best-effort ordering and at-least-once delivery; FIFO queues guarantee strict ordering and exactly-once processing."]
+    ]),
+    concept("SNS (Simple Notification Service)", [
+      ["What it is","A publish/subscribe service — one message published to a topic fans out to many subscribers at once, e.g. email, SMS, Lambda, SQS."],
+      ["Real use case","Sending an ops team an email alert when an EC2 instance is running out of storage."],
+      ["Topic vs Subscription","A Topic is the channel you publish to; a Subscription is an endpoint (email, SMS, Lambda) listening on that topic."]
+    ]),
+    concept("SES (Simple Email Service)", [
+      ["What it is","A service purpose-built for sending application email at scale, e.g. transactional or marketing email."],
+      ["Real use case","Sending a customer an email once their order has shipped."],
+      ["Verified identity","A domain or email address must be verified in SES before you can send from it — new accounts start in a Sandbox that can only email verified addresses."]
+    ]),
+    { title:"Create an SQS queue from the console", steps:[
+      "Open the AWS Console → search <code>SQS</code> → <strong>Create queue</strong>",
+      "Choose Standard or FIFO",
+      "Name the queue and leave default settings for a first test",
+      "Click <strong>Create queue</strong>",
+      "Use <strong>Send and receive messages</strong> on the queue page to test it manually"
+    ]},
+    { title:"Create an SNS topic from the console", steps:[
+      "Open the AWS Console → search <code>SNS</code> → <strong>Topics</strong> → <strong>Create topic</strong>",
+      "Choose Standard, name it, and click <strong>Create topic</strong>",
+      "Open the topic → <strong>Create subscription</strong>",
+      "Choose a protocol, e.g. Email, and enter the endpoint (email address)",
+      "Confirm the subscription from the confirmation email that gets sent",
+      "Publish a test message from the topic page or CLI to confirm delivery"
+    ]},
+    { title:"Verify and send with SES", steps:[
+      "Open the AWS Console → search <code>SES</code> → <strong>Verified identities</strong> → <strong>Create identity</strong>",
+      "Choose Email address (or Domain for production use) and enter it",
+      "Click the confirmation link sent to that inbox",
+      "Note: new SES accounts start in the <strong>Sandbox</strong> — you can only send to verified addresses until production access is requested",
+      "Send a test email from the console or via <code>aws ses send-email</code>"
+    ]},
+    cmd("Create a queue","aws sqs create-queue --queue-name my-queue","Set up a new message queue.","Decoupling a producer service from a slower consumer service.","Producers keep working even if the consumer is temporarily unavailable."),
+    cmd("Send a message","aws sqs send-message --queue-url QUEUE_URL --message-body \"order-123\"","Put a message onto a queue.","An app hands off a task, e.g. \"process order 123\", for something else to pick up.","Asynchronous processing instead of blocking the caller."),
+    cmd("Receive a message","aws sqs receive-message --queue-url QUEUE_URL","Pull the next available message off a queue.","A worker process polling for new tasks to handle.","Lets a consumer process messages at its own pace."),
+    cmd("Delete a message","aws sqs delete-message --queue-url QUEUE_URL --receipt-handle HANDLE","Remove a message after it has been successfully processed.","Confirming a task is done so it is not delivered again.","Prevents the same message being reprocessed after its visibility timeout."),
+    cmd("Create a topic","aws sns create-topic --name ops-alerts","Create a pub/sub channel that fans out to many subscribers.","Broadcasting an event, e.g. \"EC2 storage running out\", to email, SMS, or Lambda at once.","One publish reaches every subscriber without the publisher knowing who they are."),
+    cmd("Subscribe an endpoint","aws sns subscribe --topic-arn TOPIC_ARN --protocol email --notification-endpoint you@example.com","Attach an endpoint, e.g. an email address, to a topic.","Getting notified whenever the topic publishes a message.","Decouples notification delivery from the code that triggers the alert."),
+    cmd("Publish a message","aws sns publish --topic-arn TOPIC_ARN --message \"CPU above 90% on i-0abc\"","Send a message to every subscriber of a topic.","Firing an alert, e.g. from a CloudWatch alarm action.","Single publish call reaches every subscribed channel at once."),
+    cmd("Send an email","aws ses send-email --from you@example.com --destination ToAddresses=customer@example.com --message file://message.json","Send a transactional email through SES.","Sending an order confirmation or password-reset email from an app.","Built for high-volume, reliable application email with delivery tracking.")
+  ]},
+
+  { id:"aws-codebuild", title:"CodeBuild", entries:[
+    concept("Code build basics", [["Definition","A fully managed build service that compiles source code, runs tests, and produces deployable artifacts."],["buildspec.yml","The file that defines the build phases: install, pre_build, build, post_build."],["IAM serve role","The IAM role CodeBuild assumes to pull source, write logs, and push artifacts, e.g. to S3."]]),
+    { title:"Build Project — create from the console", steps:[
+      "Open the AWS Console → search <code>CodeBuild</code> → <strong>Create build project</strong>",
+      "Name the project",
+      "GitHub integration: choose the source provider, e.g. GitHub, and connect/authorize the repository",
+      "Choose an environment image, e.g. Ubuntu standard runtime, and the runtime version",
+      "Choose or create the IAM service role CodeBuild will run as",
+      "Point it at a <code>buildspec.yml</code> in the repo, or define build commands inline",
+      "Choose where artifacts go, e.g. an S3 bucket",
+      "Click <strong>Create build project</strong>, then <strong>Start build</strong> to test it"
+    ]},
+    cmd("Build commands — start a build","aws codebuild start-build --project-name my-app-build","Trigger a build run manually.","Testing a build project, or kicking off a build outside of its normal trigger.","Lets you validate the buildspec and environment before wiring up automatic triggers."),
+    cmd("Check build status","aws codebuild batch-get-builds --ids BUILD_ID","Check whether a build succeeded, failed, or is in progress.","Polling build status from a script or another pipeline stage.","Confirms build result before moving on to deploy.")
+  ]},
+
+  { id:"aws-codedeploy", title:"CodeDeploy", entries:[
+    concept("Code deploy basics", [["Definition","Automates deploying application code to EC2, on-premises servers, Lambda, or ECS."],["Applications","An Application is the logical container that groups a deployment configuration and its deployment groups."],["appspec.yml","Defines the deployment lifecycle hooks — e.g. BeforeInstall, AfterInstall, ApplicationStart — and where files go on the instance."]]),
+    concept("Deployment groups", [["What it is","The specific set of EC2 instances (matched by tag) or ASG that a given deployment targets."],["CodeDeploy agent","Software installed on each EC2 instance that receives and executes the deployment on CodeDeploy's behalf — required on every target instance."]]),
+    { title:"EC2 deployment — set up from the console", steps:[
+      "Install the CodeDeploy agent on the target EC2 instance (see install command below)",
+      "Open the AWS Console → search <code>CodeDeploy</code> → <strong>Applications</strong> → <strong>Create application</strong>",
+      "Name it and choose compute platform <strong>EC2/On-premises</strong>",
+      "Create a <strong>Deployment group</strong>: choose a service role, and tag the EC2 instances it should target",
+      "Add an <code>appspec.yml</code> to the root of your app repo describing files and lifecycle hooks",
+      "Create a deployment, point it at your revision, e.g. an S3 zip or GitHub commit, and start it",
+      "Watch deployment progress and each instance's status on the deployment page"
+    ]},
+    cmd("Install the CodeDeploy agent (Ubuntu)","sudo apt update && sudo apt install ruby-full wget -y\ncd /home/ubuntu\nwget https://aws-codedeploy-REGION.s3.REGION.amazonaws.com/latest/install\nchmod +x ./install\nsudo ./install auto\nsudo service codedeploy-agent status","Install and start the agent that lets an EC2 instance receive CodeDeploy deployments.","Every EC2 instance that will be a CodeDeploy target, before the first deployment.","Without the agent running, CodeDeploy has no way to push and execute a deployment on that instance."),
+    cmd("Create a deployment","aws deploy create-deployment --application-name my-app --deployment-group-name my-dg --s3-location bucket=my-bucket,key=app.zip,bundleType=zip","Push a new revision of the app out to the deployment group's instances.","Shipping a new build to production or staging EC2 instances.","Automates the deploy steps (stop, install, start, health-check) instead of doing them by hand on each server."),
+    cmd("Check deployment status","aws deploy get-deployment --deployment-id D-XXXX","See whether a deployment succeeded, failed, or is still rolling out.","Confirming a release actually completed cleanly across every instance.","Surfaces per-instance failures so you know exactly what to fix.")
+  ]},
+
+  { id:"aws-codepipeline", title:"CodePipeline", entries:[
+    concept("Code pipeline stages", [["What it is","Orchestrates the end-to-end release process — wires Source → Build → Deploy stages together and runs them automatically on every change."],["Stage","A logical phase of the pipeline, e.g. Source, Build, Deploy."],["Action","A single task inside a stage, e.g. \"pull from GitHub\" or \"run CodeBuild project\"."]]),
+    { title:"Create a pipeline from the console", steps:[
+      "Open the AWS Console → search <code>CodePipeline</code> → <strong>Create pipeline</strong>",
+      "Name the pipeline and choose or create a service role",
+      "Add a <strong>Source</strong> stage — connect GitHub (or CodeCommit/S3) and pick the repo and branch",
+      "Add a <strong>Build</strong> stage — select the CodeBuild project to run (this is the connecting code build and code deploy link)",
+      "Add a <strong>Deploy</strong> stage — select CodeDeploy (or another deploy provider) and its application/deployment group",
+      "Review and click <strong>Create pipeline</strong> — it runs automatically once, then on every future push"
+    ]},
+    { title:"Pipeline failure troubleshooting", fields:[
+      f("Build stage failure","Pipeline stops before Deploy runs — nothing broken ever reaches production automatically."),
+      f("Where to look first","Open the failing stage's action in the console — it links straight to the CodeBuild logs or CodeDeploy deployment events."),
+      f("Manual approval (optional)","A stage that pauses the pipeline until a person approves it, e.g. before deploying to production.")
+    ]},
+    cmd("Start a pipeline execution","aws codepipeline start-pipeline-execution --name my-pipeline","Manually trigger a pipeline run.","Re-running a release without pushing a new commit.","Useful for retrying after fixing an external issue, e.g. expired credentials."),
+    cmd("Get pipeline state","aws codepipeline get-pipeline-state --name my-pipeline","See the current status of every stage in the pipeline.","Checking exactly which stage a release is stuck or failed on.","Pinpoints the failing stage instead of digging through separate service consoles.")
+  ]},
+
+  { id:"aws-cloudformation", title:"CloudFormation (IAC)", entries:[
+    concept("Stack Creation", [["Definition","AWS's native Infrastructure-as-Code service — define resources (EC2, S3, VPC, security groups...) in a YAML/JSON template and AWS creates them for you."],["Template","The YAML/JSON file describing the desired resources and their configuration."],["Stack","A single deployed instance of a template — CloudFormation tracks every resource in a stack as one unit."]]),
+    concept("IAM Role &amp; Permissions", [["Why needed","CloudFormation needs an IAM role/permissions to actually create the resources your template defines, e.g. iam:CreateRole if the template provisions roles."],["Capabilities flag","Templates that create IAM resources require you to explicitly acknowledge that, e.g. --capabilities CAPABILITY_NAMED_IAM."]]),
+    concept("New YAML Template / Update Existing YAML", [["New template","Written from scratch to define a fresh set of resources, e.g. EC2 + security group."],["Update existing YAML","Edit the template and run an update — CloudFormation diffs it and changes only what is different."]]),
+    concept("EC2 Creation / S3 Creation / Security Group Creation", [["Pattern","Each resource is declared under Resources: with a Type, e.g. AWS::EC2::Instance, AWS::S3::Bucket, AWS::EC2::SecurityGroup, and its Properties."]]),
+    { title:"Deploy a stack from the console", steps:[
+      "Write a template, e.g. <code>ec2.yaml</code>, describing the resources you want (AMI, instance type, security group, S3 bucket, etc.)",
+      "Open the AWS Console → search <code>CloudFormation</code> → <strong>Create stack</strong> → <strong>With new resources</strong>",
+      "Upload the template file",
+      "Name the stack and fill in any parameters it asks for",
+      "Check the IAM capabilities acknowledgement if the template creates IAM roles/policies",
+      "Click <strong>Submit</strong> and watch the <strong>Events</strong> tab as resources are created",
+      "Once status is <code>CREATE_COMPLETE</code>, check the <strong>Resources</strong> and <strong>Outputs</strong> tabs"
+    ]},
+    cmd("Create a stack","aws cloudformation create-stack --stack-name my-ec2-stack --template-body file://ec2.yaml","Deploy a set of AWS resources defined in a template.","Standing up a repeatable environment, e.g. dev/staging/prod, from the same definition.","Version-controlled, repeatable infrastructure instead of manual console clicks."),
+    cmd("Update a stack","aws cloudformation update-stack --stack-name my-ec2-stack --template-body file://ec2.yaml","Apply template or parameter changes to an existing stack.","Rolling out an infrastructure change safely, e.g. a new security group rule.","CloudFormation only touches what actually changed."),
+    cmd("Delete a stack","aws cloudformation delete-stack --stack-name my-ec2-stack","Tear down every resource the stack created.","Cleaning up a temporary environment, e.g. after a demo or test.","One command removes everything cleanly, with no orphaned resources."),
+    cmd("Describe stack events","aws cloudformation describe-stack-events --stack-name my-ec2-stack","See the step-by-step history of a stack's creation or update.","Debugging why a stack failed to create or update.","Pinpoints exactly which resource failed and the reason AWS gave.")
+  ]},
+
+  { id:"aws-cloudtrail", title:"CloudTrail", entries:[
+    concept("Event History", [["Definition","Records every API call made in your AWS account — who did what, from where, and when — for auditing and security investigation."],["Coverage","The last 90 days of management events are viewable in the console automatically, with no setup required."]]),
+    concept("Trials — creating and checking", [["Trail","A configured CloudTrail resource that continuously delivers events to an S3 bucket (and optionally CloudWatch Logs) for long-term retention beyond 90 days."],["Checking it worked","After creating a trail and starting logging, trigger an action, e.g. stop an EC2 instance, then confirm it shows up in Event history within a few minutes."]]),
+    concept("Trials — added to S3 bucket", [["Why S3","Long-term, durable, queryable storage for logs — required if you need retention or audit history beyond the 90-day console window."]]),
+    { title:"Create a trail from the console", steps:[
+      "Open the AWS Console → search <code>CloudTrail</code> → <strong>Trails</strong> → <strong>Create trail</strong>",
+      "Name the trail",
+      "Choose or create an S3 bucket to store logs in long-term",
+      "Optionally enable CloudWatch Logs for real-time searching/alerting on events",
+      "Choose management and/or data events to log",
+      "Click <strong>Create trail</strong>",
+      "Use <strong>Event history</strong> to search recent events, or query the S3 logs for older ones"
+    ]},
+    cmd("Create a trail","aws cloudtrail create-trail --name my-trail --s3-bucket-name my-cloudtrail-bucket","Continuously log account API activity to S3 for retention beyond 90 days.","Meeting an audit/compliance requirement, or investigating an incident after the fact.","Event history alone only covers 90 days — a trail keeps a durable, searchable record."),
+    cmd("Start logging","aws cloudtrail start-logging --name my-trail","Turn on event delivery for a created trail.","A trail was created but is not yet capturing events.","A trail does nothing until logging is explicitly started."),
+    cmd("Look up recent events","aws cloudtrail lookup-events --lookup-attributes AttributeKey=Username,AttributeValue=jack","Search recent account activity by attributes like user, event name, or resource.","Investigating \"who did this\" without digging through raw S3 logs.","Fast, filtered search over the last 90 days of management events.")
+  ]},
+
+  { id:"aws-efs", title:"EFS — Elastic File System", entries:[
+    concept("Creating EFS", [["Definition","A managed, elastic NFS file system that multiple EC2 instances, even across Availability Zones, can mount and share at the same time."],["EFS vs EBS","EBS attaches to one instance at a time, like a hard drive; EFS is shared network storage many instances can mount concurrently, like a network drive."],["Mount target","An EFS access point created in a specific subnet/AZ that EC2 instances in that AZ connect to."]]),
+    { title:"Creating mount and adding it to an EC2 instance", steps:[
+      "Open the AWS Console → search <code>EFS</code> → <strong>Create file system</strong>",
+      "Name it and choose the same VPC as the EC2 instances that will use it",
+      "AWS creates mount targets automatically in each Availability Zone's subnet",
+      "Set the security group on the mount targets to allow NFS (port 2049) from your EC2 instances' security group",
+      "On each EC2 instance, install the NFS/EFS client (see install command below)",
+      "Create a local mount point: <code>sudo mkdir /mnt/efs</code>",
+      "Mount it: <code>sudo mount -t efs fs-xxxxxxxx:/ /mnt/efs</code>",
+      "Optionally add it to <code>/etc/fstab</code> so it mounts automatically on every reboot"
+    ]},
+    cmd("How to install (Ubuntu NFS client)","sudo apt update && sudo apt install nfs-common -y","Install the client software needed to mount an EFS file system over NFS.","Before mounting EFS on a fresh EC2 instance for the first time.","Without an NFS client installed, the instance has no way to speak the EFS mount protocol."),
+    cmd("Mount an EFS file system","sudo mount -t efs fs-0123456789:/ /mnt/efs","Attach the shared file system to a local directory on the instance.","Giving an EC2 instance access to shared application data, e.g. uploaded files across a fleet.","Every instance that mounts it sees the exact same files in real time."),
+    cmd("Persist the mount on reboot","echo \"fs-0123456789:/ /mnt/efs efs _netdev,tls 0 0\" | sudo tee -a /etc/fstab","Make the EFS mount survive an instance reboot automatically.","Any production instance that depends on EFS being mounted at boot.","Avoids the instance coming back up without its shared storage attached.")
+  ]},
+
+  { id:"aws-cognito", title:"AWS Cognito", entries:[
+    concept("Cognito overview", [["Definition","A managed service for adding user sign-up, sign-in, and access control to web/mobile apps, without building your own auth system."]]),
+    concept("User authentication", [["What it handles","Sign-up, sign-in, password reset, email/phone verification, MFA, and social/federated login (Google, Facebook, SAML/OIDC)."]]),
+    concept("User Pools", [["What it is","A managed user directory — stores user profiles and handles authentication, issuing JWT tokens on successful login."],["Identity Pools (related)","Separately, Identity Pools grant temporary AWS credentials to authenticated (or guest) users to call other AWS services directly."]]),
+    concept("Authentication flow", [["Flow","App collects credentials → sends to Cognito User Pool → Cognito verifies and returns ID/Access/Refresh tokens → app uses the token to call its backend API or AWS services."]]),
+    { title:"Create a User Pool from the console", steps:[
+      "Open the AWS Console → search <code>Cognito</code> → <strong>User pools</strong> → <strong>Create user pool</strong>",
+      "Choose sign-in options, e.g. email or username",
+      "Configure password policy and MFA requirements",
+      "Configure the sign-up experience — required attributes, self-registration on/off",
+      "Set up an app client, which is what your frontend uses to talk to the pool",
+      "Review and click <strong>Create user pool</strong>",
+      "Use the app client ID/secret in your app's login flow to call Cognito's auth APIs"
+    ]},
+    cmd("Create a user pool","aws cognito-idp create-user-pool --pool-name my-app-users","Create a managed directory of app users.","Adding login/signup to a new web or mobile app.","Removes the need to build and secure your own password storage and auth logic."),
+    cmd("Sign up a user","aws cognito-idp sign-up --client-id CLIENT_ID --username jack --password 'Passw0rd!'","Register a new user against the pool.","Testing the sign-up flow from the CLI before wiring up the app UI.","Confirms the pool's password policy and required attributes are configured correctly."),
+    cmd("Authenticate a user","aws cognito-idp initiate-auth --client-id CLIENT_ID --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=jack,PASSWORD='Passw0rd!'","Log a user in and receive back ID/Access/Refresh tokens.","Testing the login flow, or building a backend that authenticates on a user's behalf.","Tokens returned here are what your app uses to prove the user's identity on later requests.")
+  ]},
+
+  { id:"aws-guardduty", title:"AWS GuardDuty", entries:[
+    concept("GuardDuty overview", [["Definition","A managed threat-detection service that continuously analyzes account, network (VPC Flow Logs, DNS), and workload activity for malicious or unauthorized behavior."],["No agents needed","Uses threat intelligence feeds and machine learning on existing logs — nothing to install on your instances."]]),
+    concept("Findings", [["What it is","A specific detected issue, e.g. an EC2 instance communicating with a known malicious IP, or unusual IAM API calls from a new location."],["Severity","Findings are ranked Low / Medium / High so you can triage the most urgent ones first."]]),
+    concept("Threat detection concept", [["How it works","Findings are generated from CloudTrail, VPC Flow Logs, and DNS logs, cross-referenced against known threat patterns and anomaly detection."]]),
+    concept("Alerts / findings workflow", [["Typical flow","GuardDuty raises a finding → an EventBridge rule matches it → notifies an SNS topic or triggers a Lambda for automated response, e.g. isolating a compromised instance."]]),
+    concept("30-day trial / cost awareness", [["Free trial","GuardDuty offers a 30-day free trial per account so you can evaluate it before being billed."],["Cost driver","Billing scales with the volume of logs analyzed (CloudTrail events, VPC Flow Logs, DNS logs) — keep this in mind before enabling it account-wide."]]),
+    { title:"Enable GuardDuty from the console", steps:[
+      "Open the AWS Console → search <code>GuardDuty</code> → <strong>Get started</strong>",
+      "Click <strong>Enable GuardDuty</strong> — it starts analyzing existing logs immediately with no agents to install",
+      "Open <strong>Findings</strong> after a short while to see any detected issues",
+      "Optional: go to <strong>Settings</strong> to configure S3 protection, EKS protection, or Malware protection",
+      "Set up an EventBridge rule to forward findings to an SNS topic or Lambda for automated alerting"
+    ]},
+    cmd("Enable GuardDuty","aws guardduty create-detector --enable","Turn on continuous threat detection for the account.","Baseline security hygiene for any production AWS account.","Detects threats automatically from existing logs, with no infrastructure to deploy or manage."),
+    cmd("List findings","aws guardduty list-findings --detector-id DETECTOR_ID","See the IDs of current security findings.","Regularly checking for new threats, or pulling findings into a script.","First step to building automated alerting or triage on top of GuardDuty.")
+  ]}
+],
+
+devops: [
+  { id:"devops-jenkins", title:"Jenkins", entries:[
+    concept("Concept understanding", [["What it is","An open-source automation server used to build CI/CD pipelines — pulls code, builds it, tests it, and deploys it, usually triggered by a webhook from Git."]]),
+    concept("Core concepts", [
+      ["Job / Project","A configured task Jenkins can run, e.g. building a specific repo."],
+      ["Pipeline","A job defined as code (Jenkinsfile) describing stages, e.g. Build → Test → Deploy."],
+      ["Plugin","Jenkins' extension mechanism — plugins add Git, Docker, Slack, SonarQube integration, and more."]
+    ]),
+    { title:"Installed the Jenkins and SonarQube — Jenkins install (Ubuntu)", steps:[
+      "Install Java, a Jenkins prerequisite: <code>sudo apt update && sudo apt install fontconfig openjdk-17-jre -y</code>",
+      "Add the Jenkins repo key: <code>sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key</code>",
+      "Add the Jenkins repo: <code>echo \"deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/\" | sudo tee /etc/apt/sources.list.d/jenkins.list</code>",
+      "Update and install: <code>sudo apt update && sudo apt install jenkins -y</code>",
+      "Start and enable it: <code>sudo systemctl enable --now jenkins</code>",
+      "Open <code>http://server-ip:8080</code> in a browser to finish setup",
+      "Get the initial admin password: <code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code>",
+      "Paste it into the browser, install suggested plugins, and create your admin user"
+    ]},
+    { title:"Created pipeline", steps:[
+      "On the Jenkins dashboard, click <strong>New Item</strong> → choose <strong>Pipeline</strong>, name it",
+      "Under <strong>Pipeline</strong>, choose <strong>Pipeline script from SCM</strong>",
+      "Set SCM to Git, paste the repository URL, and point it at your <code>Jenkinsfile</code> path",
+      "Add credentials if the repo is private",
+      "Save, then click <strong>Build Now</strong> to run it manually",
+      "Add a GitHub webhook pointing at <code>http://server-ip:8080/github-webhook/</code> so pushes trigger builds automatically"
+    ]},
+    concept("Passwd store in credentials", [["Where","Jenkins → <strong>Manage Jenkins</strong> → <strong>Credentials</strong> → add a Username/Password, Secret text, or SSH key credential."],["Why","Keeps passwords, tokens, and keys out of the Jenkinsfile itself — pipelines reference credentials by ID instead."]]),
+    concept("Token creating and adding", [["Where","Jenkins → your user → <strong>Configure</strong> → <strong>API Token</strong> → <strong>Add new Token</strong>, or a target service's own token page, e.g. GitHub → Settings → Developer settings."],["Why","Tokens let Jenkins authenticate to external services, e.g. GitHub, SonarQube, Docker Hub, without using your actual password."]]),
+    concept("Quality analysis / Quality Gate", [["Quality analysis","Jenkins triggers a SonarQube scan as a pipeline stage, e.g. via the SonarQube Scanner plugin."],["Quality Gate","A pass/fail condition set in SonarQube, e.g. \"0 new bugs, coverage &gt; 80%\" — a Jenkins pipeline stage can wait on and fail the build if the gate fails."]]),
+    cmd("Check Jenkins service status","sudo systemctl status jenkins","Confirm Jenkins is running.","After install, or when the web UI is unreachable.","Fastest way to see if the service itself is the problem."),
+    cmd("Restart Jenkins","sudo systemctl restart jenkins","Restart the Jenkins service, e.g. after installing a plugin that needs it.","Applying a config or plugin change that requires a restart.","Some plugins and settings only take effect after Jenkins restarts.")
+  ]},
+
+  { id:"devops-sonarqube", title:"SonarQube", entries:[
+    concept("Concept understanding", [["What it is","A static code analysis platform that scans source code for bugs, code smells, security vulnerabilities, and test coverage gaps."],["Quality Gate","A set of pass/fail conditions, e.g. \"0 new bugs, coverage &gt; 80%\", that a build must meet to be considered releasable."]]),
+    { title:"Install SonarQube with Docker (quickest path)", steps:[
+      "Install Docker if not already present: <code>sudo apt update && sudo apt install docker.io -y</code>",
+      "Start SonarQube in a container: <code>sudo docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community</code>",
+      "Wait about a minute for it to boot, then open <code>http://server-ip:9000</code>",
+      "Log in with the default credentials <code>admin / admin</code> and set a new password when prompted"
+    ]},
+    { title:"Integrate SonarQube with Jenkins", steps:[
+      "In Jenkins, install the <strong>SonarQube Scanner</strong> plugin (Manage Jenkins → Plugins)",
+      "In SonarQube, generate a token: <strong>My Account → Security → Generate Token</strong>",
+      "In Jenkins, add that token as a credential, then configure the SonarQube server under <strong>Manage Jenkins → System → SonarQube servers</strong>",
+      "In your pipeline's Jenkinsfile, add a stage that runs the scanner, e.g. <code>withSonarQubeEnv('sonar') { sh 'mvn sonar:sonar' }</code>",
+      "Optionally add a Quality Gate stage that fails the pipeline if SonarQube's analysis does not pass"
+    ]},
+    cmd("Run the SonarScanner CLI","sonar-scanner -Dsonar.projectKey=my-app -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=TOKEN","Trigger a code analysis run from the command line.","Running analysis manually, or from a CI pipeline that is not using a dedicated SonarQube plugin.","Works for any language/build tool, not just projects Jenkins' plugin natively understands.")
+  ]},
+
+  { id:"devops-kubernetes", title:"Kubernetes (EKS)", entries:[
+    concept("Concept understanding", [
+      ["Kubernetes","A container orchestration platform that runs, scales, heals, and manages containerized applications across a cluster of machines."],
+      ["EKS (Elastic Kubernetes Service)","AWS's managed Kubernetes — AWS runs and patches the control plane, you manage the worker nodes and workloads."]
+    ]),
+    concept("Pods, Deployments, Service, Ingress", [
+      ["Pod","The smallest deployable unit — one or more tightly coupled containers sharing storage and network."],
+      ["Deployment","Manages a set of identical Pods, handling rolling updates and self-healing (recreates a Pod if it dies)."],
+      ["Service","A stable network endpoint that load-balances traffic across a Deployment's Pods, even as they are replaced."],
+      ["Ingress","Routes external HTTP/HTTPS traffic into Services inside the cluster, typically with host/path-based rules."]
+    ]),
+    concept("Namespaces, Configmaps, Secrets, Replicasets", [
+      ["Namespaces","Virtual clusters within a cluster — used to separate teams or environments, e.g. dev vs prod."],
+      ["Configmaps","Store non-sensitive configuration, e.g. environment variables, outside the container image."],
+      ["Secrets","Store sensitive data, e.g. API keys or passwords, base64-encoded and access-controlled."],
+      ["Replicasets","Ensure a specified number of identical Pod replicas are running at all times — usually managed for you by a Deployment."]
+    ]),
+    concept("Control panel &amp; Worker Node", [
+      ["Control panel (control plane)","The cluster's brain (API server, scheduler, etcd) — fully managed by AWS in EKS."],
+      ["Worker Node","An EC2 instance (or Fargate task) that actually runs your Pods."]
+    ]),
+    { title:"Install kubectl and eksctl (Ubuntu)", steps:[
+      "Install kubectl: <code>curl -LO \"https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl\"</code>",
+      "Make it executable and move it: <code>chmod +x kubectl && sudo mv kubectl /usr/local/bin/</code>",
+      "Verify it: <code>kubectl version --client</code>",
+      "Install eksctl: <code>curl --silent --location \"https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz\" | tar xz -C /tmp</code>",
+      "Move it: <code>sudo mv /tmp/eksctl /usr/local/bin</code>",
+      "Verify it: <code>eksctl version</code>",
+      "Make sure the AWS CLI is already configured (<code>aws configure</code>) — eksctl uses those credentials"
+    ]},
+    { title:"Create an EKS cluster", steps:[
+      "Create the cluster with eksctl: <code>eksctl create cluster --name my-cluster --region ap-south-1 --nodegroup-name my-nodes --node-type t3.medium --nodes 2</code>",
+      "This provisions the control plane, a VPC, and worker node EC2 instances — takes roughly 15–20 minutes",
+      "Point kubectl at the new cluster: <code>aws eks update-kubeconfig --name my-cluster --region ap-south-1</code>",
+      "Confirm access: <code>kubectl get nodes</code>",
+      "Deploy a test app: <code>kubectl create deployment hello --image=nginx</code>",
+      "Expose it: <code>kubectl expose deployment hello --port=80 --type=LoadBalancer</code>"
+    ]},
+    cmd("Get cluster nodes","kubectl get nodes","List the worker nodes in the cluster and their status.","Confirming the cluster is up and nodes are Ready.","First check after any cluster or kubeconfig change."),
+    cmd("Get pods","kubectl get pods -A","List all running Pods across every namespace.","Checking what is actually deployed and running right now.","Quick overall health check of workloads in the cluster."),
+    cmd("Apply a manifest","kubectl apply -f deployment.yaml","Create or update resources defined in a YAML manifest.","Deploying or updating a Deployment, Service, Configmap, etc.","Declarative — Kubernetes reconciles the cluster to match the file, whether it is a first create or an update."),
+    cmd("View logs","kubectl logs pod-name","See the console output/logs of a specific Pod.","Debugging why a Pod is crashing or behaving unexpectedly.","Fastest way to see what the application inside the Pod is actually doing."),
+    cmd("Describe a resource","kubectl describe pod pod-name","Show detailed status, events, and config for a resource.","Debugging a Pod stuck in Pending or CrashLoopBackOff.","The Events section usually reveals the exact reason a resource is not healthy."),
+    cmd("Create a Secret","kubectl create secret generic db-secret --from-literal=password=Passw0rd!","Store sensitive config in the cluster instead of hardcoding it.","Passing a database password or API key to a Pod securely.","Keeps sensitive values out of manifests and container images."),
+    cmd("Scale a Deployment","kubectl scale deployment hello --replicas=4","Change how many Pod replicas a Deployment runs.","Handling more load, or scaling down to save cost.","Kubernetes creates or removes Pods to match the new replica count automatically.")
+  ]},
+
+  { id:"devops-monitoring", title:"Prometheus &amp; Grafana", entries:[
+    concept("EC2 monitoring setup / Prometheus targets / metrics", [["Prometheus","An open-source metrics collection and alerting system — it \"scrapes\" (pulls) metrics from targets on a schedule and stores them as time-series data."],["Target","Any endpoint Prometheus is configured to scrape, defined in <code>prometheus.yml</code> under scrape_configs — e.g. an EC2 instance's node_exporter endpoint."],["Metric","A named, timestamped numeric value, e.g. node_cpu_seconds_total, that Prometheus stores and can be queried with PromQL."]]),
+    concept("Grafana overview and purpose", [["What it is","A visualization layer that turns metrics from a data source, e.g. Prometheus, into dashboards, graphs, and alerts."]]),
+    concept("Grafana data source", [["What it is","The backend Grafana queries for data, e.g. Prometheus, added under Connections → Data sources with its URL, e.g. http://localhost:9090."]]),
+    concept("Dashboard creation / Panels and visualizations", [["Dashboard","A collection of Panels arranged on one screen, saved so the same view can be reopened or shared."],["Panel","A single chart, gauge, table, or stat backed by one or more PromQL queries — the basic building block of a Grafana dashboard."]]),
+    { title:"Install Prometheus + node_exporter on Ubuntu (EC2 monitoring setup)", steps:[
+      "Create a user for Prometheus: <code>sudo useradd --no-create-home --shell /bin/false prometheus</code>",
+      "Download and extract Prometheus: <code>wget https://github.com/prometheus/prometheus/releases/latest/download/prometheus-linux-amd64.tar.gz && tar -xzf prometheus-linux-amd64.tar.gz</code>",
+      "Move binaries: <code>sudo mv prometheus-*/prometheus prometheus-*/promtool /usr/local/bin/</code>",
+      "Run it: <code>prometheus --config.file=prometheus.yml</code>",
+      "Install node_exporter to expose EC2 host metrics: <code>wget https://github.com/prometheus/node_exporter/releases/latest/download/node_exporter-linux-amd64.tar.gz && tar -xzf node_exporter-linux-amd64.tar.gz</code>",
+      "Run it in the background: <code>./node_exporter-*/node_exporter &amp;</code>",
+      "In <code>prometheus.yml</code>, add a scrape target pointing at <code>localhost:9100</code> (node_exporter's default port)",
+      "Open <code>http://server-ip:9090</code> to use the Prometheus UI and run PromQL queries"
+    ]},
+    { title:"Install Grafana on Ubuntu", steps:[
+      "Install prerequisites: <code>sudo apt install -y apt-transport-https software-properties-common wget</code>",
+      "Add the Grafana repo key: <code>sudo mkdir -p /etc/apt/keyrings/ && wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg</code>",
+      "Add the repo: <code>echo \"deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main\" | sudo tee /etc/apt/sources.list.d/grafana.list</code>",
+      "Install: <code>sudo apt update && sudo apt install grafana -y</code>",
+      "Start and enable it: <code>sudo systemctl enable --now grafana-server</code>",
+      "Open <code>http://server-ip:3000</code> — default login is <code>admin / admin</code>, you'll be asked to change it",
+      "Add Prometheus as a data source: <strong>Connections → Data sources → Add data source → Prometheus</strong>, URL <code>http://localhost:9090</code>",
+      "Create a dashboard, add a panel, and write a PromQL query, e.g. <code>rate(node_cpu_seconds_total[5m])</code>"
+    ]},
+    cmd("Check Prometheus targets","curl http://localhost:9090/api/v1/targets","Confirm which targets Prometheus is currently scraping and their health.","Debugging why a metric is not showing up.","Fast way to see if the issue is scraping or querying."),
+    cmd("Reload Prometheus config","curl -X POST http://localhost:9090/-/reload","Reload prometheus.yml without restarting the process.","Adding a new scrape target without downtime.","Avoids interrupting metric collection just to apply a config change."),
+    cmd("Check Grafana service","sudo systemctl status grafana-server","Confirm the Grafana server is running.","The dashboard UI is unreachable.","Quick check of the service itself before digging into networking or config.")
+  ]},
+
+  { id:"devops-terraform", title:"Terraform", entries:[
+    concept("Concept Understanding", [
+      ["What it is","An open-source Infrastructure-as-Code tool that provisions and manages infrastructure across many providers, e.g. AWS, Azure, GCP, using declarative config files."],
+      ["Declarative","You describe the desired end state; Terraform figures out and executes the steps to get there."],
+      ["Providers","Plugins that let Terraform talk to a specific platform's API, e.g. the AWS provider."]
+    ]),
+    concept("Provider.tf, variable.tf, outputs.tf, main.tf", [
+      ["provider.tf","Declares which provider(s) to use and their configuration, e.g. AWS region."],
+      ["variable.tf","Declares input variables so the same config can be reused with different values, e.g. instance_type."],
+      ["main.tf","The core file defining the actual resources to create, e.g. aws_instance, aws_s3_bucket."],
+      ["outputs.tf","Declares values to print or expose after apply, e.g. an instance's public IP."]
+    ]),
+    concept("Terraform state file", [
+      ["terraform.tfstate","A JSON file that maps your config to real-world resource IDs — Terraform's source of truth for what already exists."],
+      ["Why it matters","Never edit it by hand; losing or corrupting it makes Terraform lose track of resources it manages."]
+    ]),
+    concept("Terraform workspace and creating an workspace", [
+      ["What it is","An isolated instance of state within the same configuration — lets you manage e.g. dev/staging/prod from one codebase without state collisions."],
+      ["Default workspace","Every Terraform project starts in a workspace called default."]
+    ]),
+    concept("Terraform state file uploading to S3 Bucket — backup concept", [
+      ["Remote backend","Configuring Terraform to store terraform.tfstate in S3 (often with a DynamoDB table for locking) instead of only locally."],
+      ["Why it matters","Enables safe team collaboration — everyone reads/writes the same state, and locking prevents two people applying at once."]
+    ]),
+    { title:"Install Terraform on Ubuntu", steps:[
+      "Install prerequisites: <code>sudo apt update && sudo apt install -y gnupg software-properties-common curl</code>",
+      "Add the HashiCorp GPG key: <code>wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg</code>",
+      "Add the repo: <code>echo \"deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/hashicorp.list</code>",
+      "Install: <code>sudo apt update && sudo apt install terraform -y</code>",
+      "Verify: <code>terraform -version</code>"
+    ]},
+    { title:"Basic Terraform workflow", steps:[
+      "Create a project folder and the four core files: <code>provider.tf</code>, <code>variable.tf</code>, <code>main.tf</code>, <code>outputs.tf</code>",
+      "Initialize the working directory and download providers: <code>terraform init</code>",
+      "Preview what Terraform will create/change/destroy: <code>terraform plan</code>",
+      "Apply the changes: <code>terraform apply</code> — confirm with <code>yes</code> when prompted",
+      "Tear everything down when done: <code>terraform destroy</code>"
+    ]},
+    { title:"Create and use a workspace", steps:[
+      "Create a new workspace: <code>terraform workspace new dev</code>",
+      "List all workspaces: <code>terraform workspace list</code>",
+      "Switch workspaces: <code>terraform workspace select prod</code>",
+      "Each workspace keeps its own state, so a <code>terraform apply</code> in dev never touches prod resources"
+    ]},
+    { title:"Upload the state file to an S3 backend", steps:[
+      "Create an S3 bucket to hold state, e.g. <code>aws s3 mb s3://my-tfstate-bucket</code>",
+      "(Recommended) create a DynamoDB table for state locking, e.g. <code>aws dynamodb create-table --table-name tf-lock --attribute-definitions AttributeName=LockID,AttributeType=S --key-schema AttributeName=LockID,KeyType=HASH --billing-mode PAY_PER_REQUEST</code>",
+      "In <code>provider.tf</code>, add a backend block pointing Terraform at that bucket (and table) instead of local state",
+      "Re-initialize to migrate existing state: <code>terraform init -migrate-state</code>",
+      "Confirm the state file now lives in S3 instead of only on your machine"
+    ]},
+    cmd("Initialize a project","terraform init","Download the providers/modules a config needs and set up the backend.","The very first command in any new or cloned Terraform project.","Nothing else works until the working directory is initialized."),
+    cmd("Preview changes","terraform plan","Show exactly what Terraform will create, change, or destroy, without doing it.","Before every apply, as a safety check.","Catches unintended changes before they touch real infrastructure."),
+    cmd("Apply changes","terraform apply","Create/update the real infrastructure to match the config.","Actually provisioning or updating resources.","Idempotent — running it again with no config changes does nothing."),
+    cmd("Destroy resources","terraform destroy","Tear down every resource Terraform manages in the current state/workspace.","Cleaning up a temporary or no-longer-needed environment.","Removes exactly what Terraform created, cleanly and completely."),
+    cmd("Format config files","terraform fmt","Auto-format .tf files to the standard style.","Keeping config readable and consistent, e.g. before a commit.","Removes style bikeshedding from code review."),
+    cmd("Validate config","terraform validate","Check the configuration for syntax and internal consistency errors.","Catching mistakes before running plan or apply.","Fast, offline check that does not need provider credentials.")
   ]}
 ]
 
@@ -973,9 +1369,10 @@ aws: [
    ========================================================= */
 
 const SECTION_META = {
-  linux: { label:"Linux", accentClass:"linux" },
-  git:   { label:"Git &amp; GitHub", accentClass:"git" },
-  aws:   { label:"AWS", accentClass:"aws" }
+  linux:  { label:"Linux", accentClass:"linux" },
+  git:    { label:"Git &amp; GitHub", accentClass:"git" },
+  aws:    { label:"AWS", accentClass:"aws" },
+  devops: { label:"DevOps Tooling", accentClass:"devops" }
 };
 
 function renderFields(fields){
