@@ -61,8 +61,8 @@ docker run -d \
 echo "🩺 Running health checks on port ${TARGET_PORT}..."
 HEALTHY=false
 for i in {1..8}; do
-    echo "   Attempt $i/8: checking http://127.0.0.1:${TARGET_PORT}/ ..."
-    if curl -sf "http://127.0.0.1:${TARGET_PORT}/" >/dev/null 2>&1; then
+    echo "   Attempt $i/8: checking http://127.0.0.1:${TARGET_PORT}/health ..."
+    if curl -sf "http://127.0.0.1:${TARGET_PORT}/health" >/dev/null 2>&1; then
         HEALTHY=true
         echo "   ✅ Health check PASSED!"
         break
