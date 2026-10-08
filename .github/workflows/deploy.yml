@@ -42,18 +42,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      # Step 5: Copy the latest deploy script to EC2
-      - name: Copy Deploy Script to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "scripts/deploy.sh"
-          target: "/home/${{ secrets.EC2_USER }}"
-          strip_components: 1
-
-      # Step 6: Connect to EC2 and Execute Blue/Green Deployment
+      # Step 5: Connect to EC2 and Execute Blue/Green Deployment
       - name: Execute Blue/Green Deployment on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -63,11 +52,12 @@ jobs:
           script: |
             set -e
 
-            # 1. Log in Docker to Amazon ECR on EC2 using session token from GitHub Actions
-            echo "${{ steps.login-ecr.outputs.docker_password }}" | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-
-            # 2. Make script executable
+            # 1. Download latest deploy script
+            curl -sSL https://raw.githubusercontent.com/jacksamson1503/Commands/main/scripts/deploy.sh -o /home/${{ secrets.EC2_USER }}/deploy.sh
             chmod +x /home/${{ secrets.EC2_USER }}/deploy.sh
+
+            # 2. Log in Docker to Amazon ECR on EC2 using session token from GitHub Actions
+            echo "${{ steps.login-ecr.outputs.docker_password }}" | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
 
             # 3. Execute zero-downtime Blue/Green swap
             /home/${{ secrets.EC2_USER }}/deploy.sh "${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}"
