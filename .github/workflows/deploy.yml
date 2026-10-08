@@ -1,33 +1,39 @@
-name: CI/CD Pipeline - Zero-Downtime Blue/Green Deploy
+name: CI/CD - Docker, ECR and EC2 Blue-Green
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
 
 jobs:
-  build-and-deploy:
-    name: Build, Push to ECR & Blue/Green Deploy to EC2
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out repository code
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Configure AWS Credentials using GitHub Secrets
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      # Step 3: Log in to Amazon ECR
-      - name: Log in to Amazon ECR
+      - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+<<<<<<< HEAD
       # Step 4: Build, tag, and push Docker image to Amazon ECR
       - name: Build, Tag, and Push Docker Image
         run: |
@@ -41,19 +47,69 @@ jobs:
       # Step 5: Connect to EC2 and Execute Blue/Green Deployment
       - name: Execute Blue/Green Deployment on EC2
         uses: appleboy/ssh-action@v1.0.3
+=======
+      - name: Build Docker image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t ${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} .
+          docker tag ${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} ${REGISTRY}/${ECR_REPOSITORY}:latest
+
+      - name: Push Docker image to ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker push ${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          docker push ${REGISTRY}/${ECR_REPOSITORY}:latest
+
+      - name: Deploy Green container on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+>>>>>>> 6fda025ffab03cb62c5f7ab9298bd3c706a7c800
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+<<<<<<< HEAD
+=======
+          envs: AWS_REGION,REGISTRY,ECR_REPOSITORY,IMAGE_TAG
+>>>>>>> 6fda025ffab03cb62c5f7ab9298bd3c706a7c800
           script: |
             set -e
 
-            # 1. Download latest deploy script
-            curl -sSL https://raw.githubusercontent.com/jacksamson1503/Commands/main/scripts/deploy.sh -o /home/${{ secrets.EC2_USER }}/deploy.sh
-            chmod +x /home/${{ secrets.EC2_USER }}/deploy.sh
+            IMAGE="$REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
+<<<<<<< HEAD
             # 2. Log in Docker to Amazon ECR on EC2
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
 
             # 3. Execute zero-downtime Blue/Green swap
             /home/${{ secrets.EC2_USER }}/deploy.sh "${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}"
+=======
+            echo "Logging Docker into ECR..."
+            aws ecr get-login-password --region "$AWS_REGION" |               docker login --username AWS --password-stdin "$REGISTRY"
+
+            echo "Pulling image: $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "Starting Green container..."
+            docker rm -f commands-green 2>/dev/null || true
+
+            docker run -d               --name commands-green               --restart unless-stopped               -p 8081:80               "$IMAGE"
+
+            echo "Waiting for Green container..."
+            sleep 5
+
+            echo "Running health check..."
+            curl -fsS http://127.0.0.1:8081/ > /dev/null
+
+            echo "Green deployment successful."
+            echo "Green is running on port 8081."
+            echo "Blue is intentionally left running for rollback."
+>>>>>>> 6fda025ffab03cb62c5f7ab9298bd3c706a7c800
