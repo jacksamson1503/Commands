@@ -20,21 +20,21 @@ echo "Time: $(date)"
 echo "=============================================="
 
 # 1. Determine which color and port are currently active
-if docker ps --format '{{.Names}}' | grep -q "commands-green"; then
-    CURRENT_COLOR="green"
-    CURRENT_PORT=8081
-    TARGET_COLOR="blue"
-    TARGET_PORT=8082
-elif docker ps --format '{{.Names}}' | grep -q "commands-blue"; then
+if docker ps --format '{{.Names}}' | grep -q "commands-blue"; then
     CURRENT_COLOR="blue"
-    CURRENT_PORT=8082
+    CURRENT_PORT=8081
     TARGET_COLOR="green"
+    TARGET_PORT=8082
+elif docker ps --format '{{.Names}}' | grep -q "commands-green"; then
+    CURRENT_COLOR="green"
+    CURRENT_PORT=8082
+    TARGET_COLOR="blue"
     TARGET_PORT=8081
 else
     # Fresh deployment / First time run
     CURRENT_COLOR="none"
     CURRENT_PORT=0
-    TARGET_COLOR="green"
+    TARGET_COLOR="blue"
     TARGET_PORT=8081
 fi
 
